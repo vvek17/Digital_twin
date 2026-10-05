@@ -1,0 +1,676 @@
+{
+  "note": "Fictional training emails for simulation only. Hospital, people, domains and links are fake (.example domains).",
+  "hospital": "Ashbrook General Hospital",
+  "real_domain": "ashbrookgeneral.example",
+  "counts": {
+    "phishing": 20,
+    "legitimate": 20
+  },
+  "emails": [
+    {
+      "id": "E01",
+      "label": "phishing",
+      "cue": "it_login",
+      "target_role": "nurse",
+      "difficulty": "hard",
+      "sender_name": "Clinical Systems Team",
+      "sender_email": "clinicalsystems@ashbrookgeneral-it.example",
+      "subject": "Records system upgrade - verify your access before Saturday",
+      "body": "Hello,\n\nThe patient records system will be upgraded this weekend. Nursing staff who do not verify their access before Saturday may be unable to chart until IT reactivates their account manually.\n\nVerify access: https://ashbrookgeneral-it.example/verify\n\nClinical Systems Team",
+      "red_flags": [
+        "lookalike domain",
+        "fear of not being able to work",
+        "access verification by link"
+      ]
+    },
+    {
+      "id": "E02",
+      "label": "phishing",
+      "cue": "urgency",
+      "target_role": "nurse",
+      "difficulty": "hard",
+      "sender_name": "Pharmacy Services",
+      "sender_email": "pharmacy@ashbrookgeneral.example.net",
+      "subject": "Medication recall affecting your unit",
+      "body": "Dear Nursing Staff,\n\nA manufacturer has issued a recall for a batch of IV medication stocked on several units. Please check the affected lot numbers against your unit stock before the next medication round.\n\nAffected lots: https://ashbrookgeneral.example.net/pharmacy/recall\n\nPharmacy Services",
+      "red_flags": [
+        "domain has extra ending (.net)",
+        "patient safety fear used to rush",
+        "recalls come through official pharmacy channels"
+      ]
+    },
+    {
+      "id": "E03",
+      "label": "phishing",
+      "cue": "it_login",
+      "target_role": "front_desk",
+      "difficulty": "easy",
+      "sender_name": "Mailbox Administrator",
+      "sender_email": "mailbox-admin@secure-mail-ashbrook.example",
+      "subject": "Your mailbox is full",
+      "body": "Your mailbox has reached 99% of its storage limit. New incoming messages are being held. Click below to increase your storage limit.\n\nIncrease storage: https://secure-mail-ashbrook.example/storage\n\nMail Administrator",
+      "red_flags": [
+        "outside domain",
+        "generic message",
+        "storage increase by link is not normal"
+      ]
+    },
+    {
+      "id": "E04",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "benefits",
+      "target_role": "all",
+      "difficulty": "easy",
+      "sender_name": "Human Resources",
+      "sender_email": "hr@ashbrookgeneral.example",
+      "subject": "Benefits enrollment opens November 1",
+      "body": "Hello all,\n\nAnnual benefits enrollment opens November 1 and closes November 30. Enroll through the Staff Portal on the intranet. HR drop-in sessions will be held in the cafeteria on November 5 and 12.\n\nHuman Resources",
+      "safe_signs": [
+        "real hospital domain",
+        "long deadline",
+        "no direct link"
+      ]
+    },
+    {
+      "id": "E05",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "safety",
+      "target_role": "all",
+      "difficulty": "easy",
+      "sender_name": "Fire Safety Officer",
+      "sender_email": "firesafety@ashbrookgeneral.example",
+      "subject": "Fire drill - East Wing, Thursday 10 AM",
+      "body": "Hello,\n\nA fire drill will take place in the East Wing on Thursday at 10 AM. Patients will not be evacuated. Staff should follow normal unit procedures.\n\nFire Safety Officer",
+      "safe_signs": [
+        "real hospital domain",
+        "no link",
+        "no action requested online"
+      ]
+    },
+    {
+      "id": "E06",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "facilities",
+      "target_role": "all",
+      "difficulty": "easy",
+      "sender_name": "Facilities Management",
+      "sender_email": "facilities@ashbrookgeneral.example",
+      "subject": "Parking Lot C closed for resurfacing",
+      "body": "Dear colleagues,\n\nParking Lot C will be closed from Monday to Wednesday next week for resurfacing. Please use Lots A or D during this time. A shuttle will run from Lot D every 15 minutes.\n\nFacilities Management",
+      "safe_signs": [
+        "real hospital domain",
+        "no link",
+        "information only"
+      ]
+    },
+    {
+      "id": "E07",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "audit",
+      "target_role": "nurse",
+      "difficulty": "easy",
+      "sender_name": "Infection Prevention Team",
+      "sender_email": "infectionprevention@ashbrookgeneral.example",
+      "subject": "Hand hygiene audit results - great work!",
+      "body": "Hello all,\n\nThe latest hand hygiene audit showed 96% compliance across inpatient units. Thank you for your hard work. Full results will be shared at unit meetings.\n\nInfection Prevention Team",
+      "safe_signs": [
+        "real hospital domain",
+        "no link",
+        "no request"
+      ]
+    },
+    {
+      "id": "E08",
+      "label": "phishing",
+      "cue": "it_login",
+      "target_role": "doctor",
+      "difficulty": "hard",
+      "sender_name": "IT Security",
+      "sender_email": "security@ashbrookgeneral.example.org",
+      "subject": "Unusual sign-in to your account",
+      "body": "Hello,\n\nWe detected a sign-in to your hospital account from a new device in another city. If this was not you, secure your account immediately to protect patient data.\n\nSecure my account: https://ashbrookgeneral.example.org/security\n\nIT Security Team",
+      "red_flags": [
+        "domain has extra ending (.org)",
+        "fear of being hacked",
+        "real alerts say to call IT directly"
+      ]
+    },
+    {
+      "id": "E09",
+      "label": "phishing",
+      "cue": "authority",
+      "target_role": "nurse",
+      "difficulty": "easy",
+      "sender_name": "M. Collins (Head Nurse)",
+      "sender_email": "m.collins.headnurse@outlook-mail.example",
+      "subject": "Need this done before end of shift",
+      "body": "Hi,\n\nI need you to complete the staff feedback form before the end of your shift. Management is reviewing completion rates this week so please don't skip it. Use your normal hospital login.\n\nhttps://staff-feedback-form.example/ashbrook\n\nThanks,\nMaria",
+      "red_flags": [
+        "personal email address",
+        "asks for hospital login",
+        "pressure from manager"
+      ]
+    },
+    {
+      "id": "E10",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "scheduling",
+      "target_role": "front_desk",
+      "difficulty": "hard",
+      "sender_name": "Patient Scheduling Lead",
+      "sender_email": "scheduling.lead@ashbrookgeneral.example",
+      "subject": "Scheduling system update next Tuesday",
+      "body": "Hello,\n\nThe appointment system will get a small update next Tuesday evening after clinic hours. Your bookings and login will not change. A short guide to the new layout will be shared at Monday's huddle.\n\nScheduling Lead, extension 1820",
+      "safe_signs": [
+        "real hospital domain",
+        "no login request",
+        "no threat",
+        "phone to verify"
+      ]
+    },
+    {
+      "id": "E11",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "payroll",
+      "target_role": "all",
+      "difficulty": "hard",
+      "sender_name": "Payroll Department",
+      "sender_email": "payroll@ashbrookgeneral.example",
+      "subject": "Your October payslip is available",
+      "body": "Hello,\n\nYour October payslip is now available in the Staff Portal. Open the Staff Portal from your usual intranet bookmark.\n\nIf anything looks wrong, contact Payroll at extension 2150.\n\nPayroll Department",
+      "safe_signs": [
+        "real hospital domain",
+        "no link to click",
+        "tells you to use your usual bookmark"
+      ]
+    },
+    {
+      "id": "E12",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "colleague",
+      "target_role": "nurse",
+      "difficulty": "easy",
+      "sender_name": "Sarah Kim",
+      "sender_email": "s.kim@ashbrookgeneral.example",
+      "subject": "Shift swap Saturday?",
+      "body": "Hi!\n\nWould you be able to swap my Saturday day shift for your Sunday day shift next weekend? No worries if not. If yes, I'll put the request in the rota system.\n\nThanks,\nSarah (Ward 4)",
+      "safe_signs": [
+        "real hospital domain",
+        "known colleague",
+        "no link or login"
+      ]
+    },
+    {
+      "id": "E13",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "vaccination",
+      "target_role": "all",
+      "difficulty": "easy",
+      "sender_name": "Occupational Health",
+      "sender_email": "occhealth@ashbrookgeneral.example",
+      "subject": "Staff flu vaccine clinics this month",
+      "body": "Hello all,\n\nFree flu vaccines for staff are available at the Occupational Health office (Building B, Room 104) every Tuesday and Thursday this month, 8 AM to 4 PM. No appointment needed. Bring your staff ID.\n\nOccupational Health",
+      "safe_signs": [
+        "real hospital domain",
+        "no link",
+        "only asks you to walk in"
+      ]
+    },
+    {
+      "id": "E14",
+      "label": "phishing",
+      "cue": "billing",
+      "target_role": "front_desk",
+      "difficulty": "easy",
+      "sender_name": "Insurance Claims Center",
+      "sender_email": "claims@health-insure-claims.example",
+      "subject": "Patient insurance claim rejected",
+      "body": "Hello,\n\nA claim submitted by your office for a recent patient was rejected due to incorrect details. Log in with your hospital account to correct and resubmit the claim.\n\nCorrect claim: https://health-insure-claims.example/login\n\nClaims Center",
+      "red_flags": [
+        "outside domain",
+        "asks for hospital login",
+        "no patient or claim number"
+      ]
+    },
+    {
+      "id": "E15",
+      "label": "phishing",
+      "cue": "hr_payroll",
+      "target_role": "nurse",
+      "difficulty": "easy",
+      "sender_name": "Staff Scheduling",
+      "sender_email": "rota-update@ashbrook-hr.example",
+      "subject": "Your shift schedule has changed",
+      "body": "Hi,\n\nYour shifts for next week have been changed due to staffing needs. Please review your updated schedule and confirm it by tomorrow.\n\nView schedule: https://ashbrook-hr.example/rota\n\nStaff Scheduling",
+      "red_flags": [
+        "outside domain",
+        "schedules are in the rota system",
+        "confirm by link"
+      ]
+    },
+    {
+      "id": "E16",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "lab",
+      "target_role": "doctor",
+      "difficulty": "hard",
+      "sender_name": "Laboratory Services",
+      "sender_email": "lab@ashbrookgeneral.example",
+      "subject": "New reference ranges for thyroid tests",
+      "body": "Dear clinicians,\n\nFrom Monday, the lab will use updated reference ranges for thyroid function tests. Ranges will display automatically in the records system. No action is needed.\n\nLaboratory Services",
+      "safe_signs": [
+        "real hospital domain",
+        "no action required",
+        "results stay in records system"
+      ]
+    },
+    {
+      "id": "E17",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "security_alert",
+      "target_role": "doctor",
+      "difficulty": "hard",
+      "sender_name": "IT Security",
+      "sender_email": "itsecurity@ashbrookgeneral.example",
+      "subject": "Reminder: watch out for fake password emails",
+      "body": "Hello,\n\nWe've seen fake emails asking staff to reset their passwords. IT will never ask you to reset your password through an email link. If you receive one, use the Report Phish button.\n\nIT Security, extension 4410",
+      "safe_signs": [
+        "real hospital domain",
+        "no link",
+        "warns about phishing"
+      ]
+    },
+    {
+      "id": "E18",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "training",
+      "target_role": "nurse",
+      "difficulty": "hard",
+      "sender_name": "Clinical Education",
+      "sender_email": "education@ashbrookgeneral.example",
+      "subject": "Reminder: annual infection control training",
+      "body": "Hi,\n\nThis is a reminder that annual infection control training is due by the end of the month. You can complete it in the Learning Portal, which you can find on the intranet home page.\n\nIf you need help, contact Clinical Education at extension 3310.\n\nClinical Education Team",
+      "safe_signs": [
+        "real hospital domain",
+        "no direct login link",
+        "reasonable deadline"
+      ]
+    },
+    {
+      "id": "E19",
+      "label": "phishing",
+      "cue": "hr_payroll",
+      "target_role": "all",
+      "difficulty": "hard",
+      "sender_name": "Payroll Department",
+      "sender_email": "payroll@ashbrookgeneral-hr.example",
+      "subject": "Problem with this month's salary payment",
+      "body": "Dear Employee,\n\nWe were unable to process your salary payment this month because your bank details could not be verified. Please update them by Thursday so your pay is not delayed.\n\nUpdate bank details: https://ashbrookgeneral-hr.example/payroll\n\nPayroll Department",
+      "red_flags": [
+        "lookalike domain",
+        "money worry",
+        "asks for bank details by link"
+      ]
+    },
+    {
+      "id": "E20",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "scheduling",
+      "target_role": "nurse",
+      "difficulty": "hard",
+      "sender_name": "Staff Scheduling",
+      "sender_email": "scheduling@ashbrookgeneral.example",
+      "subject": "December rota now published",
+      "body": "Hi everyone,\n\nThe December rota has been published in the rota system. Shift swap requests for December should be submitted by November 20.\n\nThanks,\nStaff Scheduling Team",
+      "safe_signs": [
+        "real hospital domain",
+        "no link",
+        "normal deadline, no threat"
+      ]
+    },
+    {
+      "id": "E21",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "it_maintenance",
+      "target_role": "all",
+      "difficulty": "hard",
+      "sender_name": "IT Service Desk",
+      "sender_email": "servicedesk@ashbrookgeneral.example",
+      "subject": "Planned maintenance: records system, Sunday 2-4 AM",
+      "body": "Hello all,\n\nThe patient records system will be unavailable on Sunday from 2:00 to 4:00 AM for planned maintenance. Downtime paper forms are available on every unit.\n\nYou do not need to do anything. Your login will not change.\n\nQuestions? Call the Service Desk at extension 4400.\n\nIT Service Desk",
+      "safe_signs": [
+        "real hospital domain",
+        "no link or login request",
+        "announced in advance",
+        "phone extension to verify"
+      ]
+    },
+    {
+      "id": "E22",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "patient_feedback",
+      "target_role": "front_desk",
+      "difficulty": "easy",
+      "sender_name": "Patient Experience Team",
+      "sender_email": "patientexperience@ashbrookgeneral.example",
+      "subject": "Thank-you card from a patient",
+      "body": "Hi front desk team,\n\nA patient left a thank-you card for the main reception team, mentioning how kind and patient everyone was. The card is in the staff room. Well done!\n\nPatient Experience Team",
+      "safe_signs": [
+        "real hospital domain",
+        "no link",
+        "no request"
+      ]
+    },
+    {
+      "id": "E23",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "billing",
+      "target_role": "admin_billing",
+      "difficulty": "hard",
+      "sender_name": "Accounts Payable",
+      "sender_email": "ap@ashbrookgeneral.example",
+      "subject": "Invoice matched to PO 7731 - ready for approval",
+      "body": "Hi,\n\nThe invoice from our regular linen supplier has been matched to purchase order 7731 and is ready for your approval in the finance system as usual.\n\nAccounts Payable",
+      "safe_signs": [
+        "real hospital domain",
+        "matches known PO",
+        "approval in normal finance system"
+      ]
+    },
+    {
+      "id": "E24",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "meeting",
+      "target_role": "nurse",
+      "difficulty": "easy",
+      "sender_name": "Ward 4 Manager",
+      "sender_email": "ward4.manager@ashbrookgeneral.example",
+      "subject": "Ward 4 team meeting agenda",
+      "body": "Hi team,\n\nOur monthly team meeting is on Wednesday at 2 PM in the Ward 4 seminar room. Agenda: new bed board, hand hygiene results, summer leave.\n\nSee you there,\nJames",
+      "safe_signs": [
+        "real hospital domain",
+        "no link",
+        "normal content"
+      ]
+    },
+    {
+      "id": "E25",
+      "label": "phishing",
+      "cue": "billing",
+      "target_role": "admin_billing",
+      "difficulty": "hard",
+      "sender_name": "Accounts Payable",
+      "sender_email": "ap@ashbrookgeneral.example.biz",
+      "subject": "Payment run approval needed before 3 PM",
+      "body": "Hi,\n\nThis week's supplier payment run is ready but requires your approval before 3 PM to be processed on time.\n\nReview and approve: https://ashbrookgeneral.example.biz/ap/approve\n\nAccounts Payable",
+      "red_flags": [
+        "domain has extra ending (.biz)",
+        "deadline pressure",
+        "approvals happen in the finance system"
+      ]
+    },
+    {
+      "id": "E26",
+      "label": "phishing",
+      "cue": "billing",
+      "target_role": "admin_billing",
+      "difficulty": "easy",
+      "sender_name": "MedSupply Partners Accounts",
+      "sender_email": "accounts@medsupply-partners-invoice.example",
+      "subject": "Overdue invoice #48213 - FINAL NOTICE",
+      "body": "Dear Accounts Team,\n\nInvoice #48213 for medical supplies is now 30 days overdue. If payment is not received today, deliveries to Ashbrook General will be suspended.\n\nView and pay invoice: https://medsupply-partners-invoice.example/pay\n\nAccounts Receivable",
+      "red_flags": [
+        "unknown supplier",
+        "final notice threat",
+        "invoice not in billing system"
+      ]
+    },
+    {
+      "id": "E27",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "cafeteria",
+      "target_role": "all",
+      "difficulty": "easy",
+      "sender_name": "Catering Services",
+      "sender_email": "catering@ashbrookgeneral.example",
+      "subject": "This week's cafeteria menu",
+      "body": "Hello all,\n\nThis week's specials: Monday lentil soup, Wednesday baked salmon, Friday vegetable curry. The cafeteria is open 7 AM to 7 PM.\n\nCatering Services",
+      "safe_signs": [
+        "real hospital domain",
+        "no link",
+        "information only"
+      ]
+    },
+    {
+      "id": "E28",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "procedure",
+      "target_role": "front_desk",
+      "difficulty": "hard",
+      "sender_name": "Front Office Manager",
+      "sender_email": "l.nguyen@ashbrookgeneral.example",
+      "subject": "Updated check-in procedure from next month",
+      "body": "Hi team,\n\nFrom next month we'll ask patients to confirm their emergency contact at every check-in. I've printed the updated procedure and left copies at each desk. We'll go over it at Friday's huddle.\n\nThanks,\nLinda Nguyen\nFront Office Manager",
+      "safe_signs": [
+        "real hospital domain",
+        "named manager",
+        "printed copy, no link"
+      ]
+    },
+    {
+      "id": "E29",
+      "label": "phishing",
+      "cue": "urgency",
+      "target_role": "front_desk",
+      "difficulty": "easy",
+      "sender_name": "Patient Scheduling",
+      "sender_email": "scheduling-alert@ashbrook-scheduling.example",
+      "subject": "Appointment system going offline in 1 hour - action required",
+      "body": "Hi team,\n\nThe appointment system will go offline in 1 hour for an emergency update. To keep your saved bookings, you must confirm your account before then. Accounts that are not confirmed will lose today's appointment data.\n\nConfirm now: https://ashbrook-scheduling.example/confirm\n\nScheduling Support",
+      "red_flags": [
+        "outside domain",
+        "threat of losing data",
+        "unusual request to confirm account"
+      ]
+    },
+    {
+      "id": "E30",
+      "label": "phishing",
+      "cue": "urgency",
+      "target_role": "nurse",
+      "difficulty": "easy",
+      "sender_name": "Lab Results Team",
+      "sender_email": "labresults@ashbrook-labs-notify.example",
+      "subject": "URGENT: Critical lab result needs review within 30 minutes",
+      "body": "Hello,\n\nA critical lab result for a patient on your unit has been flagged by the system and requires nurse acknowledgement within 30 minutes. Unacknowledged results are escalated to the unit manager.\n\nReview the result here: https://ashbrook-labs-notify.example/results/review\n\nLab Results Team\nAshbrook General Hospital",
+      "red_flags": [
+        "outside domain",
+        "30-minute deadline",
+        "lab results appear in the records system, not email links"
+      ]
+    },
+    {
+      "id": "E31",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "billing",
+      "target_role": "admin_billing",
+      "difficulty": "easy",
+      "sender_name": "CleanLinen Services",
+      "sender_email": "accounts@cleanlinen.example",
+      "subject": "Monthly statement - October",
+      "body": "Dear Ashbrook Accounts Team,\n\nPlease find your October statement attached for your records. Payment terms remain 30 days. There are no changes to our bank details.\n\nKind regards,\nAccounts Team\nCleanLinen Services",
+      "safe_signs": [
+        "known regular supplier",
+        "no urgency",
+        "no bank change",
+        "no link"
+      ]
+    },
+    {
+      "id": "E32",
+      "label": "legitimate",
+      "cue": "none",
+      "topic": "training",
+      "target_role": "doctor",
+      "difficulty": "hard",
+      "sender_name": "Medical Staff Office",
+      "sender_email": "medstaff@ashbrookgeneral.example",
+      "subject": "Compliance attestation window open",
+      "body": "Dear Doctor,\n\nThe annual compliance attestation is now open in the Learning Portal and is due by the end of next month. Access the portal from the intranet as usual.\n\nMedical Staff Office, extension 2900",
+      "safe_signs": [
+        "real hospital domain",
+        "long deadline",
+        "no threat",
+        "no link"
+      ]
+    },
+    {
+      "id": "E33",
+      "label": "phishing",
+      "cue": "authority",
+      "target_role": "admin_billing",
+      "difficulty": "hard",
+      "sender_name": "Dr. R. Patel, Hospital Director",
+      "sender_email": "director@ashbrookgenerai.example",
+      "subject": "Confidential payment request",
+      "body": "Hello,\n\nI'm in board meetings all day and can't take calls. I need you to process a payment to a new equipment supplier today so we don't lose the discount. Please keep this between us until the contract is announced.\n\nSupplier and payment details: https://ashbrookgenerai.example/finance/doc\n\nRegards,\nDr. Patel",
+      "red_flags": [
+        "misspelled domain (generai)",
+        "secrecy request",
+        "executive asking for unusual payment",
+        "can't be reached by phone"
+      ]
+    },
+    {
+      "id": "E34",
+      "label": "phishing",
+      "cue": "authority",
+      "target_role": "front_desk",
+      "difficulty": "easy",
+      "sender_name": "Front Office Manager",
+      "sender_email": "frontoffice.manager@ashbrook-staff.example",
+      "subject": "New check-in procedure - read today",
+      "body": "Hello front desk team,\n\nWe have introduced a new patient check-in procedure starting tomorrow. All staff must read it and sign in to confirm today.\n\nRead and confirm: https://ashbrook-staff.example/procedures\n\nFront Office Manager",
+      "red_flags": [
+        "outside domain",
+        "sign-in to read a document",
+        "no manager name"
+      ]
+    },
+    {
+      "id": "E35",
+      "label": "phishing",
+      "cue": "it_login",
+      "target_role": "all",
+      "difficulty": "easy",
+      "sender_name": "IT Helpdesk",
+      "sender_email": "it-helpdesk@ashbrook-support.example",
+      "subject": "Your password expires today",
+      "body": "Dear User,\n\nYour hospital network password will expire today at 5:00 PM. To avoid losing access to email and patient records, update your password now.\n\nUpdate password: https://ashbrook-support.example/password\n\nIT Helpdesk",
+      "red_flags": [
+        "outside domain",
+        "'Dear User' greeting",
+        "IT never asks for password resets by link"
+      ]
+    },
+    {
+      "id": "E36",
+      "label": "phishing",
+      "cue": "hr_payroll",
+      "target_role": "front_desk",
+      "difficulty": "easy",
+      "sender_name": "Human Resources",
+      "sender_email": "hr-benefits@ashbrook-benefits.example",
+      "subject": "Overtime bonus approved!",
+      "body": "Good news!\n\nYour overtime bonus for last quarter has been approved. Log in to accept your bonus before it expires on Friday.\n\nAccept bonus: https://ashbrook-benefits.example/bonus\n\nHR Team",
+      "red_flags": [
+        "outside domain",
+        "too good to be true",
+        "bonus that expires"
+      ]
+    },
+    {
+      "id": "E37",
+      "label": "phishing",
+      "cue": "hr_payroll",
+      "target_role": "doctor",
+      "difficulty": "hard",
+      "sender_name": "Medical Staff Office",
+      "sender_email": "medstaff@ashbrookgeneral.example.info",
+      "subject": "On-call schedule and payment summary - Q3",
+      "body": "Dear Doctor,\n\nYour on-call schedule and payment summary for Q3 are ready. Due to the personal information included, the document is shared through our secure document service.\n\nOpen secure document: https://ashbrookgeneral.example.info/docs\n\nMedical Staff Office",
+      "red_flags": [
+        "domain has extra ending (.info)",
+        "'secure document' link",
+        "unexpected payment summary"
+      ]
+    },
+    {
+      "id": "E38",
+      "label": "phishing",
+      "cue": "billing",
+      "target_role": "admin_billing",
+      "difficulty": "hard",
+      "sender_name": "Vendor Relations",
+      "sender_email": "vendor.relations@ashbrookgeneral-finance.example",
+      "subject": "Updated bank details for linen supplier",
+      "body": "Hello,\n\nOur linen supplier has moved to a new bank. Please update their payment details before the next payment run on Wednesday so the payment is not returned.\n\nNew bank details: https://ashbrookgeneral-finance.example/vendor\n\nVendor Relations",
+      "red_flags": [
+        "lookalike domain",
+        "bank detail change by email",
+        "should be confirmed by phone with a known contact"
+      ]
+    },
+    {
+      "id": "E39",
+      "label": "phishing",
+      "cue": "urgency",
+      "target_role": "doctor",
+      "difficulty": "hard",
+      "sender_name": "Ashbrook Radiology",
+      "sender_email": "radiology@ashbrookgeneral-mail.example",
+      "subject": "Imaging report pending your sign-off",
+      "body": "Dear Doctor,\n\nAn imaging report for one of your inpatients is awaiting your electronic signature. The discharge coordinator has noted the patient cannot be discharged until this is complete.\n\nSign the report: https://ashbrookgeneral-mail.example/radiology/sign\n\nThank you,\nRadiology Department",
+      "red_flags": [
+        "lookalike domain",
+        "pressure from discharge delay",
+        "sign-off is done inside the records system"
+      ]
+    },
+    {
+      "id": "E40",
+      "label": "phishing",
+      "cue": "authority",
+      "target_role": "doctor",
+      "difficulty": "hard",
+      "sender_name": "Office of the Chief Medical Officer",
+      "sender_email": "cmo.office@ashbrookgeneral.example.co",
+      "subject": "Mandatory compliance attestation - due Friday",
+      "body": "Dear Physician,\n\nAll medical staff are required to complete the annual compliance attestation by Friday. Incomplete attestations will be reported to the Credentials Committee and may affect clinical privileges.\n\nComplete your attestation: https://ashbrookgeneral.example.co/attest\n\nOffice of the CMO",
+      "red_flags": [
+        "domain has extra ending (.co)",
+        "threat to privileges",
+        "attestations are done in the training portal"
+      ]
+    }
+  ]
+}

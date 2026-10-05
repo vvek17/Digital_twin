@@ -1,0 +1,559 @@
+{
+  "hospital": {
+    "name": "Ashbrook General Hospital",
+    "email_domain": "ashbrookgeneral.example",
+    "beds": 320,
+    "departments": [
+      "Emergency",
+      "Ward 4 (Medical)",
+      "Surgery",
+      "Pediatrics",
+      "Radiology",
+      "Main Reception",
+      "Outpatient Clinic",
+      "Finance & Billing"
+    ]
+  },
+  "people": [
+    {
+      "id": "P01",
+      "name": "Theo Cohen",
+      "role": "nurse",
+      "department": "Surgery",
+      "shift": "night",
+      "years_experience": 7,
+      "security_awareness": "high",
+      "workload": "normal",
+      "hidden_probs": {
+        "urgency": 0.309,
+        "authority": 0.246,
+        "it_login": 0.158,
+        "hr_payroll": 0.416,
+        "billing": 0.02,
+        "false_report": 0.16
+      }
+    },
+    {
+      "id": "P02",
+      "name": "Mia Moreno",
+      "role": "nurse",
+      "department": "Surgery",
+      "shift": "evening",
+      "years_experience": 21,
+      "security_awareness": "medium",
+      "workload": "normal",
+      "hidden_probs": {
+        "urgency": 0.524,
+        "authority": 0.392,
+        "it_login": 0.303,
+        "hr_payroll": 0.737,
+        "billing": 0.08,
+        "false_report": 0.161
+      }
+    },
+    {
+      "id": "P03",
+      "name": "Ava Sato",
+      "role": "nurse",
+      "department": "Ward 4 (Medical)",
+      "shift": "night",
+      "years_experience": 24,
+      "security_awareness": "low",
+      "workload": "normal",
+      "hidden_probs": {
+        "urgency": 0.642,
+        "authority": 0.504,
+        "it_login": 0.535,
+        "hr_payroll": 0.788,
+        "billing": 0.094,
+        "false_report": 0.082
+      }
+    },
+    {
+      "id": "P04",
+      "name": "Iris Carter",
+      "role": "nurse",
+      "department": "Emergency",
+      "shift": "day",
+      "years_experience": 2,
+      "security_awareness": "medium",
+      "workload": "busy",
+      "hidden_probs": {
+        "urgency": 0.554,
+        "authority": 0.442,
+        "it_login": 0.489,
+        "hr_payroll": 0.775,
+        "billing": 0.063,
+        "false_report": 0.166
+      }
+    },
+    {
+      "id": "P05",
+      "name": "Mason Ivanov",
+      "role": "nurse",
+      "department": "Pediatrics",
+      "shift": "night",
+      "years_experience": 15,
+      "security_awareness": "low",
+      "workload": "busy",
+      "hidden_probs": {
+        "urgency": 0.628,
+        "authority": 0.649,
+        "it_login": 0.508,
+        "hr_payroll": 0.849,
+        "billing": 0.186,
+        "false_report": 0.108
+      }
+    },
+    {
+      "id": "P06",
+      "name": "Isla Reyes",
+      "role": "nurse",
+      "department": "Surgery",
+      "shift": "day",
+      "years_experience": 5,
+      "security_awareness": "high",
+      "workload": "busy",
+      "hidden_probs": {
+        "urgency": 0.368,
+        "authority": 0.259,
+        "it_login": 0.172,
+        "hr_payroll": 0.575,
+        "billing": 0.02,
+        "false_report": 0.192
+      }
+    },
+    {
+      "id": "P07",
+      "name": "Felix Khan",
+      "role": "nurse",
+      "department": "Emergency",
+      "shift": "evening",
+      "years_experience": 13,
+      "security_awareness": "high",
+      "workload": "busy",
+      "hidden_probs": {
+        "urgency": 0.456,
+        "authority": 0.444,
+        "it_login": 0.322,
+        "hr_payroll": 0.452,
+        "billing": 0.02,
+        "false_report": 0.218
+      }
+    },
+    {
+      "id": "P08",
+      "name": "Ethan Haddad",
+      "role": "nurse",
+      "department": "Surgery",
+      "shift": "night",
+      "years_experience": 11,
+      "security_awareness": "low",
+      "workload": "busy",
+      "hidden_probs": {
+        "urgency": 0.687,
+        "authority": 0.591,
+        "it_login": 0.591,
+        "hr_payroll": 0.875,
+        "billing": 0.153,
+        "false_report": 0.1
+      }
+    },
+    {
+      "id": "P09",
+      "name": "Hugo Kaur",
+      "role": "nurse",
+      "department": "Ward 4 (Medical)",
+      "shift": "night",
+      "years_experience": 4,
+      "security_awareness": "high",
+      "workload": "busy",
+      "hidden_probs": {
+        "urgency": 0.518,
+        "authority": 0.352,
+        "it_login": 0.19,
+        "hr_payroll": 0.525,
+        "billing": 0.02,
+        "false_report": 0.245
+      }
+    },
+    {
+      "id": "P10",
+      "name": "Maya Costa",
+      "role": "nurse",
+      "department": "Emergency",
+      "shift": "night",
+      "years_experience": 11,
+      "security_awareness": "medium",
+      "workload": "normal",
+      "hidden_probs": {
+        "urgency": 0.472,
+        "authority": 0.423,
+        "it_login": 0.447,
+        "hr_payroll": 0.711,
+        "billing": 0.02,
+        "false_report": 0.124
+      }
+    },
+    {
+      "id": "P11",
+      "name": "Noah Brooks",
+      "role": "front_desk",
+      "department": "Main Reception",
+      "shift": "day",
+      "years_experience": 24,
+      "security_awareness": "medium",
+      "workload": "normal",
+      "hidden_probs": {
+        "urgency": 0.546,
+        "authority": 0.457,
+        "it_login": 0.475,
+        "hr_payroll": 0.482,
+        "billing": 0.439,
+        "false_report": 0.167
+      }
+    },
+    {
+      "id": "P12",
+      "name": "Jonah Flynn",
+      "role": "front_desk",
+      "department": "Outpatient Clinic",
+      "shift": "day",
+      "years_experience": 18,
+      "security_awareness": "high",
+      "workload": "very busy",
+      "hidden_probs": {
+        "urgency": 0.37,
+        "authority": 0.392,
+        "it_login": 0.629,
+        "hr_payroll": 0.46,
+        "billing": 0.318,
+        "false_report": 0.252
+      }
+    },
+    {
+      "id": "P13",
+      "name": "Ruby Ortiz",
+      "role": "front_desk",
+      "department": "Main Reception",
+      "shift": "day",
+      "years_experience": 8,
+      "security_awareness": "low",
+      "workload": "busy",
+      "hidden_probs": {
+        "urgency": 0.504,
+        "authority": 0.611,
+        "it_login": 0.718,
+        "hr_payroll": 0.501,
+        "billing": 0.542,
+        "false_report": 0.106
+      }
+    },
+    {
+      "id": "P14",
+      "name": "Liam Patel",
+      "role": "front_desk",
+      "department": "Main Reception",
+      "shift": "day",
+      "years_experience": 11,
+      "security_awareness": "low",
+      "workload": "very busy",
+      "hidden_probs": {
+        "urgency": 0.628,
+        "authority": 0.714,
+        "it_login": 0.723,
+        "hr_payroll": 0.606,
+        "billing": 0.667,
+        "false_report": 0.157
+      }
+    },
+    {
+      "id": "P15",
+      "name": "Lena Nguyen",
+      "role": "front_desk",
+      "department": "Outpatient Clinic",
+      "shift": "day",
+      "years_experience": 16,
+      "security_awareness": "medium",
+      "workload": "normal",
+      "hidden_probs": {
+        "urgency": 0.369,
+        "authority": 0.482,
+        "it_login": 0.521,
+        "hr_payroll": 0.432,
+        "billing": 0.423,
+        "false_report": 0.155
+      }
+    },
+    {
+      "id": "P16",
+      "name": "Kai Lindqvist",
+      "role": "front_desk",
+      "department": "Main Reception",
+      "shift": "day",
+      "years_experience": 13,
+      "security_awareness": "high",
+      "workload": "busy",
+      "hidden_probs": {
+        "urgency": 0.41,
+        "authority": 0.272,
+        "it_login": 0.388,
+        "hr_payroll": 0.357,
+        "billing": 0.178,
+        "false_report": 0.218
+      }
+    },
+    {
+      "id": "P17",
+      "name": "Hana Ahmed",
+      "role": "front_desk",
+      "department": "Outpatient Clinic",
+      "shift": "day",
+      "years_experience": 3,
+      "security_awareness": "medium",
+      "workload": "very busy",
+      "hidden_probs": {
+        "urgency": 0.5,
+        "authority": 0.61,
+        "it_login": 0.688,
+        "hr_payroll": 0.483,
+        "billing": 0.399,
+        "false_report": 0.225
+      }
+    },
+    {
+      "id": "P18",
+      "name": "Priya Bauer",
+      "role": "front_desk",
+      "department": "Main Reception",
+      "shift": "day",
+      "years_experience": 14,
+      "security_awareness": "medium",
+      "workload": "busy",
+      "hidden_probs": {
+        "urgency": 0.443,
+        "authority": 0.48,
+        "it_login": 0.512,
+        "hr_payroll": 0.476,
+        "billing": 0.497,
+        "false_report": 0.177
+      }
+    },
+    {
+      "id": "P19",
+      "name": "Nina Rossi",
+      "role": "doctor",
+      "department": "Radiology",
+      "shift": "evening",
+      "years_experience": 14,
+      "security_awareness": "high",
+      "workload": "very busy",
+      "hidden_probs": {
+        "urgency": 0.529,
+        "authority": 0.341,
+        "it_login": 0.374,
+        "hr_payroll": 0.161,
+        "billing": 0.02,
+        "false_report": 0.197
+      }
+    },
+    {
+      "id": "P20",
+      "name": "Zoe Walsh",
+      "role": "doctor",
+      "department": "Emergency",
+      "shift": "night",
+      "years_experience": 11,
+      "security_awareness": "low",
+      "workload": "normal",
+      "hidden_probs": {
+        "urgency": 0.567,
+        "authority": 0.451,
+        "it_login": 0.521,
+        "hr_payroll": 0.281,
+        "billing": 0.192,
+        "false_report": 0.02
+      }
+    },
+    {
+      "id": "P21",
+      "name": "Elise Novak",
+      "role": "doctor",
+      "department": "Surgery",
+      "shift": "day",
+      "years_experience": 20,
+      "security_awareness": "low",
+      "workload": "very busy",
+      "hidden_probs": {
+        "urgency": 0.752,
+        "authority": 0.561,
+        "it_login": 0.668,
+        "hr_payroll": 0.494,
+        "billing": 0.246,
+        "false_report": 0.02
+      }
+    },
+    {
+      "id": "P22",
+      "name": "Nora Mwangi",
+      "role": "doctor",
+      "department": "Emergency",
+      "shift": "evening",
+      "years_experience": 22,
+      "security_awareness": "high",
+      "workload": "very busy",
+      "hidden_probs": {
+        "urgency": 0.435,
+        "authority": 0.417,
+        "it_login": 0.271,
+        "hr_payroll": 0.273,
+        "billing": 0.02,
+        "false_report": 0.14
+      }
+    },
+    {
+      "id": "P23",
+      "name": "Owen Okafor",
+      "role": "doctor",
+      "department": "Pediatrics",
+      "shift": "evening",
+      "years_experience": 11,
+      "security_awareness": "low",
+      "workload": "normal",
+      "hidden_probs": {
+        "urgency": 0.542,
+        "authority": 0.55,
+        "it_login": 0.549,
+        "hr_payroll": 0.265,
+        "billing": 0.043,
+        "false_report": 0.027
+      }
+    },
+    {
+      "id": "P24",
+      "name": "Sofia Park",
+      "role": "doctor",
+      "department": "Pediatrics",
+      "shift": "day",
+      "years_experience": 8,
+      "security_awareness": "medium",
+      "workload": "busy",
+      "hidden_probs": {
+        "urgency": 0.432,
+        "authority": 0.467,
+        "it_login": 0.441,
+        "hr_payroll": 0.322,
+        "billing": 0.147,
+        "false_report": 0.115
+      }
+    },
+    {
+      "id": "P25",
+      "name": "Lucas Fisher",
+      "role": "admin_billing",
+      "department": "Finance & Billing",
+      "shift": "night",
+      "years_experience": 18,
+      "security_awareness": "medium",
+      "workload": "very busy",
+      "hidden_probs": {
+        "urgency": 0.401,
+        "authority": 0.756,
+        "it_login": 0.433,
+        "hr_payroll": 0.558,
+        "billing": 0.728,
+        "false_report": 0.066
+      }
+    },
+    {
+      "id": "P26",
+      "name": "Milo Osei",
+      "role": "admin_billing",
+      "department": "Finance & Billing",
+      "shift": "night",
+      "years_experience": 7,
+      "security_awareness": "high",
+      "workload": "busy",
+      "hidden_probs": {
+        "urgency": 0.191,
+        "authority": 0.477,
+        "it_login": 0.203,
+        "hr_payroll": 0.248,
+        "billing": 0.531,
+        "false_report": 0.185
+      }
+    },
+    {
+      "id": "P27",
+      "name": "Oscar Dubois",
+      "role": "admin_billing",
+      "department": "Finance & Billing",
+      "shift": "night",
+      "years_experience": 14,
+      "security_awareness": "medium",
+      "workload": "normal",
+      "hidden_probs": {
+        "urgency": 0.251,
+        "authority": 0.604,
+        "it_login": 0.377,
+        "hr_payroll": 0.302,
+        "billing": 0.598,
+        "false_report": 0.105
+      }
+    },
+    {
+      "id": "P28",
+      "name": "Leo Mendez",
+      "role": "admin_billing",
+      "department": "Finance & Billing",
+      "shift": "night",
+      "years_experience": 1,
+      "security_awareness": "low",
+      "workload": "normal",
+      "hidden_probs": {
+        "urgency": 0.539,
+        "authority": 0.688,
+        "it_login": 0.38,
+        "hr_payroll": 0.357,
+        "billing": 0.624,
+        "false_report": 0.055
+      }
+    },
+    {
+      "id": "P29",
+      "name": "Finn Webb",
+      "role": "admin_billing",
+      "department": "Finance & Billing",
+      "shift": "day",
+      "years_experience": 2,
+      "security_awareness": "medium",
+      "workload": "busy",
+      "hidden_probs": {
+        "urgency": 0.48,
+        "authority": 0.659,
+        "it_login": 0.472,
+        "hr_payroll": 0.48,
+        "billing": 0.542,
+        "false_report": 0.075
+      }
+    },
+    {
+      "id": "P30",
+      "name": "Clara Larsen",
+      "role": "admin_billing",
+      "department": "Finance & Billing",
+      "shift": "evening",
+      "years_experience": 25,
+      "security_awareness": "high",
+      "workload": "busy",
+      "hidden_probs": {
+        "urgency": 0.345,
+        "authority": 0.5,
+        "it_login": 0.335,
+        "hr_payroll": 0.197,
+        "billing": 0.383,
+        "false_report": 0.18
+      }
+    }
+  ]
+}
