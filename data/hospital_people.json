@@ -1,558 +1,1334 @@
 {
   "hospital": {
     "name": "Ashbrook General Hospital",
-    "email_domain": "ashbrookgeneral.example",
     "beds": 320,
-    "departments": [
-      "Emergency",
-      "Ward 4 (Medical)",
-      "Surgery",
-      "Pediatrics",
-      "Radiology",
-      "Main Reception",
-      "Outpatient Clinic",
-      "Finance & Billing"
-    ]
+    "pillars": [
+      {
+        "name": "Patient Care",
+        "description": "Professionals directly responsible for caring for patients.",
+        "professions": [
+          "Emergency Physician",
+          "Surgeon",
+          "Registered Nurse",
+          "Nurse Practitioner",
+          "Certified Nursing Assistant"
+        ]
+      },
+      {
+        "name": "Diagnostics & Treatment",
+        "description": "Professionals responsible for diagnosing diseases and providing medical treatment.",
+        "professions": [
+          "Pharmacist",
+          "Medical Laboratory Scientist",
+          "Phlebotomist",
+          "Radiologist",
+          "Respiratory Therapist"
+        ]
+      },
+      {
+        "name": "Nursing & Clinical Support",
+        "description": "Professionals who support the patient's clinical recovery and ongoing care.",
+        "professions": [
+          "Physical Therapist",
+          "Occupational Therapist",
+          "Dietitian",
+          "Social Worker",
+          "Case Manager"
+        ]
+      },
+      {
+        "name": "Administration & Management",
+        "description": "Professionals responsible for managing the hospital and its administrative functions.",
+        "professions": [
+          "Hospital Administrator",
+          "Nursing Director",
+          "Human Resources Manager",
+          "Medical Billing Specialist",
+          "Patient Registration Representative"
+        ]
+      },
+      {
+        "name": "Operations & Infrastructure",
+        "description": "Professionals responsible for keeping the hospital physically and operationally functioning.",
+        "professions": [
+          "Security Officer",
+          "Environmental Services Worker",
+          "Biomedical Equipment Technician",
+          "Patient Transporter",
+          "IT Support Specialist"
+        ]
+      }
+    ],
+    "notes": {
+      "years_in_role": "Years the person has held their current job title.",
+      "years_with_organization": "Total years employed at this hospital, across any role (always >= years_in_role). Example: a nurse of 1 year who spent 5 earlier years as a pharmacy tech has years_in_role 1 and years_with_organization 6.",
+      "age_rule": "Age is consistent with the required training for the current role plus time worked; years_with_organization never exceeds age minus ~18.",
+      "patient_facing": "Y if the role has direct contact with patients, N if it does not.",
+      "collaborating_departments": "The departments and key people this person routinely works with (named by name and job_id).",
+      "simulation": "Phishing-simulation behavior for the twin model only. role_group, security_awareness, workload and shift drive hidden_probs (secret click chances per cue). hidden_probs must be used only by the simulated human, never by the twin predictor."
+    }
   },
   "people": [
     {
-      "id": "P01",
-      "name": "Theo Cohen",
-      "role": "nurse",
+      "job_id": "P01",
+      "name": "Dr. Marcus Ellery",
+      "age": 48,
+      "gender": "male",
+      "job_title": "Emergency Physician",
+      "pillar": "Patient Care",
+      "department": "Emergency Medicine",
+      "location": "Emergency Department",
+      "inpatient_outpatient": "both",
+      "patient_facing": "Y",
+      "years_in_role": 12,
+      "years_with_organization": 18,
+      "responsibilities": [
+        "Assess and stabilize patients arriving in the Emergency Department",
+        "Order and interpret urgent labs and imaging",
+        "Lead the trauma team during critical cases",
+        "Decide on admission, discharge, or transfer"
+      ],
+      "skills": [
+        "Rapid triage",
+        "Advanced cardiac life support",
+        "Point-of-care ultrasound",
+        "Clear crisis communication"
+      ],
+      "reporting_structure": {
+        "reports_to": "Chief Medical Officer (medical staff leadership)",
+        "supervises": [
+          "ER residents",
+          "Certified Nursing Assistant Mia Caldwell (P05) during shifts"
+        ]
+      },
+      "collaborating_departments": [
+        "Nursing (Grace Okonkwo, P03)",
+        "Radiology (Dr. Kenji Watanabe, P09)",
+        "Respiratory Therapy (Hannah Boateng, P10)"
+      ],
+      "simulation": {
+        "role_group": "physician",
+        "security_awareness": "high",
+        "workload": "normal",
+        "shift": "day",
+        "hidden_probs": {
+          "urgency": 0.348,
+          "authority": 0.149,
+          "it_login": 0.128,
+          "hr_payroll": 0.02,
+          "billing": 0.02,
+          "false_report": 0.155
+        }
+      }
+    },
+    {
+      "job_id": "P02",
+      "name": "Dr. Priya Nair",
+      "age": 56,
+      "gender": "female",
+      "job_title": "Surgeon",
+      "pillar": "Patient Care",
       "department": "Surgery",
-      "shift": "night",
-      "years_experience": 7,
-      "security_awareness": "high",
-      "workload": "normal",
-      "hidden_probs": {
-        "urgency": 0.309,
-        "authority": 0.246,
-        "it_login": 0.158,
-        "hr_payroll": 0.416,
-        "billing": 0.02,
-        "false_report": 0.16
+      "location": "Operating Theatres",
+      "inpatient_outpatient": "inpatient",
+      "patient_facing": "Y",
+      "years_in_role": 20,
+      "years_with_organization": 24,
+      "responsibilities": [
+        "Perform scheduled and emergency operations",
+        "Run pre-operative assessments and obtain informed consent",
+        "Direct the surgical team in the operating room",
+        "Manage post-surgical recovery plans"
+      ],
+      "skills": [
+        "Laparoscopic surgery",
+        "Operative decision-making",
+        "Team leadership",
+        "Sterile technique"
+      ],
+      "reporting_structure": {
+        "reports_to": "Chief Medical Officer (medical staff leadership)",
+        "supervises": [
+          "Surgical residents",
+          "Operating room nursing team"
+        ]
+      },
+      "collaborating_departments": [
+        "Anaesthesia & Operating Theatres",
+        "Rehabilitation (Liam O'Connor, P11)",
+        "Case Management (Olivia Brennan, P15)"
+      ],
+      "simulation": {
+        "role_group": "physician",
+        "security_awareness": "high",
+        "workload": "busy",
+        "shift": "day",
+        "hidden_probs": {
+          "urgency": 0.256,
+          "authority": 0.194,
+          "it_login": 0.251,
+          "hr_payroll": 0.055,
+          "billing": 0.02,
+          "false_report": 0.165
+        }
       }
     },
     {
-      "id": "P02",
-      "name": "Mia Moreno",
-      "role": "nurse",
-      "department": "Surgery",
-      "shift": "evening",
-      "years_experience": 21,
-      "security_awareness": "medium",
-      "workload": "normal",
-      "hidden_probs": {
-        "urgency": 0.524,
-        "authority": 0.392,
-        "it_login": 0.303,
-        "hr_payroll": 0.737,
-        "billing": 0.08,
-        "false_report": 0.161
+      "job_id": "P03",
+      "name": "Grace Okonkwo",
+      "age": 33,
+      "gender": "female",
+      "job_title": "Registered Nurse",
+      "pillar": "Patient Care",
+      "department": "Nursing",
+      "location": "Emergency Department",
+      "inpatient_outpatient": "both",
+      "patient_facing": "Y",
+      "years_in_role": 6,
+      "years_with_organization": 11,
+      "responsibilities": [
+        "Provide bedside nursing care and administer medications",
+        "Monitor vital signs and escalate deterioration",
+        "Act as charge nurse coordinating the ER floor",
+        "Document care and communicate with families"
+      ],
+      "skills": [
+        "IV and medication administration",
+        "Patient assessment",
+        "Prioritization under load",
+        "De-escalation"
+      ],
+      "reporting_structure": {
+        "reports_to": "Nursing Director Carol Mendes (P17), via the ER Nurse Manager",
+        "supervises": [
+          "Certified Nursing Assistant Mia Caldwell (P05)"
+        ]
+      },
+      "collaborating_departments": [
+        "Emergency Medicine (Dr. Marcus Ellery, P01)",
+        "Nursing (Mia Caldwell, P05)",
+        "Laboratory (Rosa Jimenez, P08)"
+      ],
+      "simulation": {
+        "role_group": "nurse",
+        "security_awareness": "high",
+        "workload": "busy",
+        "shift": "day",
+        "hidden_probs": {
+          "urgency": 0.44,
+          "authority": 0.306,
+          "it_login": 0.324,
+          "hr_payroll": 0.602,
+          "billing": 0.02,
+          "false_report": 0.192
+        }
       }
     },
     {
-      "id": "P03",
-      "name": "Ava Sato",
-      "role": "nurse",
-      "department": "Ward 4 (Medical)",
-      "shift": "night",
-      "years_experience": 24,
-      "security_awareness": "low",
-      "workload": "normal",
-      "hidden_probs": {
-        "urgency": 0.642,
-        "authority": 0.504,
-        "it_login": 0.535,
-        "hr_payroll": 0.788,
-        "billing": 0.094,
-        "false_report": 0.082
+      "job_id": "P04",
+      "name": "Daniel Reyes",
+      "age": 42,
+      "gender": "male",
+      "job_title": "Nurse Practitioner",
+      "pillar": "Patient Care",
+      "department": "Advanced Practice (Nursing)",
+      "location": "Outpatient Clinic",
+      "inpatient_outpatient": "outpatient",
+      "patient_facing": "Y",
+      "years_in_role": 10,
+      "years_with_organization": 18,
+      "responsibilities": [
+        "See patients independently in the outpatient clinic",
+        "Diagnose common conditions and prescribe treatment",
+        "Order follow-up labs and imaging",
+        "Manage chronic-disease patients over time"
+      ],
+      "skills": [
+        "Primary care diagnosis",
+        "Prescribing",
+        "Chronic-disease management",
+        "Patient education"
+      ],
+      "reporting_structure": {
+        "reports_to": "Chief Medical Officer (collaborating physician)",
+        "supervises": [
+          "Clinic medical assistants"
+        ]
+      },
+      "collaborating_departments": [
+        "Physicians (Dr. Marcus Ellery, P01)",
+        "Nutrition Services (Emma Schultz, P13)",
+        "Rehabilitation (Liam O'Connor, P11)"
+      ],
+      "simulation": {
+        "role_group": "physician",
+        "security_awareness": "medium",
+        "workload": "normal",
+        "shift": "day",
+        "hidden_probs": {
+          "urgency": 0.541,
+          "authority": 0.317,
+          "it_login": 0.269,
+          "hr_payroll": 0.169,
+          "billing": 0.069,
+          "false_report": 0.11
+        }
       }
     },
     {
-      "id": "P04",
-      "name": "Iris Carter",
-      "role": "nurse",
-      "department": "Emergency",
-      "shift": "day",
-      "years_experience": 2,
-      "security_awareness": "medium",
-      "workload": "busy",
-      "hidden_probs": {
-        "urgency": 0.554,
-        "authority": 0.442,
-        "it_login": 0.489,
-        "hr_payroll": 0.775,
-        "billing": 0.063,
-        "false_report": 0.166
+      "job_id": "P05",
+      "name": "Mia Caldwell",
+      "age": 22,
+      "gender": "female",
+      "job_title": "Certified Nursing Assistant",
+      "pillar": "Patient Care",
+      "department": "Nursing",
+      "location": "Ward 4 (Medical)",
+      "inpatient_outpatient": "inpatient",
+      "patient_facing": "Y",
+      "years_in_role": 3,
+      "years_with_organization": 3,
+      "responsibilities": [
+        "Help patients with bathing, dressing, and mobility",
+        "Record vital signs and intake/output",
+        "Keep patients comfortable and report changes to nurses",
+        "Stock supplies and prepare rooms"
+      ],
+      "skills": [
+        "Basic patient care",
+        "Vital-sign measurement",
+        "Safe patient handling",
+        "Attentive observation"
+      ],
+      "reporting_structure": {
+        "reports_to": "Registered Nurse Grace Okonkwo (P03) / charge nurse",
+        "supervises": []
+      },
+      "collaborating_departments": [
+        "Nursing (Grace Okonkwo, P03)",
+        "Transport Services (Jamal Carter, P24)",
+        "Environmental Services (Beatrice Mwangi, P22)"
+      ],
+      "simulation": {
+        "role_group": "nurse",
+        "security_awareness": "low",
+        "workload": "very busy",
+        "shift": "evening",
+        "hidden_probs": {
+          "urgency": 0.787,
+          "authority": 0.775,
+          "it_login": 0.556,
+          "hr_payroll": 0.89,
+          "billing": 0.346,
+          "false_report": 0.112
+        }
       }
     },
     {
-      "id": "P05",
-      "name": "Mason Ivanov",
-      "role": "nurse",
-      "department": "Pediatrics",
-      "shift": "night",
-      "years_experience": 15,
-      "security_awareness": "low",
-      "workload": "busy",
-      "hidden_probs": {
-        "urgency": 0.628,
-        "authority": 0.649,
-        "it_login": 0.508,
-        "hr_payroll": 0.849,
-        "billing": 0.186,
-        "false_report": 0.108
+      "job_id": "P06",
+      "name": "Dr. Aisha Rahman",
+      "age": 38,
+      "gender": "female",
+      "job_title": "Pharmacist",
+      "pillar": "Diagnostics & Treatment",
+      "department": "Pharmacy",
+      "location": "Inpatient Pharmacy",
+      "inpatient_outpatient": "both",
+      "patient_facing": "N",
+      "years_in_role": 9,
+      "years_with_organization": 12,
+      "responsibilities": [
+        "Review and verify all medication orders for safety",
+        "Check for drug interactions and correct dosing",
+        "Advise physicians and nurses on medications",
+        "Oversee the pharmacy's dispensing workflow"
+      ],
+      "skills": [
+        "Medication review",
+        "Dosing calculation",
+        "Drug-interaction analysis",
+        "Clinical consultation"
+      ],
+      "reporting_structure": {
+        "reports_to": "Director of Pharmacy / Hospital Administrator Richard Vance (P16)",
+        "supervises": [
+          "Pharmacy technicians"
+        ]
+      },
+      "collaborating_departments": [
+        "Physicians & Advanced Practice (P01, P04)",
+        "Nursing (Grace Okonkwo, P03)"
+      ],
+      "simulation": {
+        "role_group": "allied_clinical",
+        "security_awareness": "medium",
+        "workload": "very busy",
+        "shift": "day",
+        "hidden_probs": {
+          "urgency": 0.621,
+          "authority": 0.439,
+          "it_login": 0.476,
+          "hr_payroll": 0.538,
+          "billing": 0.196,
+          "false_report": 0.123
+        }
       }
     },
     {
-      "id": "P06",
-      "name": "Isla Reyes",
-      "role": "nurse",
-      "department": "Surgery",
-      "shift": "day",
-      "years_experience": 5,
-      "security_awareness": "high",
-      "workload": "busy",
-      "hidden_probs": {
-        "urgency": 0.368,
-        "authority": 0.259,
-        "it_login": 0.172,
-        "hr_payroll": 0.575,
-        "billing": 0.02,
-        "false_report": 0.192
+      "job_id": "P07",
+      "name": "Victor Lindqvist",
+      "age": 41,
+      "gender": "male",
+      "job_title": "Medical Laboratory Scientist",
+      "pillar": "Diagnostics & Treatment",
+      "department": "Laboratory",
+      "location": "Central Laboratory",
+      "inpatient_outpatient": "both",
+      "patient_facing": "N",
+      "years_in_role": 14,
+      "years_with_organization": 19,
+      "responsibilities": [
+        "Run and validate blood, tissue, and fluid analyses",
+        "Operate and maintain lab analyzers",
+        "Flag and verify critical results",
+        "Ensure quality control across the lab"
+      ],
+      "skills": [
+        "Clinical chemistry",
+        "Hematology",
+        "Instrument calibration",
+        "Quality assurance"
+      ],
+      "reporting_structure": {
+        "reports_to": "Laboratory Manager",
+        "supervises": [
+          "Phlebotomist Rosa Jimenez (P08)",
+          "Laboratory technicians"
+        ]
+      },
+      "collaborating_departments": [
+        "Emergency Medicine (Dr. Marcus Ellery, P01)",
+        "Laboratory (Rosa Jimenez, P08)",
+        "Biomedical Engineering (Samuel Park, P23)"
+      ],
+      "simulation": {
+        "role_group": "allied_clinical",
+        "security_awareness": "low",
+        "workload": "busy",
+        "shift": "evening",
+        "hidden_probs": {
+          "urgency": 0.591,
+          "authority": 0.617,
+          "it_login": 0.483,
+          "hr_payroll": 0.571,
+          "billing": 0.334,
+          "false_report": 0.12
+        }
       }
     },
     {
-      "id": "P07",
-      "name": "Felix Khan",
-      "role": "nurse",
-      "department": "Emergency",
-      "shift": "evening",
-      "years_experience": 13,
-      "security_awareness": "high",
-      "workload": "busy",
-      "hidden_probs": {
-        "urgency": 0.456,
-        "authority": 0.444,
-        "it_login": 0.322,
-        "hr_payroll": 0.452,
-        "billing": 0.02,
-        "false_report": 0.218
+      "job_id": "P08",
+      "name": "Rosa Jimenez",
+      "age": 25,
+      "gender": "female",
+      "job_title": "Phlebotomist",
+      "pillar": "Diagnostics & Treatment",
+      "department": "Laboratory",
+      "location": "Laboratory & Wards",
+      "inpatient_outpatient": "both",
+      "patient_facing": "Y",
+      "years_in_role": 6,
+      "years_with_organization": 6,
+      "responsibilities": [
+        "Draw blood from patients across the hospital",
+        "Label and transport samples correctly",
+        "Keep patients calm during draws",
+        "Follow strict specimen-handling rules"
+      ],
+      "skills": [
+        "Venipuncture",
+        "Pediatric and difficult draws",
+        "Specimen handling",
+        "Patient reassurance"
+      ],
+      "reporting_structure": {
+        "reports_to": "Medical Laboratory Scientist Victor Lindqvist (P07)",
+        "supervises": []
+      },
+      "collaborating_departments": [
+        "Laboratory (Victor Lindqvist, P07)",
+        "Nursing (Mia Caldwell, P05)",
+        "Outpatient Clinic (Daniel Reyes, P04)"
+      ],
+      "simulation": {
+        "role_group": "allied_clinical",
+        "security_awareness": "high",
+        "workload": "very busy",
+        "shift": "day",
+        "hidden_probs": {
+          "urgency": 0.452,
+          "authority": 0.314,
+          "it_login": 0.426,
+          "hr_payroll": 0.363,
+          "billing": 0.106,
+          "false_report": 0.249
+        }
       }
     },
     {
-      "id": "P08",
-      "name": "Ethan Haddad",
-      "role": "nurse",
-      "department": "Surgery",
-      "shift": "night",
-      "years_experience": 11,
-      "security_awareness": "low",
-      "workload": "busy",
-      "hidden_probs": {
-        "urgency": 0.687,
-        "authority": 0.591,
-        "it_login": 0.591,
-        "hr_payroll": 0.875,
-        "billing": 0.153,
-        "false_report": 0.1
-      }
-    },
-    {
-      "id": "P09",
-      "name": "Hugo Kaur",
-      "role": "nurse",
-      "department": "Ward 4 (Medical)",
-      "shift": "night",
-      "years_experience": 4,
-      "security_awareness": "high",
-      "workload": "busy",
-      "hidden_probs": {
-        "urgency": 0.518,
-        "authority": 0.352,
-        "it_login": 0.19,
-        "hr_payroll": 0.525,
-        "billing": 0.02,
-        "false_report": 0.245
-      }
-    },
-    {
-      "id": "P10",
-      "name": "Maya Costa",
-      "role": "nurse",
-      "department": "Emergency",
-      "shift": "night",
-      "years_experience": 11,
-      "security_awareness": "medium",
-      "workload": "normal",
-      "hidden_probs": {
-        "urgency": 0.472,
-        "authority": 0.423,
-        "it_login": 0.447,
-        "hr_payroll": 0.711,
-        "billing": 0.02,
-        "false_report": 0.124
-      }
-    },
-    {
-      "id": "P11",
-      "name": "Noah Brooks",
-      "role": "front_desk",
-      "department": "Main Reception",
-      "shift": "day",
-      "years_experience": 24,
-      "security_awareness": "medium",
-      "workload": "normal",
-      "hidden_probs": {
-        "urgency": 0.546,
-        "authority": 0.457,
-        "it_login": 0.475,
-        "hr_payroll": 0.482,
-        "billing": 0.439,
-        "false_report": 0.167
-      }
-    },
-    {
-      "id": "P12",
-      "name": "Jonah Flynn",
-      "role": "front_desk",
-      "department": "Outpatient Clinic",
-      "shift": "day",
-      "years_experience": 18,
-      "security_awareness": "high",
-      "workload": "very busy",
-      "hidden_probs": {
-        "urgency": 0.37,
-        "authority": 0.392,
-        "it_login": 0.629,
-        "hr_payroll": 0.46,
-        "billing": 0.318,
-        "false_report": 0.252
-      }
-    },
-    {
-      "id": "P13",
-      "name": "Ruby Ortiz",
-      "role": "front_desk",
-      "department": "Main Reception",
-      "shift": "day",
-      "years_experience": 8,
-      "security_awareness": "low",
-      "workload": "busy",
-      "hidden_probs": {
-        "urgency": 0.504,
-        "authority": 0.611,
-        "it_login": 0.718,
-        "hr_payroll": 0.501,
-        "billing": 0.542,
-        "false_report": 0.106
-      }
-    },
-    {
-      "id": "P14",
-      "name": "Liam Patel",
-      "role": "front_desk",
-      "department": "Main Reception",
-      "shift": "day",
-      "years_experience": 11,
-      "security_awareness": "low",
-      "workload": "very busy",
-      "hidden_probs": {
-        "urgency": 0.628,
-        "authority": 0.714,
-        "it_login": 0.723,
-        "hr_payroll": 0.606,
-        "billing": 0.667,
-        "false_report": 0.157
-      }
-    },
-    {
-      "id": "P15",
-      "name": "Lena Nguyen",
-      "role": "front_desk",
-      "department": "Outpatient Clinic",
-      "shift": "day",
-      "years_experience": 16,
-      "security_awareness": "medium",
-      "workload": "normal",
-      "hidden_probs": {
-        "urgency": 0.369,
-        "authority": 0.482,
-        "it_login": 0.521,
-        "hr_payroll": 0.432,
-        "billing": 0.423,
-        "false_report": 0.155
-      }
-    },
-    {
-      "id": "P16",
-      "name": "Kai Lindqvist",
-      "role": "front_desk",
-      "department": "Main Reception",
-      "shift": "day",
-      "years_experience": 13,
-      "security_awareness": "high",
-      "workload": "busy",
-      "hidden_probs": {
-        "urgency": 0.41,
-        "authority": 0.272,
-        "it_login": 0.388,
-        "hr_payroll": 0.357,
-        "billing": 0.178,
-        "false_report": 0.218
-      }
-    },
-    {
-      "id": "P17",
-      "name": "Hana Ahmed",
-      "role": "front_desk",
-      "department": "Outpatient Clinic",
-      "shift": "day",
-      "years_experience": 3,
-      "security_awareness": "medium",
-      "workload": "very busy",
-      "hidden_probs": {
-        "urgency": 0.5,
-        "authority": 0.61,
-        "it_login": 0.688,
-        "hr_payroll": 0.483,
-        "billing": 0.399,
-        "false_report": 0.225
-      }
-    },
-    {
-      "id": "P18",
-      "name": "Priya Bauer",
-      "role": "front_desk",
-      "department": "Main Reception",
-      "shift": "day",
-      "years_experience": 14,
-      "security_awareness": "medium",
-      "workload": "busy",
-      "hidden_probs": {
-        "urgency": 0.443,
-        "authority": 0.48,
-        "it_login": 0.512,
-        "hr_payroll": 0.476,
-        "billing": 0.497,
-        "false_report": 0.177
-      }
-    },
-    {
-      "id": "P19",
-      "name": "Nina Rossi",
-      "role": "doctor",
+      "job_id": "P09",
+      "name": "Dr. Kenji Watanabe",
+      "age": 52,
+      "gender": "male",
+      "job_title": "Radiologist",
+      "pillar": "Diagnostics & Treatment",
       "department": "Radiology",
-      "shift": "evening",
-      "years_experience": 14,
-      "security_awareness": "high",
-      "workload": "very busy",
-      "hidden_probs": {
-        "urgency": 0.529,
-        "authority": 0.341,
-        "it_login": 0.374,
-        "hr_payroll": 0.161,
-        "billing": 0.02,
-        "false_report": 0.197
+      "location": "Imaging Suite",
+      "inpatient_outpatient": "both",
+      "patient_facing": "N",
+      "years_in_role": 16,
+      "years_with_organization": 20,
+      "responsibilities": [
+        "Interpret X-rays, CT, MRI, and ultrasound studies",
+        "Write diagnostic reports for the care team",
+        "Perform image-guided procedures",
+        "Advise clinicians on the best imaging to order"
+      ],
+      "skills": [
+        "Diagnostic imaging interpretation",
+        "CT/MRI expertise",
+        "Image-guided procedures",
+        "Clinical correlation"
+      ],
+      "reporting_structure": {
+        "reports_to": "Chief Medical Officer / Radiology Department Chair",
+        "supervises": [
+          "Radiologic technologists"
+        ]
+      },
+      "collaborating_departments": [
+        "Emergency Medicine (P01)",
+        "Surgery (Dr. Priya Nair, P02)",
+        "Biomedical Engineering (Samuel Park, P23)"
+      ],
+      "simulation": {
+        "role_group": "physician",
+        "security_awareness": "high",
+        "workload": "very busy",
+        "shift": "night",
+        "hidden_probs": {
+          "urgency": 0.374,
+          "authority": 0.295,
+          "it_login": 0.384,
+          "hr_payroll": 0.141,
+          "billing": 0.044,
+          "false_report": 0.181
+        }
       }
     },
     {
-      "id": "P20",
-      "name": "Zoe Walsh",
-      "role": "doctor",
-      "department": "Emergency",
-      "shift": "night",
-      "years_experience": 11,
-      "security_awareness": "low",
-      "workload": "normal",
-      "hidden_probs": {
-        "urgency": 0.567,
-        "authority": 0.451,
-        "it_login": 0.521,
-        "hr_payroll": 0.281,
-        "billing": 0.192,
-        "false_report": 0.02
+      "job_id": "P10",
+      "name": "Hannah Boateng",
+      "age": 31,
+      "gender": "female",
+      "job_title": "Respiratory Therapist",
+      "pillar": "Diagnostics & Treatment",
+      "department": "Respiratory Therapy",
+      "location": "Intensive Care Unit",
+      "inpatient_outpatient": "inpatient",
+      "patient_facing": "Y",
+      "years_in_role": 9,
+      "years_with_organization": 9,
+      "responsibilities": [
+        "Manage ventilators and oxygen therapy",
+        "Perform breathing treatments and airway care",
+        "Respond to respiratory emergencies and codes",
+        "Assess lung function and adjust support"
+      ],
+      "skills": [
+        "Mechanical ventilation",
+        "Airway management",
+        "Arterial blood gas interpretation",
+        "Emergency response"
+      ],
+      "reporting_structure": {
+        "reports_to": "Respiratory Care Manager",
+        "supervises": []
+      },
+      "collaborating_departments": [
+        "Emergency Medicine (P01)",
+        "Nursing / ICU (Grace Okonkwo, P03)",
+        "Biomedical Engineering (Samuel Park, P23)"
+      ],
+      "simulation": {
+        "role_group": "nurse",
+        "security_awareness": "medium",
+        "workload": "busy",
+        "shift": "day",
+        "hidden_probs": {
+          "urgency": 0.542,
+          "authority": 0.589,
+          "it_login": 0.475,
+          "hr_payroll": 0.663,
+          "billing": 0.131,
+          "false_report": 0.14
+        }
       }
     },
     {
-      "id": "P21",
-      "name": "Elise Novak",
-      "role": "doctor",
-      "department": "Surgery",
-      "shift": "day",
-      "years_experience": 20,
-      "security_awareness": "low",
-      "workload": "very busy",
-      "hidden_probs": {
-        "urgency": 0.752,
-        "authority": 0.561,
-        "it_login": 0.668,
-        "hr_payroll": 0.494,
-        "billing": 0.246,
-        "false_report": 0.02
+      "job_id": "P11",
+      "name": "Liam O'Connor",
+      "age": 35,
+      "gender": "male",
+      "job_title": "Physical Therapist",
+      "pillar": "Nursing & Clinical Support",
+      "department": "Rehabilitation",
+      "location": "Rehabilitation Gym",
+      "inpatient_outpatient": "both",
+      "patient_facing": "Y",
+      "years_in_role": 10,
+      "years_with_organization": 10,
+      "responsibilities": [
+        "Build and run rehabilitation plans to restore movement",
+        "Help post-surgical and stroke patients regain strength",
+        "Teach safe walking and transfers",
+        "Track and document functional progress"
+      ],
+      "skills": [
+        "Gait and mobility training",
+        "Therapeutic exercise",
+        "Manual therapy",
+        "Goal setting"
+      ],
+      "reporting_structure": {
+        "reports_to": "Rehabilitation Services Manager",
+        "supervises": [
+          "Physical therapy aides"
+        ]
+      },
+      "collaborating_departments": [
+        "Surgery (Dr. Priya Nair, P02)",
+        "Rehabilitation (Nadia Haddad, P12)",
+        "Case Management (Olivia Brennan, P15)"
+      ],
+      "simulation": {
+        "role_group": "allied_clinical",
+        "security_awareness": "high",
+        "workload": "busy",
+        "shift": "day",
+        "hidden_probs": {
+          "urgency": 0.303,
+          "authority": 0.249,
+          "it_login": 0.312,
+          "hr_payroll": 0.303,
+          "billing": 0.067,
+          "false_report": 0.24
+        }
       }
     },
     {
-      "id": "P22",
-      "name": "Nora Mwangi",
-      "role": "doctor",
-      "department": "Emergency",
-      "shift": "evening",
-      "years_experience": 22,
-      "security_awareness": "high",
-      "workload": "very busy",
-      "hidden_probs": {
-        "urgency": 0.435,
-        "authority": 0.417,
-        "it_login": 0.271,
-        "hr_payroll": 0.273,
-        "billing": 0.02,
-        "false_report": 0.14
+      "job_id": "P12",
+      "name": "Nadia Haddad",
+      "age": 31,
+      "gender": "female",
+      "job_title": "Occupational Therapist",
+      "pillar": "Nursing & Clinical Support",
+      "department": "Rehabilitation",
+      "location": "Rehabilitation Gym",
+      "inpatient_outpatient": "both",
+      "patient_facing": "Y",
+      "years_in_role": 7,
+      "years_with_organization": 7,
+      "responsibilities": [
+        "Help patients relearn daily-living activities",
+        "Recommend adaptive equipment and home modifications",
+        "Improve fine-motor and cognitive function",
+        "Prepare patients to return home safely"
+      ],
+      "skills": [
+        "Activities-of-daily-living training",
+        "Adaptive-equipment fitting",
+        "Cognitive rehab",
+        "Home-safety assessment"
+      ],
+      "reporting_structure": {
+        "reports_to": "Rehabilitation Services Manager",
+        "supervises": []
+      },
+      "collaborating_departments": [
+        "Rehabilitation (Liam O'Connor, P11)",
+        "Case Management (Thomas Abara, P14)",
+        "Nursing"
+      ],
+      "simulation": {
+        "role_group": "allied_clinical",
+        "security_awareness": "medium",
+        "workload": "busy",
+        "shift": "day",
+        "hidden_probs": {
+          "urgency": 0.599,
+          "authority": 0.378,
+          "it_login": 0.449,
+          "hr_payroll": 0.551,
+          "billing": 0.272,
+          "false_report": 0.115
+        }
       }
     },
     {
-      "id": "P23",
-      "name": "Owen Okafor",
-      "role": "doctor",
-      "department": "Pediatrics",
-      "shift": "evening",
-      "years_experience": 11,
-      "security_awareness": "low",
-      "workload": "normal",
-      "hidden_probs": {
-        "urgency": 0.542,
-        "authority": 0.55,
-        "it_login": 0.549,
-        "hr_payroll": 0.265,
-        "billing": 0.043,
-        "false_report": 0.027
+      "job_id": "P13",
+      "name": "Emma Schultz",
+      "age": 37,
+      "gender": "female",
+      "job_title": "Dietitian",
+      "pillar": "Nursing & Clinical Support",
+      "department": "Nutrition Services",
+      "location": "Wards & Outpatient Clinic",
+      "inpatient_outpatient": "both",
+      "patient_facing": "Y",
+      "years_in_role": 11,
+      "years_with_organization": 14,
+      "responsibilities": [
+        "Assess patients' nutritional needs",
+        "Design therapeutic diets and tube-feeding plans",
+        "Counsel patients on diet and disease",
+        "Coordinate nutrition with the medical team"
+      ],
+      "skills": [
+        "Nutritional assessment",
+        "Therapeutic diet planning",
+        "Enteral nutrition",
+        "Patient counseling"
+      ],
+      "reporting_structure": {
+        "reports_to": "Nutrition Services Manager",
+        "supervises": [
+          "Diet technicians"
+        ]
+      },
+      "collaborating_departments": [
+        "Advanced Practice (Daniel Reyes, P04)",
+        "Nursing (Grace Okonkwo, P03)",
+        "Case Management (Thomas Abara, P14)"
+      ],
+      "simulation": {
+        "role_group": "allied_clinical",
+        "security_awareness": "low",
+        "workload": "very busy",
+        "shift": "evening",
+        "hidden_probs": {
+          "urgency": 0.699,
+          "authority": 0.607,
+          "it_login": 0.649,
+          "hr_payroll": 0.674,
+          "billing": 0.33,
+          "false_report": 0.105
+        }
       }
     },
     {
-      "id": "P24",
-      "name": "Sofia Park",
-      "role": "doctor",
-      "department": "Pediatrics",
-      "shift": "day",
-      "years_experience": 8,
-      "security_awareness": "medium",
-      "workload": "busy",
-      "hidden_probs": {
-        "urgency": 0.432,
-        "authority": 0.467,
-        "it_login": 0.441,
-        "hr_payroll": 0.322,
-        "billing": 0.147,
-        "false_report": 0.115
+      "job_id": "P14",
+      "name": "Thomas Abara",
+      "age": 41,
+      "gender": "male",
+      "job_title": "Social Worker",
+      "pillar": "Nursing & Clinical Support",
+      "department": "Case Management",
+      "location": "Case Management Office & Wards",
+      "inpatient_outpatient": "inpatient",
+      "patient_facing": "Y",
+      "years_in_role": 12,
+      "years_with_organization": 17,
+      "responsibilities": [
+        "Assess patients' social and emotional needs",
+        "Connect families to community and financial resources",
+        "Support patients through difficult diagnoses",
+        "Help arrange safe housing and home support"
+      ],
+      "skills": [
+        "Psychosocial assessment",
+        "Resource navigation",
+        "Crisis counseling",
+        "Advocacy"
+      ],
+      "reporting_structure": {
+        "reports_to": "Case Manager Olivia Brennan (P15) / Director of Case Management",
+        "supervises": []
+      },
+      "collaborating_departments": [
+        "Case Management (Olivia Brennan, P15)",
+        "Rehabilitation (Nadia Haddad, P12)",
+        "Nutrition Services (Emma Schultz, P13)"
+      ],
+      "simulation": {
+        "role_group": "allied_clinical",
+        "security_awareness": "low",
+        "workload": "very busy",
+        "shift": "night",
+        "hidden_probs": {
+          "urgency": 0.603,
+          "authority": 0.707,
+          "it_login": 0.68,
+          "hr_payroll": 0.734,
+          "billing": 0.348,
+          "false_report": 0.079
+        }
       }
     },
     {
-      "id": "P25",
-      "name": "Lucas Fisher",
-      "role": "admin_billing",
+      "job_id": "P15",
+      "name": "Olivia Brennan",
+      "age": 46,
+      "gender": "female",
+      "job_title": "Case Manager",
+      "pillar": "Nursing & Clinical Support",
+      "department": "Case Management",
+      "location": "Case Management Office",
+      "inpatient_outpatient": "inpatient",
+      "patient_facing": "Y",
+      "years_in_role": 9,
+      "years_with_organization": 22,
+      "responsibilities": [
+        "Coordinate each patient's overall care plan",
+        "Plan safe, timely discharges",
+        "Liaise between doctors, nurses, insurers, and families",
+        "Prevent avoidable readmissions"
+      ],
+      "skills": [
+        "Discharge planning",
+        "Care coordination",
+        "Insurance navigation",
+        "Interdisciplinary communication"
+      ],
+      "reporting_structure": {
+        "reports_to": "Director of Case Management / Hospital Administrator Richard Vance (P16)",
+        "supervises": [
+          "Social Worker Thomas Abara (P14)",
+          "Care coordinators"
+        ]
+      },
+      "collaborating_departments": [
+        "Surgery (Dr. Priya Nair, P02)",
+        "Rehabilitation (Liam O'Connor, P11)",
+        "Finance & Billing (Derek Flynn, P19)"
+      ],
+      "simulation": {
+        "role_group": "allied_clinical",
+        "security_awareness": "low",
+        "workload": "busy",
+        "shift": "day",
+        "hidden_probs": {
+          "urgency": 0.691,
+          "authority": 0.625,
+          "it_login": 0.503,
+          "hr_payroll": 0.6,
+          "billing": 0.236,
+          "false_report": 0.141
+        }
+      }
+    },
+    {
+      "job_id": "P16",
+      "name": "Richard Vance",
+      "age": 54,
+      "gender": "male",
+      "job_title": "Hospital Administrator",
+      "pillar": "Administration & Management",
+      "department": "Administration",
+      "location": "Administration Suite",
+      "inpatient_outpatient": "n/a",
+      "patient_facing": "N",
+      "years_in_role": 12,
+      "years_with_organization": 30,
+      "responsibilities": [
+        "Set strategy and oversee hospital operations",
+        "Manage budgets and major decisions",
+        "Ensure regulatory compliance and quality",
+        "Lead the senior management team"
+      ],
+      "skills": [
+        "Executive leadership",
+        "Financial management",
+        "Healthcare regulation",
+        "Stakeholder negotiation"
+      ],
+      "reporting_structure": {
+        "reports_to": "Board of Directors",
+        "supervises": [
+          "Nursing Director Carol Mendes (P17)",
+          "HR Manager Sandra Kim (P18)",
+          "Department managers"
+        ]
+      },
+      "collaborating_departments": [
+        "Nursing Administration (Carol Mendes, P17)",
+        "Human Resources (Sandra Kim, P18)",
+        "Information Technology (Elena Petrova, P25)"
+      ],
+      "simulation": {
+        "role_group": "administration",
+        "security_awareness": "high",
+        "workload": "busy",
+        "shift": "night",
+        "hidden_probs": {
+          "urgency": 0.252,
+          "authority": 0.39,
+          "it_login": 0.225,
+          "hr_payroll": 0.232,
+          "billing": 0.391,
+          "false_report": 0.212
+        }
+      }
+    },
+    {
+      "job_id": "P17",
+      "name": "Carol Mendes",
+      "age": 50,
+      "gender": "female",
+      "job_title": "Nursing Director",
+      "pillar": "Administration & Management",
+      "department": "Nursing Administration",
+      "location": "Administration Suite",
+      "inpatient_outpatient": "both",
+      "patient_facing": "N",
+      "years_in_role": 9,
+      "years_with_organization": 28,
+      "responsibilities": [
+        "Lead nursing practice and standards across the hospital",
+        "Manage nurse staffing and scheduling",
+        "Mentor nurse managers and resolve escalations",
+        "Drive patient-safety initiatives"
+      ],
+      "skills": [
+        "Nursing leadership",
+        "Staffing and budgeting",
+        "Policy development",
+        "Conflict resolution"
+      ],
+      "reporting_structure": {
+        "reports_to": "Hospital Administrator Richard Vance (P16)",
+        "supervises": [
+          "Nurse managers",
+          "Registered Nurse Grace Okonkwo (P03)",
+          "nursing staff"
+        ]
+      },
+      "collaborating_departments": [
+        "Administration (Richard Vance, P16)",
+        "Nursing (Grace Okonkwo, P03)",
+        "Human Resources (Sandra Kim, P18)"
+      ],
+      "simulation": {
+        "role_group": "administration",
+        "security_awareness": "low",
+        "workload": "very busy",
+        "shift": "evening",
+        "hidden_probs": {
+          "urgency": 0.578,
+          "authority": 0.702,
+          "it_login": 0.553,
+          "hr_payroll": 0.727,
+          "billing": 0.691,
+          "false_report": 0.044
+        }
+      }
+    },
+    {
+      "job_id": "P18",
+      "name": "Sandra Kim",
+      "age": 39,
+      "gender": "female",
+      "job_title": "Human Resources Manager",
+      "pillar": "Administration & Management",
+      "department": "Human Resources",
+      "location": "Administration Building",
+      "inpatient_outpatient": "n/a",
+      "patient_facing": "N",
+      "years_in_role": 7,
+      "years_with_organization": 16,
+      "responsibilities": [
+        "Lead hiring, onboarding, and staff records",
+        "Handle employee relations and disputes",
+        "Oversee training and compliance programs",
+        "Manage benefits and workplace policy"
+      ],
+      "skills": [
+        "Recruitment",
+        "Employee relations",
+        "Policy and compliance",
+        "Conflict mediation"
+      ],
+      "reporting_structure": {
+        "reports_to": "Hospital Administrator Richard Vance (P16)",
+        "supervises": [
+          "HR coordinators"
+        ]
+      },
+      "collaborating_departments": [
+        "Administration (Richard Vance, P16)",
+        "Nursing Administration (Carol Mendes, P17)",
+        "Information Technology (Elena Petrova, P25)"
+      ],
+      "simulation": {
+        "role_group": "administration",
+        "security_awareness": "low",
+        "workload": "very busy",
+        "shift": "day",
+        "hidden_probs": {
+          "urgency": 0.497,
+          "authority": 0.777,
+          "it_login": 0.494,
+          "hr_payroll": 0.682,
+          "billing": 0.683,
+          "false_report": 0.033
+        }
+      }
+    },
+    {
+      "job_id": "P19",
+      "name": "Derek Flynn",
+      "age": 30,
+      "gender": "male",
+      "job_title": "Medical Billing Specialist",
+      "pillar": "Administration & Management",
       "department": "Finance & Billing",
-      "shift": "night",
-      "years_experience": 18,
-      "security_awareness": "medium",
-      "workload": "very busy",
-      "hidden_probs": {
-        "urgency": 0.401,
-        "authority": 0.756,
-        "it_login": 0.433,
-        "hr_payroll": 0.558,
-        "billing": 0.728,
-        "false_report": 0.066
+      "location": "Business Office",
+      "inpatient_outpatient": "both",
+      "patient_facing": "N",
+      "years_in_role": 5,
+      "years_with_organization": 9,
+      "responsibilities": [
+        "Prepare and submit insurance claims",
+        "Resolve billing errors and denials",
+        "Explain charges to patients",
+        "Protect revenue-cycle accuracy"
+      ],
+      "skills": [
+        "Medical billing",
+        "Claims processing",
+        "Insurance coding knowledge",
+        "Dispute resolution"
+      ],
+      "reporting_structure": {
+        "reports_to": "Revenue Cycle Manager / Finance",
+        "supervises": [
+          "Medical coders"
+        ]
+      },
+      "collaborating_departments": [
+        "Patient Access (Lucia Ferraro, P20)",
+        "Case Management (Olivia Brennan, P15)",
+        "Administration (Richard Vance, P16)"
+      ],
+      "simulation": {
+        "role_group": "front_billing",
+        "security_awareness": "medium",
+        "workload": "very busy",
+        "shift": "day",
+        "hidden_probs": {
+          "urgency": 0.533,
+          "authority": 0.654,
+          "it_login": 0.665,
+          "hr_payroll": 0.522,
+          "billing": 0.638,
+          "false_report": 0.223
+        }
       }
     },
     {
-      "id": "P26",
-      "name": "Milo Osei",
-      "role": "admin_billing",
-      "department": "Finance & Billing",
-      "shift": "night",
-      "years_experience": 7,
-      "security_awareness": "high",
-      "workload": "busy",
-      "hidden_probs": {
-        "urgency": 0.191,
-        "authority": 0.477,
-        "it_login": 0.203,
-        "hr_payroll": 0.248,
-        "billing": 0.531,
-        "false_report": 0.185
+      "job_id": "P20",
+      "name": "Lucia Ferraro",
+      "age": 24,
+      "gender": "female",
+      "job_title": "Patient Registration Representative",
+      "pillar": "Administration & Management",
+      "department": "Patient Access",
+      "location": "Main Reception",
+      "inpatient_outpatient": "both",
+      "patient_facing": "Y",
+      "years_in_role": 4,
+      "years_with_organization": 4,
+      "responsibilities": [
+        "Register and check in arriving patients",
+        "Verify insurance and collect demographics",
+        "Direct patients to the right department",
+        "Start the medical record accurately"
+      ],
+      "skills": [
+        "Patient intake",
+        "Insurance verification",
+        "Data entry accuracy",
+        "Customer service"
+      ],
+      "reporting_structure": {
+        "reports_to": "Patient Access Manager",
+        "supervises": []
+      },
+      "collaborating_departments": [
+        "Finance & Billing (Derek Flynn, P19)",
+        "Nursing (Mia Caldwell, P05)",
+        "Information Technology (Elena Petrova, P25)"
+      ],
+      "simulation": {
+        "role_group": "front_billing",
+        "security_awareness": "low",
+        "workload": "very busy",
+        "shift": "evening",
+        "hidden_probs": {
+          "urgency": 0.66,
+          "authority": 0.714,
+          "it_login": 0.755,
+          "hr_payroll": 0.76,
+          "billing": 0.72,
+          "false_report": 0.125
+        }
       }
     },
     {
-      "id": "P27",
-      "name": "Oscar Dubois",
-      "role": "admin_billing",
-      "department": "Finance & Billing",
-      "shift": "night",
-      "years_experience": 14,
-      "security_awareness": "medium",
-      "workload": "normal",
-      "hidden_probs": {
-        "urgency": 0.251,
-        "authority": 0.604,
-        "it_login": 0.377,
-        "hr_payroll": 0.302,
-        "billing": 0.598,
-        "false_report": 0.105
+      "job_id": "P21",
+      "name": "Andre Dubois",
+      "age": 33,
+      "gender": "male",
+      "job_title": "Security Officer",
+      "pillar": "Operations & Infrastructure",
+      "department": "Security",
+      "location": "Hospital Campus",
+      "inpatient_outpatient": "both",
+      "patient_facing": "Y",
+      "years_in_role": 8,
+      "years_with_organization": 12,
+      "responsibilities": [
+        "Patrol and protect the hospital campus",
+        "Respond to disturbances and safety alerts",
+        "Control access to restricted areas",
+        "Support staff during aggressive incidents"
+      ],
+      "skills": [
+        "De-escalation",
+        "Emergency response",
+        "Access control",
+        "Situational awareness"
+      ],
+      "reporting_structure": {
+        "reports_to": "Security Supervisor / Facilities Manager",
+        "supervises": []
+      },
+      "collaborating_departments": [
+        "Emergency Medicine (P01, P03)",
+        "Information Technology (Elena Petrova, P25)",
+        "Transport Services (Jamal Carter, P24)"
+      ],
+      "simulation": {
+        "role_group": "operations",
+        "security_awareness": "low",
+        "workload": "busy",
+        "shift": "day",
+        "hidden_probs": {
+          "urgency": 0.568,
+          "authority": 0.496,
+          "it_login": 0.594,
+          "hr_payroll": 0.464,
+          "billing": 0.376,
+          "false_report": 0.103
+        }
       }
     },
     {
-      "id": "P28",
-      "name": "Leo Mendez",
-      "role": "admin_billing",
-      "department": "Finance & Billing",
-      "shift": "night",
-      "years_experience": 1,
-      "security_awareness": "low",
-      "workload": "normal",
-      "hidden_probs": {
-        "urgency": 0.539,
-        "authority": 0.688,
-        "it_login": 0.38,
-        "hr_payroll": 0.357,
-        "billing": 0.624,
-        "false_report": 0.055
+      "job_id": "P22",
+      "name": "Beatrice Mwangi",
+      "age": 40,
+      "gender": "female",
+      "job_title": "Environmental Services Worker",
+      "pillar": "Operations & Infrastructure",
+      "department": "Environmental Services",
+      "location": "Wards & Common Areas",
+      "inpatient_outpatient": "inpatient",
+      "patient_facing": "Y",
+      "years_in_role": 21,
+      "years_with_organization": 21,
+      "responsibilities": [
+        "Clean and disinfect patient rooms and common areas",
+        "Turn over rooms quickly between patients",
+        "Follow strict infection-control protocols",
+        "Manage waste safely"
+      ],
+      "skills": [
+        "Hospital-grade disinfection",
+        "Infection control",
+        "Fast room turnover",
+        "Safe waste handling"
+      ],
+      "reporting_structure": {
+        "reports_to": "Environmental Services Supervisor",
+        "supervises": []
+      },
+      "collaborating_departments": [
+        "Nursing (Mia Caldwell, P05)",
+        "Nursing Administration (Carol Mendes, P17)",
+        "Transport Services (Jamal Carter, P24)"
+      ],
+      "simulation": {
+        "role_group": "operations",
+        "security_awareness": "low",
+        "workload": "busy",
+        "shift": "day",
+        "hidden_probs": {
+          "urgency": 0.553,
+          "authority": 0.506,
+          "it_login": 0.647,
+          "hr_payroll": 0.558,
+          "billing": 0.395,
+          "false_report": 0.168
+        }
       }
     },
     {
-      "id": "P29",
-      "name": "Finn Webb",
-      "role": "admin_billing",
-      "department": "Finance & Billing",
-      "shift": "day",
-      "years_experience": 2,
-      "security_awareness": "medium",
-      "workload": "busy",
-      "hidden_probs": {
-        "urgency": 0.48,
-        "authority": 0.659,
-        "it_login": 0.472,
-        "hr_payroll": 0.48,
-        "billing": 0.542,
-        "false_report": 0.075
+      "job_id": "P23",
+      "name": "Samuel Park",
+      "age": 33,
+      "gender": "male",
+      "job_title": "Biomedical Equipment Technician",
+      "pillar": "Operations & Infrastructure",
+      "department": "Biomedical Engineering",
+      "location": "Clinical Engineering Workshop",
+      "inpatient_outpatient": "n/a",
+      "patient_facing": "N",
+      "years_in_role": 8,
+      "years_with_organization": 11,
+      "responsibilities": [
+        "Install, test, and repair medical equipment",
+        "Run preventive maintenance on devices",
+        "Ensure equipment safety and calibration",
+        "Respond fast when critical devices fail"
+      ],
+      "skills": [
+        "Medical-device repair",
+        "Calibration",
+        "Preventive maintenance",
+        "Technical troubleshooting"
+      ],
+      "reporting_structure": {
+        "reports_to": "Clinical Engineering Manager",
+        "supervises": []
+      },
+      "collaborating_departments": [
+        "Laboratory (Victor Lindqvist, P07)",
+        "Radiology (Dr. Kenji Watanabe, P09)",
+        "Respiratory Therapy (Hannah Boateng, P10)"
+      ],
+      "simulation": {
+        "role_group": "operations",
+        "security_awareness": "high",
+        "workload": "busy",
+        "shift": "day",
+        "hidden_probs": {
+          "urgency": 0.357,
+          "authority": 0.361,
+          "it_login": 0.338,
+          "hr_payroll": 0.219,
+          "billing": 0.086,
+          "false_report": 0.222
+        }
       }
     },
     {
-      "id": "P30",
-      "name": "Clara Larsen",
-      "role": "admin_billing",
-      "department": "Finance & Billing",
-      "shift": "evening",
-      "years_experience": 25,
-      "security_awareness": "high",
-      "workload": "busy",
-      "hidden_probs": {
-        "urgency": 0.345,
-        "authority": 0.5,
-        "it_login": 0.335,
-        "hr_payroll": 0.197,
-        "billing": 0.383,
-        "false_report": 0.18
+      "job_id": "P24",
+      "name": "Jamal Carter",
+      "age": 21,
+      "gender": "male",
+      "job_title": "Patient Transporter",
+      "pillar": "Operations & Infrastructure",
+      "department": "Transport Services",
+      "location": "Hospital-wide",
+      "inpatient_outpatient": "both",
+      "patient_facing": "Y",
+      "years_in_role": 2,
+      "years_with_organization": 2,
+      "responsibilities": [
+        "Move patients safely between units and tests",
+        "Transport patients to Radiology and therapy",
+        "Help with safe transfers to beds and chairs",
+        "Keep transport equipment ready"
+      ],
+      "skills": [
+        "Safe patient transfer",
+        "Wheelchair and stretcher handling",
+        "Wayfinding",
+        "Friendly reassurance"
+      ],
+      "reporting_structure": {
+        "reports_to": "Transport Services Supervisor",
+        "supervises": []
+      },
+      "collaborating_departments": [
+        "Nursing (Mia Caldwell, P05)",
+        "Radiology (Dr. Kenji Watanabe, P09)",
+        "Rehabilitation (Liam O'Connor, P11)"
+      ],
+      "simulation": {
+        "role_group": "operations",
+        "security_awareness": "medium",
+        "workload": "very busy",
+        "shift": "day",
+        "hidden_probs": {
+          "urgency": 0.565,
+          "authority": 0.627,
+          "it_login": 0.55,
+          "hr_payroll": 0.511,
+          "billing": 0.298,
+          "false_report": 0.216
+        }
+      }
+    },
+    {
+      "job_id": "P25",
+      "name": "Elena Petrova",
+      "age": 28,
+      "gender": "female",
+      "job_title": "IT Support Specialist",
+      "pillar": "Operations & Infrastructure",
+      "department": "Information Technology",
+      "location": "IT Department",
+      "inpatient_outpatient": "n/a",
+      "patient_facing": "N",
+      "years_in_role": 4,
+      "years_with_organization": 7,
+      "responsibilities": [
+        "Support the electronic health record and hospital systems",
+        "Fix staff computer, login, and network issues",
+        "Run security-awareness and phishing training",
+        "Protect systems and respond to IT incidents"
+      ],
+      "skills": [
+        "EHR support",
+        "Troubleshooting",
+        "Network basics",
+        "Cybersecurity awareness"
+      ],
+      "reporting_structure": {
+        "reports_to": "IT Manager / Hospital Administrator Richard Vance (P16)",
+        "supervises": [
+          "IT help-desk staff"
+        ]
+      },
+      "collaborating_departments": [
+        "All departments (EHR & systems)",
+        "Human Resources (Sandra Kim, P18)",
+        "Administration (Richard Vance, P16)"
+      ],
+      "simulation": {
+        "role_group": "operations",
+        "security_awareness": "high",
+        "workload": "normal",
+        "shift": "day",
+        "hidden_probs": {
+          "urgency": 0.257,
+          "authority": 0.178,
+          "it_login": 0.287,
+          "hr_payroll": 0.243,
+          "billing": 0.125,
+          "false_report": 0.188
+        }
       }
     }
   ]

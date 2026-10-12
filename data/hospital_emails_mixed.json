@@ -32,7 +32,7 @@
       "sender_name": "Pharmacy Services",
       "sender_email": "pharmacy@ashbrookgeneral.example.net",
       "subject": "Medication recall affecting your unit",
-      "body": "Dear Nursing Staff,\n\nA manufacturer has issued a recall for a batch of IV medication stocked on several units. Please check the affected lot numbers against your unit stock before the next medication round.\n\nAffected lots: https://ashbrookgeneral.example.net/pharmacy/recall\n\nPharmacy Services",
+        "body": "Dear Nursing Staff,\n\nA manufacturer has issued a recall for a batch of IV medication stocked on several units. Please check the affected lot numbers against your unit stock before the next medication round.\n\nAffected lots: https://ashbrookgeneral.example.net/pharmacy/recall\n\nPharmacy Services",
       "red_flags": [
         "domain has extra ending (.net)",
         "patient safety fear used to rush",

@@ -28,7 +28,7 @@ def main():
     generator = EmailGenerator()
 
     # 2. Pick one person (P05 here) and build their simulated human + the twin.
-    person = people[4]
+    person = people[3]
     human = SimulatedHuman(person)
     twin = TwinPredictor()
 
