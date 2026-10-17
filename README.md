@@ -112,7 +112,6 @@ network calls, or external APIs; all data is local JSON. `data/responses.json`
 ## Presentation material
 
 - `project_architecture.pdf` - full architecture and workflow.
-- `demo_walkthrough.pdf` - what to show and say during a live demo.
 - `hospital_workforce_summary.pdf` - the dataset summary.
 - `phishing_twin_overview.pptx` - overview slide deck.
 - `prompts.md` - the main prompts used to build the project.
