@@ -105,14 +105,78 @@ TAXONOMY = {
 }
 
 
+# ---------------------------------------------------------------------------
+# How the SENDER ADDRESS itself lies. This is a second axis, independent of the
+# social-engineering technique: a whaling email and a mailbox-full email can
+# both arrive from a typosquatted domain.
+#
+# Every address stays inside space that can never resolve. RFC 2606 reserves
+# the .example TLD outright, plus example.com / example.net / example.org.
+# Endings like .example.info or .example.co are NOT reserved - somebody could
+# register them - so they are never used here.
+# ---------------------------------------------------------------------------
+
+ADDRESS_TRICKS = {
+    "forged_from": (
+        "The From line shows the hospital's own address. A From line can be "
+        "forged, so it proves nothing on its own - check Reply-To and the link."
+    ),
+    "lookalike": (
+        "Extra words bolted onto the real name: ashbrook-support.example. "
+        "Reads right at a glance, owned by someone else."
+    ),
+    "typosquat": (
+        "A character swapped for one that looks identical: an 'i' for an 'l', "
+        "or a zero for an 'o'."
+    ),
+    "subdomain_misdirection": (
+        "The hospital name sits at the FRONT as a subdomain, but the real owner "
+        "is the LAST domain before the ending. Read a domain right to left."
+    ),
+    "extra_ending": (
+        "The genuine name with a further ending bolted on, so the real "
+        "registered domain is not the one you recognise."
+    ),
+    "display_name_fraud": (
+        "The display name is a department you trust; the address behind it is "
+        "a machine-generated mailbox somewhere else."
+    ),
+    "free_provider": (
+        "A corporate role sent from a consumer mail provider. Payroll and "
+        "managers never write from a personal mail service."
+    ),
+    "unrelated": (
+        "Makes no attempt to look like the hospital - it imitates a supplier, "
+        "insurer or authority instead."
+    ),
+}
+
+# Which address trick each phishing email uses.
+ADDRESS_TRICK_BY_ID = {
+     1: "forged_from",             2: "typosquat",
+     3: "lookalike",               4: "lookalike",
+     5: "unrelated",               6: "typosquat",
+     7: "forged_from",             8: "free_provider",
+     9: "unrelated",              10: "display_name_fraud",
+    11: "lookalike",              12: "forged_from",
+    13: "subdomain_misdirection", 14: "extra_ending",
+    15: "unrelated",              16: "forged_from",
+    17: "lookalike",              18: "lookalike",
+    19: "free_provider",          20: "subdomain_misdirection",
+    21: "lookalike",              22: "unrelated",
+    23: "forged_from",            24: "extra_ending",
+    25: "lookalike",              51: "forged_from",
+}
+
+
 def body(text):
     """Trim the newlines that come from triple-quoted strings."""
     return text.strip("\n")
 
 
 # ---------------------------------------------------------------------------
-# E01-E25 phishing, five per cue so the twin sees each cue equally often.
-# E26-E50 legitimate. Several legitimate ones are deliberate near-twins of a
+# 1-25 phishing, five per cue so the twin sees each cue equally often.
+# 26-50 legitimate. Several legitimate ones are deliberate near-twins of a
 # phishing email, so the difference is the lesson rather than the vocabulary.
 # ---------------------------------------------------------------------------
 
@@ -121,7 +185,7 @@ EMAILS = [
     # ================= cue: it_login =================
 
     {
-        "id": "E01", "label": "phishing", "cue": "it_login",
+        "id": 1, "label": "phishing", "cue": "it_login",
         "technique": "Phishing", "target_role": "all", "difficulty": "hard",
         "teaches": ("The table's example, 'Your password expires today', but sent from the "
                     "hospital's own address - checking the domain does not save you."),
@@ -150,11 +214,11 @@ IT Helpdesk
         ],
     },
     {
-        "id": "E02", "label": "phishing", "cue": "it_login",
+        "id": 2, "label": "phishing", "cue": "it_login",
         "technique": "Phishing", "target_role": "front_billing", "difficulty": "easy",
-        "teaches": "A look-alike domain, the same trick as wellsfargo-secure.com in the table.",
+        "teaches": "Typosquatting with digits: ashbr00kgeneral uses two zeros in place of the o's.",
         "sender_name": "Mail Administrator",
-        "sender_email": "mailbox-admin@secure-mail-ashbrook.example",
+        "sender_email": "mailbox-admin@ashbr00kgeneral.example",
         "subject": "Your mailbox is full",
         "body": body("""
 Your mailbox has reached 99% of its storage limit. New incoming messages are
@@ -165,14 +229,15 @@ Increase storage: https://secure-mail-ashbrook.example/storage
 Mail Administrator
 """),
         "red_flags": [
-            "lookalike domain: secure-mail-ashbrook.example",
+            "typosquatted domain: ashbr00kgeneral.example, with zeros in place of the o's",
+            "at a glance it reads as the real domain - that is the entire point",
             "no name, no extension, no department",
             "threatens that mail will be deleted",
             "mailbox size is managed by IT, not by a link in an email",
         ],
     },
     {
-        "id": "E03", "label": "phishing", "cue": "it_login",
+        "id": 3, "label": "phishing", "cue": "it_login",
         "technique": "Quid pro quo", "target_role": "all", "difficulty": "hard",
         "teaches": "The trade: a free benefit offered in exchange for your login.",
         "sender_name": "Ashbrook IT Modernisation",
@@ -199,7 +264,7 @@ Ashbrook IT Modernisation Team
         ],
     },
     {
-        "id": "E04", "label": "phishing", "cue": "it_login",
+        "id": 4, "label": "phishing", "cue": "it_login",
         "technique": "Spear phishing", "target_role": "nurse", "difficulty": "hard",
         "teaches": "Targeted: it uses real details - the person's unit and their actual director.",
         "sender_name": "Clinical Systems Team",
@@ -225,7 +290,7 @@ Clinical Systems Team
         ],
     },
     {
-        "id": "E05", "label": "phishing", "cue": "it_login",
+        "id": 5, "label": "phishing", "cue": "it_login",
         "technique": "Third-party / supply chain", "target_role": "all", "difficulty": "hard",
         "teaches": "Riding a vendor breach, the way attackers followed the Change Healthcare disruption.",
         "sender_name": "Claims Portal Security",
@@ -253,7 +318,7 @@ Claims Portal Security Team
     # ================= cue: authority =================
 
     {
-        "id": "E06", "label": "phishing", "cue": "authority",
+        "id": 6, "label": "phishing", "cue": "authority",
         "technique": "Whaling", "target_role": "administration", "difficulty": "hard",
         "teaches": "The table's Main Line Health case: a fake executive requests the staff W-2 file.",
         "sender_name": "Richard Vance, Hospital Administrator",
@@ -282,7 +347,7 @@ Hospital Administrator
         ],
     },
     {
-        "id": "E07", "label": "phishing", "cue": "authority",
+        "id": 7, "label": "phishing", "cue": "authority",
         "technique": "Whaling", "target_role": "physician", "difficulty": "hard",
         "teaches": ("Going after the people with the most access, from an address that "
                     "looks exactly like the one the real notice comes from."),
@@ -313,7 +378,7 @@ Office of the Chief Medical Officer
         ],
     },
     {
-        "id": "E08", "label": "phishing", "cue": "authority",
+        "id": 8, "label": "phishing", "cue": "authority",
         "technique": "Spear phishing", "target_role": "nurse", "difficulty": "easy",
         "teaches": "The table's example: an email that names your actual manager and a real meeting.",
         "sender_name": "Carol Mendes",
@@ -340,7 +405,7 @@ Nursing Director
         ],
     },
     {
-        "id": "E09", "label": "phishing", "cue": "authority",
+        "id": 9, "label": "phishing", "cue": "authority",
         "technique": "Pretexting", "target_role": "all", "difficulty": "hard",
         "teaches": "An invented but believable scenario, posing as someone with authority.",
         "sender_name": "Accreditation Survey Team",
@@ -367,11 +432,12 @@ Accreditation Survey Team
         ],
     },
     {
-        "id": "E10", "label": "phishing", "cue": "authority",
+        "id": 10, "label": "phishing", "cue": "authority",
         "technique": "Phishing", "target_role": "front_billing", "difficulty": "easy",
-        "teaches": "Plain authority pressure with no personalisation at all.",
+        "teaches": ("Display-name fraud: the name reads 'Front Office Manager', but the "
+                    "address behind it is a machine-generated mailbox."),
         "sender_name": "Front Office Manager",
-        "sender_email": "frontoffice.manager@ashbrook-staff.example",
+        "sender_email": "user7392@mail-relay-svc.example",
         "subject": "New check-in procedure - acknowledge today",
         "body": body("""
 All reception staff must read and acknowledge the new patient check-in procedure
@@ -382,7 +448,8 @@ Read and acknowledge: https://ashbrook-staff.example/procedures/checkin
 Front Office Manager
 """),
         "red_flags": [
-            "lookalike domain: ashbrook-staff.example",
+            "the display name says Front Office Manager; the address is user7392@mail-relay-svc.example",
+            "expand the sender before trusting it - the name shown is not the address",
             "a title with no name behind it",
             "implies you are being monitored, to push a fast click",
             "compare with E44, where the real procedure change comes from a named colleague",
@@ -392,7 +459,7 @@ Front Office Manager
     # ================= cue: urgency =================
 
     {
-        "id": "E11", "label": "phishing", "cue": "urgency",
+        "id": 11, "label": "phishing", "cue": "urgency",
         "technique": "Malware", "target_role": "nurse", "difficulty": "hard",
         "teaches": "The table's example file: Patient_Records_Update.exe, which spreads across the network.",
         "sender_name": "Patient Records Update",
@@ -418,7 +485,7 @@ Patient Records Update Service
         ],
     },
     {
-        "id": "E12", "label": "phishing", "cue": "urgency",
+        "id": 12, "label": "phishing", "cue": "urgency",
         "technique": "Phishing", "target_role": "nurse", "difficulty": "easy",
         "teaches": "Manufactured clinical urgency with a countdown, from the lab's own address.",
         "sender_name": "Laboratory Results",
@@ -447,11 +514,12 @@ Laboratory Results
         ],
     },
     {
-        "id": "E13", "label": "phishing", "cue": "urgency",
+        "id": 13, "label": "phishing", "cue": "urgency",
         "technique": "Phishing", "target_role": "front_billing", "difficulty": "easy",
-        "teaches": "An invented outage used to make you act within the hour.",
+        "teaches": ("Subdomain misdirection: the hospital's name is only a subdomain. "
+                    "The real owner is scheduling-alerts.example, read right to left."),
         "sender_name": "Scheduling Alerts",
-        "sender_email": "scheduling-alert@ashbrook-scheduling.example",
+        "sender_email": "alerts@ashbrookgeneral.example.scheduling-alerts.example",
         "subject": "Appointment system going offline in 1 hour - action required",
         "body": body("""
 The outpatient appointment system goes offline in one hour for emergency
@@ -463,14 +531,15 @@ Export your list: https://ashbrook-scheduling.example/export
 Scheduling Alerts
 """),
         "red_flags": [
-            "lookalike domain: ashbrook-scheduling.example",
+            "subdomain misdirection: ashbrookgeneral.example is only a label in front",
+            "the domain that actually owns this is scheduling-alerts.example - read right to left",
             "one hour's notice, so you don't stop to check",
             "invents a consequence to force the click",
             "real outages come from the Service Desk with a change reference - see E38",
         ],
     },
     {
-        "id": "E14", "label": "phishing", "cue": "urgency",
+        "id": 14, "label": "phishing", "cue": "urgency",
         "technique": "Pretexting", "target_role": "nurse", "difficulty": "hard",
         "teaches": "A false story built from real clinical practice, so hesitating feels unsafe.",
         "sender_name": "Pharmacy Services",
@@ -495,7 +564,7 @@ Pharmacy Services
         ],
     },
     {
-        "id": "E15", "label": "phishing", "cue": "urgency",
+        "id": 15, "label": "phishing", "cue": "urgency",
         "technique": "Extortion / blackmail", "target_role": "all", "difficulty": "easy",
         "teaches": "A threat with a countdown - the goal is panic, not accuracy.",
         "sender_name": "System Notice",
@@ -524,7 +593,7 @@ This is your only notice.
     # ================= cue: hr_payroll =================
 
     {
-        "id": "E16", "label": "phishing", "cue": "hr_payroll",
+        "id": 16, "label": "phishing", "cue": "hr_payroll",
         "technique": "Phishing", "target_role": "all", "difficulty": "hard",
         "teaches": ("Sent from payroll@ashbrookgeneral.example - the exact address the real "
                     "payslip notice E26 comes from. Only the content gives it away."),
@@ -555,7 +624,7 @@ Payroll Services
         ],
     },
     {
-        "id": "E17", "label": "phishing", "cue": "hr_payroll",
+        "id": 17, "label": "phishing", "cue": "hr_payroll",
         "technique": "Smishing", "target_role": "all", "difficulty": "easy",
         "teaches": "The table's example: 'Your direct deposit failed, click here', pushed to SMS.",
         "sender_name": "Payroll Notifications",
@@ -583,7 +652,7 @@ Payroll Notifications
         ],
     },
     {
-        "id": "E18", "label": "phishing", "cue": "hr_payroll",
+        "id": 18, "label": "phishing", "cue": "hr_payroll",
         "technique": "Baiting", "target_role": "all", "difficulty": "hard",
         "teaches": "The table's 'Salary Info 2026' bait, as a file instead of a USB stick.",
         "sender_name": "Compensation Review",
@@ -607,11 +676,12 @@ Compensation Review
         ],
     },
     {
-        "id": "E19", "label": "phishing", "cue": "hr_payroll",
+        "id": 19, "label": "phishing", "cue": "hr_payroll",
         "technique": "Baiting", "target_role": "front_billing", "difficulty": "easy",
-        "teaches": "Unexpected money - the oldest bait there is.",
+        "teaches": ("A payroll message from a consumer mail provider - HR never writes "
+                    "from a personal mail service."),
         "sender_name": "HR Benefits",
-        "sender_email": "hr-benefits@ashbrook-benefits.example",
+        "sender_email": "hr.benefits.dept@mailbox-provider.example",
         "subject": "Overtime bonus approved!",
         "body": body("""
 Good news - a discretionary overtime bonus has been approved for your department
@@ -624,29 +694,32 @@ Payments will be made with the next salary run.
 HR Benefits
 """),
         "red_flags": [
-            "lookalike domain: ashbrook-benefits.example",
+            "a consumer mail provider, not the hospital: hr.benefits.dept@mailbox-provider.example",
+            "a long official-sounding local part does not make an address internal",
             "something tempting, with nothing asked for up front",
             "a bonus nobody mentioned and no manager announced",
             "real bonuses appear on your payslip, not behind a link",
         ],
     },
     {
-        "id": "E20", "label": "phishing", "cue": "hr_payroll",
+        "id": 20, "label": "phishing", "cue": "hr_payroll",
         "technique": "Spear phishing", "target_role": "physician", "difficulty": "hard",
-        "teaches": "Targeted detail: the right departments, the right quarter, a real past query.",
+        "teaches": ("Targeted detail - right departments, right quarter, a real past query - "
+                    "behind a domain whose real owner is oncall-portal.example."),
         "sender_name": "Medical Staffing",
-        "sender_email": "medstaff@ashbrookgeneral.example.info",
+        "sender_email": "medstaff@ashbrookgeneral.example.oncall-portal.example",
         "subject": "On-call schedule and payment summary - Q3",
         "body": body("""
 Your Q3 on-call payment summary is ready. It covers the Emergency Medicine and
 Surgery rotas and includes the two weekends you queried in August.
 
-View your summary: https://ashbrookgeneral.example.info/oncall/q3
+View your summary: https://ashbrookgeneral.example.oncall-portal.example/q3
 
 Medical Staffing
 """),
         "red_flags": [
-            "domain has an extra ending: ashbrookgeneral.example.info",
+            "subdomain misdirection: the real domain is oncall-portal.example, not the hospital",
+            "the hospital's name is only the first label - read the domain right to left",
             "real departments and a real past query, to sound routine",
             "combines rota and pay, the two things worth checking immediately",
             "on-call summaries live on the Staff Portal",
@@ -654,7 +727,7 @@ Medical Staffing
     },
 
     {
-        "id": "E51", "label": "phishing", "cue": "hr_payroll",
+        "id": 51, "label": "phishing", "cue": "hr_payroll",
         "technique": "Phishing", "target_role": "all", "difficulty": "hard",
         "teaches": ("Modelled on a real captured phish: no name, no detail, no reason - just "
                     "'you have a message' and a Click here. Vagueness is the whole design."),
@@ -692,7 +765,7 @@ This is an automatically generated email, please do not reply.
     # ================= cue: billing =================
 
     {
-        "id": "E21", "label": "phishing", "cue": "billing",
+        "id": 21, "label": "phishing", "cue": "billing",
         "technique": "Ransomware", "target_role": "front_billing", "difficulty": "hard",
         "teaches": "The delivery email behind a hospital going back to paper charts for days.",
         "sender_name": "Ashbrook Procurement",
@@ -718,7 +791,7 @@ Ashbrook Procurement
         ],
     },
     {
-        "id": "E22", "label": "phishing", "cue": "billing",
+        "id": 22, "label": "phishing", "cue": "billing",
         "technique": "Pretexting", "target_role": "front_billing", "difficulty": "easy",
         "teaches": "The table's example: 'Billing' asking someone to verify a patient's SSN.",
         "sender_name": "Claims Processing",
@@ -743,7 +816,7 @@ Claims Processing Department
         ],
     },
     {
-        "id": "E23", "label": "phishing", "cue": "billing",
+        "id": 23, "label": "phishing", "cue": "billing",
         "technique": "Third-party / supply chain", "target_role": "front_billing", "difficulty": "hard",
         "teaches": ("A vendor's compromise becoming your loss. Sent from inside the hospital, "
                     "because the attacker already has a colleague's mailbox."),
@@ -772,11 +845,11 @@ Vendor Relations
         ],
     },
     {
-        "id": "E24", "label": "phishing", "cue": "billing",
+        "id": 24, "label": "phishing", "cue": "billing",
         "technique": "Phishing", "target_role": "front_billing", "difficulty": "easy",
         "teaches": "Pressure by invoice: shouting, a countdown and a threat.",
         "sender_name": "MedSupply Partners Accounts",
-        "sender_email": "accounts@medsupply-partners-invoice.example",
+        "sender_email": "accounts@medsupply-partners.example.net",
         "subject": "Overdue invoice #48213 - FINAL NOTICE",
         "body": body("""
 FINAL NOTICE
@@ -785,19 +858,20 @@ Invoice #48213 is 60 days overdue. Unless payment is received within 3 working
 days, the account passes to a collections agency and further deliveries will be
 suspended.
 
-View invoice and pay: https://medsupply-partners-invoice.example/48213
+View invoice and pay: https://medsupply-partners.example.net/48213
 
 Accounts Department
 """),
         "red_flags": [
-            "a domain built to look like an invoicing service",
+            "an extra ending bolted on: the supplier on file is not on .example.net",
+            "check the ending as well as the name - both have to match",
             "shouting FINAL NOTICE to create panic",
             "threatens collections and suspended deliveries",
             "no purchase order number to match it against - see E39",
         ],
     },
     {
-        "id": "E25", "label": "phishing", "cue": "billing",
+        "id": 25, "label": "phishing", "cue": "billing",
         "technique": "Malware", "target_role": "front_billing", "difficulty": "hard",
         "teaches": "Malware through an attachment that looks like ordinary finance paperwork.",
         "sender_name": "Accounts Receivable",
@@ -825,7 +899,7 @@ Accounts Receivable
     # ================= legitimate =================
 
     {
-        "id": "E26", "label": "legitimate", "cue": "none", "topic": "payroll",
+        "id": 26, "label": "legitimate", "cue": "none", "topic": "payroll",
         "technique": "Legitimate", "target_role": "all", "difficulty": "hard",
         "teaches": "The honest version of E16 and E17: it tells you where to go and promises nothing by link.",
         "sender_name": "Payroll",
@@ -847,7 +921,7 @@ Payroll
         ],
     },
     {
-        "id": "E27", "label": "legitimate", "cue": "none", "topic": "security_alert",
+        "id": 27, "label": "legitimate", "cue": "none", "topic": "security_alert",
         "technique": "Legitimate", "target_role": "all", "difficulty": "hard",
         "teaches": "What a real IT security warning looks like, including a safe way to report.",
         "sender_name": "IT Security",
@@ -874,7 +948,7 @@ IT Support, extension 4410
         ],
     },
     {
-        "id": "E28", "label": "legitimate", "cue": "none", "topic": "security_training",
+        "id": 28, "label": "legitimate", "cue": "none", "topic": "security_training",
         "technique": "Legitimate", "target_role": "all", "difficulty": "hard",
         "teaches": "Simulated phishing tests, one of the key defenses the table lists.",
         "sender_name": "IT Security",
@@ -901,7 +975,7 @@ IT Support, extension 4410
         ],
     },
     {
-        "id": "E29", "label": "legitimate", "cue": "none", "topic": "availability",
+        "id": 29, "label": "legitimate", "cue": "none", "topic": "availability",
         "technique": "Legitimate", "target_role": "all", "difficulty": "hard",
         "teaches": "A Week 8 availability incident: the portal is flooded, but no data is taken.",
         "sender_name": "IT Service Desk",
@@ -927,7 +1001,7 @@ IT Service Desk, extension 4400
         ],
     },
     {
-        "id": "E30", "label": "legitimate", "cue": "none", "topic": "shadow_it",
+        "id": 30, "label": "legitimate", "cue": "none", "topic": "shadow_it",
         "technique": "Legitimate", "target_role": "all", "difficulty": "hard",
         "teaches": "Shadow IT: why the quick workaround is the risk.",
         "sender_name": "IT Security",
@@ -954,7 +1028,7 @@ IT Support, extension 4410
         ],
     },
     {
-        "id": "E31", "label": "legitimate", "cue": "none", "topic": "continuity",
+        "id": 31, "label": "legitimate", "cue": "none", "topic": "continuity",
         "technique": "Legitimate", "target_role": "all", "difficulty": "hard",
         "teaches": "Practising the paper-charting fallback a ransomware lockout would force.",
         "sender_name": "Emergency Preparedness",
@@ -980,7 +1054,7 @@ Emergency Preparedness, extension 4320
         ],
     },
     {
-        "id": "E32", "label": "legitimate", "cue": "none", "topic": "vendor_security",
+        "id": 32, "label": "legitimate", "cue": "none", "topic": "vendor_security",
         "technique": "Legitimate", "target_role": "all", "difficulty": "hard",
         "teaches": "The real supply-chain advisory that E05 imitates.",
         "sender_name": "IT Security",
@@ -1008,7 +1082,7 @@ IT Security, extension 4410
         ],
     },
     {
-        "id": "E33", "label": "legitimate", "cue": "none", "topic": "benefits",
+        "id": 33, "label": "legitimate", "cue": "none", "topic": "benefits",
         "technique": "Legitimate", "target_role": "all", "difficulty": "easy",
         "sender_name": "Human Resources",
         "sender_email": "hr@ashbrookgeneral.example",
@@ -1031,7 +1105,7 @@ Human Resources Manager, extension 4120
         ],
     },
     {
-        "id": "E34", "label": "legitimate", "cue": "none", "topic": "safety",
+        "id": 34, "label": "legitimate", "cue": "none", "topic": "safety",
         "technique": "Legitimate", "target_role": "all", "difficulty": "easy",
         "sender_name": "Fire Safety Office",
         "sender_email": "firesafety@ashbrookgeneral.example",
@@ -1051,7 +1125,7 @@ Fire Safety Office, extension 4305
         ],
     },
     {
-        "id": "E35", "label": "legitimate", "cue": "none", "topic": "facilities",
+        "id": 35, "label": "legitimate", "cue": "none", "topic": "facilities",
         "technique": "Legitimate", "target_role": "all", "difficulty": "easy",
         "sender_name": "Facilities",
         "sender_email": "facilities@ashbrookgeneral.example",
@@ -1071,7 +1145,7 @@ Facilities, extension 4210
         ],
     },
     {
-        "id": "E36", "label": "legitimate", "cue": "none", "topic": "quality",
+        "id": 36, "label": "legitimate", "cue": "none", "topic": "quality",
         "technique": "Legitimate", "target_role": "nurse", "difficulty": "easy",
         "sender_name": "Infection Prevention",
         "sender_email": "infectionprevention@ashbrookgeneral.example",
@@ -1091,7 +1165,7 @@ Infection Prevention Team
         ],
     },
     {
-        "id": "E37", "label": "legitimate", "cue": "none", "topic": "rota",
+        "id": 37, "label": "legitimate", "cue": "none", "topic": "rota",
         "technique": "Legitimate", "target_role": "nurse", "difficulty": "hard",
         "teaches": "The honest counterpart to the rota-change phishing pattern.",
         "sender_name": "Scheduling",
@@ -1113,7 +1187,7 @@ Scheduling, extension 4155
         ],
     },
     {
-        "id": "E38", "label": "legitimate", "cue": "none", "topic": "it_maintenance",
+        "id": 38, "label": "legitimate", "cue": "none", "topic": "it_maintenance",
         "technique": "Legitimate", "target_role": "all", "difficulty": "hard",
         "teaches": "A real outage notice: advance warning, a change reference, no sign-in.",
         "sender_name": "IT Service Desk",
@@ -1136,7 +1210,7 @@ IT Service Desk, extension 4400
         ],
     },
     {
-        "id": "E39", "label": "legitimate", "cue": "none", "topic": "billing",
+        "id": 39, "label": "legitimate", "cue": "none", "topic": "billing",
         "technique": "Legitimate", "target_role": "front_billing", "difficulty": "hard",
         "teaches": "The routine approval that E23 and E24 are built to imitate.",
         "sender_name": "Accounts Payable",
@@ -1160,7 +1234,7 @@ Accounts Payable, extension 4260
         ],
     },
     {
-        "id": "E40", "label": "legitimate", "cue": "none", "topic": "vendor",
+        "id": 40, "label": "legitimate", "cue": "none", "topic": "vendor",
         "technique": "Legitimate", "target_role": "front_billing", "difficulty": "easy",
         "sender_name": "Clean Linen Services",
         "sender_email": "accounts@cleanlinen.example",
@@ -1179,7 +1253,7 @@ Clean Linen Services, Accounts
         ],
     },
     {
-        "id": "E41", "label": "legitimate", "cue": "none", "topic": "clinical_update",
+        "id": 41, "label": "legitimate", "cue": "none", "topic": "clinical_update",
         "technique": "Legitimate", "target_role": "physician", "difficulty": "hard",
         "sender_name": "Laboratory",
         "sender_email": "lab@ashbrookgeneral.example",
@@ -1201,7 +1275,7 @@ Laboratory, extension 4280
         ],
     },
     {
-        "id": "E42", "label": "legitimate", "cue": "none", "topic": "compliance",
+        "id": 42, "label": "legitimate", "cue": "none", "topic": "compliance",
         "technique": "Legitimate", "target_role": "physician", "difficulty": "hard",
         "teaches": "The genuine attestation notice that E07 impersonates.",
         "sender_name": "Medical Staff Office",
@@ -1223,7 +1297,7 @@ Medical Staff Office, extension 4190
         ],
     },
     {
-        "id": "E43", "label": "legitimate", "cue": "none", "topic": "colleague",
+        "id": 43, "label": "legitimate", "cue": "none", "topic": "colleague",
         "technique": "Legitimate", "target_role": "nurse", "difficulty": "easy",
         "sender_name": "Grace Okonkwo",
         "sender_email": "g.okonkwo@ashbrookgeneral.example",
@@ -1246,7 +1320,7 @@ Grace
         ],
     },
     {
-        "id": "E44", "label": "legitimate", "cue": "none", "topic": "procedure",
+        "id": 44, "label": "legitimate", "cue": "none", "topic": "procedure",
         "technique": "Legitimate", "target_role": "front_billing", "difficulty": "hard",
         "teaches": "The real procedure change that E10 imitates - named sender, portal, face-to-face.",
         "sender_name": "Lucia Ferraro",
@@ -1271,7 +1345,7 @@ Patient Registration, extension 4140
         ],
     },
     {
-        "id": "E45", "label": "legitimate", "cue": "none", "topic": "training",
+        "id": 45, "label": "legitimate", "cue": "none", "topic": "training",
         "technique": "Legitimate", "target_role": "nurse", "difficulty": "hard",
         "sender_name": "Education Department",
         "sender_email": "education@ashbrookgeneral.example",
@@ -1292,7 +1366,7 @@ Education Department, extension 4360
         ],
     },
     {
-        "id": "E46", "label": "legitimate", "cue": "none", "topic": "occupational_health",
+        "id": 46, "label": "legitimate", "cue": "none", "topic": "occupational_health",
         "technique": "Legitimate", "target_role": "all", "difficulty": "easy",
         "sender_name": "Occupational Health",
         "sender_email": "occhealth@ashbrookgeneral.example",
@@ -1313,7 +1387,7 @@ Occupational Health, extension 4340
         ],
     },
     {
-        "id": "E47", "label": "legitimate", "cue": "none", "topic": "team",
+        "id": 47, "label": "legitimate", "cue": "none", "topic": "team",
         "technique": "Legitimate", "target_role": "nurse", "difficulty": "easy",
         "sender_name": "Ward 4 Manager",
         "sender_email": "ward4.manager@ashbrookgeneral.example",
@@ -1337,7 +1411,7 @@ Ward 4 Manager
         ],
     },
     {
-        "id": "E48", "label": "legitimate", "cue": "none", "topic": "it_change",
+        "id": 48, "label": "legitimate", "cue": "none", "topic": "it_change",
         "technique": "Legitimate", "target_role": "front_billing", "difficulty": "hard",
         "sender_name": "Scheduling Lead",
         "sender_email": "scheduling.lead@ashbrookgeneral.example",
@@ -1360,7 +1434,7 @@ Scheduling Lead, extension 4155
         ],
     },
     {
-        "id": "E49", "label": "legitimate", "cue": "none", "topic": "patient_feedback",
+        "id": 49, "label": "legitimate", "cue": "none", "topic": "patient_feedback",
         "technique": "Legitimate", "target_role": "front_billing", "difficulty": "easy",
         "sender_name": "Patient Experience",
         "sender_email": "patientexperience@ashbrookgeneral.example",
@@ -1380,7 +1454,7 @@ Patient Experience Team
         ],
     },
     {
-        "id": "E50", "label": "legitimate", "cue": "none", "topic": "catering",
+        "id": 50, "label": "legitimate", "cue": "none", "topic": "catering",
         "technique": "Legitimate", "target_role": "all", "difficulty": "easy",
         "sender_name": "Catering",
         "sender_email": "catering@ashbrookgeneral.example",
@@ -1438,6 +1512,9 @@ def build():
             if optional in e:
                 rec[optional] = e[optional]
         if e["label"] == "phishing":
+            trick = ADDRESS_TRICK_BY_ID[e["id"]]
+            rec["address_trick"] = trick
+            rec["address_trick_note"] = ADDRESS_TRICKS[trick]
             rec["red_flags"] = e["red_flags"]
         else:
             rec["safe_signs"] = e["safe_signs"]
@@ -1449,6 +1526,23 @@ def build():
 
     ids = [r["id"] for r in records]
     assert len(ids) == len(set(ids)), "duplicate email id"
+
+    # Every address must sit in space that can never resolve: the reserved
+    # .example TLD, or example.com / example.net / example.org (RFC 2606).
+    # Endings like .example.info or .example.co are NOT reserved.
+    safe_endings = (".example", ".example.com", ".example.net", ".example.org")
+    for r in records:
+        domain = r["sender_email"].split("@")[1]
+        assert domain.endswith(safe_endings), (
+            "sender domain %r in %s could resolve - use reserved space only"
+            % (domain, r["id"])
+        )
+        for field in ("reply_to", "link_target"):
+            value = r.get(field)
+            if value:
+                host = value.split("@")[-1].split("//")[-1].split("/")[0]
+                assert host.endswith(safe_endings), (
+                    "%s %r in %s could resolve" % (field, value, r["id"]))
 
     phish = [r for r in records if r["label"] == "phishing"]
     counts = Counter(r["label"] for r in records)
@@ -1484,7 +1578,9 @@ def build():
                 1 for r in phish if r["sender_email"].endswith("@" + REAL_DOMAIN)
             ),
             "phishing_with_hidden_link": sum(1 for r in phish if "link_target" in r),
+            "by_address_trick": dict(sorted(Counter(r["address_trick"] for r in phish).items())),
         },
+        "address_tricks": ADDRESS_TRICKS,
         "emails": records,
     }
 

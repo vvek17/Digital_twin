@@ -38,7 +38,8 @@ def average_error(twin, person):
 def main():
     people = load_people()
     generator = EmailGenerator()
-    twin = TwinPredictor()   # one twin; it keeps separate counters per person id
+    # No file paths: a test must never write into the real history.
+    twin = TwinPredictor(log_path=None, csv_path=None, results_path=None)   # separate counters per person id
 
     # Run the simulation for every person.
     for person in people:

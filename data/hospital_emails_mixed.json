@@ -37,11 +37,31 @@
       "hard": 31
     },
     "phishing_from_real_domain": 6,
-    "phishing_with_hidden_link": 6
+    "phishing_with_hidden_link": 6,
+    "by_address_trick": {
+      "display_name_fraud": 1,
+      "extra_ending": 2,
+      "forged_from": 6,
+      "free_provider": 2,
+      "lookalike": 7,
+      "subdomain_misdirection": 2,
+      "typosquat": 2,
+      "unrelated": 4
+    }
+  },
+  "address_tricks": {
+    "forged_from": "The From line shows the hospital's own address. A From line can be forged, so it proves nothing on its own - check Reply-To and the link.",
+    "lookalike": "Extra words bolted onto the real name: ashbrook-support.example. Reads right at a glance, owned by someone else.",
+    "typosquat": "A character swapped for one that looks identical: an 'i' for an 'l', or a zero for an 'o'.",
+    "subdomain_misdirection": "The hospital name sits at the FRONT as a subdomain, but the real owner is the LAST domain before the ending. Read a domain right to left.",
+    "extra_ending": "The genuine name with a further ending bolted on, so the real registered domain is not the one you recognise.",
+    "display_name_fraud": "The display name is a department you trust; the address behind it is a machine-generated mailbox somewhere else.",
+    "free_provider": "A corporate role sent from a consumer mail provider. Payroll and managers never write from a personal mail service.",
+    "unrelated": "Makes no attempt to look like the hospital - it imitates a supplier, insurer or authority instead."
   },
   "emails": [
     {
-      "id": "E01",
+      "id": 1,
       "label": "phishing",
       "cue": "it_login",
       "technique": "Phishing",
@@ -60,6 +80,8 @@
       "link_text": "Renew your password",
       "link_target": "https://ashbrook-support.example/renew",
       "teaches": "The table's example, 'Your password expires today', but sent from the hospital's own address - checking the domain does not save you.",
+      "address_trick": "forged_from",
+      "address_trick_note": "The From line shows the hospital's own address. A From line can be forged, so it proves nothing on its own - check Reply-To and the link.",
       "red_flags": [
         "the From line shows the real hospital domain - a From line can be forged, so it proves nothing",
         "Reply-To goes somewhere else entirely: mail-ashbrook-it.example",
@@ -69,7 +91,7 @@
       ]
     },
     {
-      "id": "E02",
+      "id": 2,
       "label": "phishing",
       "cue": "it_login",
       "technique": "Phishing",
@@ -81,19 +103,22 @@
       "target_role": "front_billing",
       "difficulty": "easy",
       "sender_name": "Mail Administrator",
-      "sender_email": "mailbox-admin@secure-mail-ashbrook.example",
+      "sender_email": "mailbox-admin@ashbr00kgeneral.example",
       "subject": "Your mailbox is full",
       "body": "Your mailbox has reached 99% of its storage limit. New incoming messages are\nbeing held and will be deleted after 24 hours.\n\nIncrease storage: https://secure-mail-ashbrook.example/storage\n\nMail Administrator",
-      "teaches": "A look-alike domain, the same trick as wellsfargo-secure.com in the table.",
+      "teaches": "Typosquatting with digits: ashbr00kgeneral uses two zeros in place of the o's.",
+      "address_trick": "typosquat",
+      "address_trick_note": "A character swapped for one that looks identical: an 'i' for an 'l', or a zero for an 'o'.",
       "red_flags": [
-        "lookalike domain: secure-mail-ashbrook.example",
+        "typosquatted domain: ashbr00kgeneral.example, with zeros in place of the o's",
+        "at a glance it reads as the real domain - that is the entire point",
         "no name, no extension, no department",
         "threatens that mail will be deleted",
         "mailbox size is managed by IT, not by a link in an email"
       ]
     },
     {
-      "id": "E03",
+      "id": 3,
       "label": "phishing",
       "cue": "it_login",
       "technique": "Quid pro quo",
@@ -109,6 +134,8 @@
       "subject": "Free premium licence for staff - 200 seats available",
       "body": "As part of the IT modernisation programme we have 200 free premium office\nlicences for staff, including installation on your own computer at home.\n\nTo claim a seat, sign in with your Ashbrook network account so we can confirm\nyou are staff and attach the licence to you:\n\nhttps://ashbrook-it-rollout.example/claim\n\nSeats are allocated in the order claims are received.\n\nAshbrook IT Modernisation Team",
       "teaches": "The trade: a free benefit offered in exchange for your login.",
+      "address_trick": "lookalike",
+      "address_trick_note": "Extra words bolted onto the real name: ashbrook-support.example. Reads right at a glance, owned by someone else.",
       "red_flags": [
         "offers you something valuable in exchange for your login",
         "lookalike domain: ashbrook-it-rollout.example",
@@ -117,7 +144,7 @@
       ]
     },
     {
-      "id": "E04",
+      "id": 4,
       "label": "phishing",
       "cue": "it_login",
       "technique": "Spear phishing",
@@ -133,6 +160,8 @@
       "subject": "Ward 4 access re-verification before Saturday",
       "body": "Hello,\n\nThe patient records system is being upgraded this weekend. Nursing staff on\nCarol Mendes's Ward 4 list need to re-verify access before Saturday 6 AM.\nAccounts that are not verified will be locked for charting until IT reactivates\nthem by hand, which can take most of a shift.\n\nVerify access: https://ashbrookgeneral-it.example/verify\n\nClinical Systems Team",
       "teaches": "Targeted: it uses real details - the person's unit and their actual director.",
+      "address_trick": "lookalike",
+      "address_trick_note": "Extra words bolted onto the real name: ashbrook-support.example. Reads right at a glance, owned by someone else.",
       "red_flags": [
         "lookalike domain: ashbrookgeneral-it.example",
         "uses real details - your ward and Nursing Director Carol Mendes - to sound informed",
@@ -141,7 +170,7 @@
       ]
     },
     {
-      "id": "E05",
+      "id": 5,
       "label": "phishing",
       "cue": "it_login",
       "technique": "Third-party / supply chain",
@@ -157,6 +186,8 @@
       "subject": "Mandatory password reset after our security incident",
       "body": "As your hospital has been informed, our claims processing platform experienced a\nsecurity incident. As a precaution, all hospital user accounts must be reset\nbefore access is restored.\n\nReset your account: https://claims-portal-reset.example/restore\n\nAccounts not reset within 72 hours will be suspended pending manual review.\n\nClaims Portal Security Team",
       "teaches": "Riding a vendor breach, the way attackers followed the Change Healthcare disruption.",
+      "address_trick": "unrelated",
+      "address_trick_note": "Makes no attempt to look like the hospital - it imitates a supplier, insurer or authority instead.",
       "red_flags": [
         "attackers follow the news - a real breach makes a fake reset believable",
         "domain exists only to host the reset: claims-portal-reset.example",
@@ -165,7 +196,7 @@
       ]
     },
     {
-      "id": "E06",
+      "id": 6,
       "label": "phishing",
       "cue": "authority",
       "technique": "Whaling",
@@ -181,6 +212,8 @@
       "subject": "Staff W-2 summary needed for the board pack",
       "body": "Sandra,\n\nThe board pack goes out tonight and I need the staff W-2 summary for last year -\nnames, earnings and tax identifiers - in one file.\n\nSend it straight to me rather than through the usual channel; I'd rather this\ndidn't circulate before the compensation review is announced.\n\nI'm in meetings until six and can't take calls.\n\nRichard Vance\nHospital Administrator",
       "teaches": "The table's Main Line Health case: a fake executive requests the staff W-2 file.",
+      "address_trick": "typosquat",
+      "address_trick_note": "A character swapped for one that looks identical: an 'i' for an 'l', or a zero for an 'o'.",
       "red_flags": [
         "misspelled domain: ashbrookgenerai.example (an 'i' in place of the 'l')",
         "the whole workforce's tax data in one request",
@@ -190,7 +223,7 @@
       ]
     },
     {
-      "id": "E07",
+      "id": 7,
       "label": "phishing",
       "cue": "authority",
       "technique": "Whaling",
@@ -209,6 +242,8 @@
       "link_text": "Attest here",
       "link_target": "https://ashbrookgeneral-medstaff.example/attestation",
       "teaches": "Going after the people with the most access, from an address that looks exactly like the one the real notice comes from.",
+      "address_trick": "forged_from",
+      "address_trick_note": "The From line shows the hospital's own address. A From line can be forged, so it proves nothing on its own - check Reply-To and the link.",
       "red_flags": [
         "the From line is the genuine hospital domain, so the usual domain check passes",
         "Reply-To and the link both go to ashbrookgeneral-medstaff.example",
@@ -219,7 +254,7 @@
       ]
     },
     {
-      "id": "E08",
+      "id": 8,
       "label": "phishing",
       "cue": "authority",
       "technique": "Spear phishing",
@@ -235,6 +270,8 @@
       "subject": "The staffing return from Thursday's meeting",
       "body": "Hi,\n\nFollowing Thursday's ward meeting - I still need the Ward 4 staffing return\nbefore you go off shift. It was due yesterday and it's holding up next month's\nrota.\n\nForm here: https://outlook-mail.example/ashbrook/staffing\n\nThanks,\nCarol Mendes\nNursing Director",
       "teaches": "The table's example: an email that names your actual manager and a real meeting.",
+      "address_trick": "free_provider",
+      "address_trick_note": "A corporate role sent from a consumer mail provider. Payroll and managers never write from a personal mail service.",
       "red_flags": [
         "your Nursing Director's real name, sent from a personal outside address",
         "references a real meeting to prove they know you",
@@ -243,7 +280,7 @@
       ]
     },
     {
-      "id": "E09",
+      "id": 9,
       "label": "phishing",
       "cue": "authority",
       "technique": "Pretexting",
@@ -259,6 +296,8 @@
       "subject": "Pre-survey staff verification - response required today",
       "body": "As part of this week's unannounced accreditation survey, we are verifying that\nstaff records match the credentials held by the hospital.\n\nPlease confirm your full name, date of birth, employee number and the systems\nyou have access to, using the secure form:\n\nhttps://healthcare-accreditation-review.example/verify\n\nSurveyors will follow up in person with staff who do not respond today.\n\nAccreditation Survey Team",
       "teaches": "An invented but believable scenario, posing as someone with authority.",
+      "address_trick": "unrelated",
+      "address_trick_note": "Makes no attempt to look like the hospital - it imitates a supplier, insurer or authority instead.",
       "red_flags": [
         "a believable story that explains why a stranger is asking personal questions",
         "outside domain with an official-sounding name",
@@ -267,7 +306,7 @@
       ]
     },
     {
-      "id": "E10",
+      "id": 10,
       "label": "phishing",
       "cue": "authority",
       "technique": "Phishing",
@@ -279,19 +318,22 @@
       "target_role": "front_billing",
       "difficulty": "easy",
       "sender_name": "Front Office Manager",
-      "sender_email": "frontoffice.manager@ashbrook-staff.example",
+      "sender_email": "user7392@mail-relay-svc.example",
       "subject": "New check-in procedure - acknowledge today",
       "body": "All reception staff must read and acknowledge the new patient check-in procedure\ntoday. Acknowledgements are tracked and reported to department managers.\n\nRead and acknowledge: https://ashbrook-staff.example/procedures/checkin\n\nFront Office Manager",
-      "teaches": "Plain authority pressure with no personalisation at all.",
+      "teaches": "Display-name fraud: the name reads 'Front Office Manager', but the address behind it is a machine-generated mailbox.",
+      "address_trick": "display_name_fraud",
+      "address_trick_note": "The display name is a department you trust; the address behind it is a machine-generated mailbox somewhere else.",
       "red_flags": [
-        "lookalike domain: ashbrook-staff.example",
+        "the display name says Front Office Manager; the address is user7392@mail-relay-svc.example",
+        "expand the sender before trusting it - the name shown is not the address",
         "a title with no name behind it",
         "implies you are being monitored, to push a fast click",
         "compare with E44, where the real procedure change comes from a named colleague"
       ]
     },
     {
-      "id": "E11",
+      "id": 11,
       "label": "phishing",
       "cue": "urgency",
       "technique": "Malware",
@@ -307,6 +349,8 @@
       "subject": "Updated patient transfer list - open before handover",
       "body": "The transfer list for this evening's handover has been revised. Four patients\nhave changed beds since the morning list was printed.\n\nAttached: Patient_Records_Update.exe (2.1 MB)\n\nRun the attached updater on a hospital workstation to refresh your local copy\nbefore handover.\n\nPatient Records Update Service",
       "teaches": "The table's example file: Patient_Records_Update.exe, which spreads across the network.",
+      "address_trick": "lookalike",
+      "address_trick_note": "Extra words bolted onto the real name: ashbrook-support.example. Reads right at a glance, owned by someone else.",
       "red_flags": [
         "an .exe attachment is a program, not a document",
         "lookalike domain: ashbrook-records.example",
@@ -316,7 +360,7 @@
       ]
     },
     {
-      "id": "E12",
+      "id": 12,
       "label": "phishing",
       "cue": "urgency",
       "technique": "Phishing",
@@ -335,6 +379,8 @@
       "link_text": "View result",
       "link_target": "https://ashbrook-labs-notify.example/critical",
       "teaches": "Manufactured clinical urgency with a countdown, from the lab's own address.",
+      "address_trick": "forged_from",
+      "address_trick_note": "The From line shows the hospital's own address. A From line can be forged, so it proves nothing on its own - check Reply-To and the link.",
       "red_flags": [
         "the From line is the real lab address, so it passes a quick glance",
         "Reply-To and the link both lead to ashbrook-labs-notify.example",
@@ -344,7 +390,7 @@
       ]
     },
     {
-      "id": "E13",
+      "id": 13,
       "label": "phishing",
       "cue": "urgency",
       "technique": "Phishing",
@@ -356,19 +402,22 @@
       "target_role": "front_billing",
       "difficulty": "easy",
       "sender_name": "Scheduling Alerts",
-      "sender_email": "scheduling-alert@ashbrook-scheduling.example",
+      "sender_email": "alerts@ashbrookgeneral.example.scheduling-alerts.example",
       "subject": "Appointment system going offline in 1 hour - action required",
       "body": "The outpatient appointment system goes offline in one hour for emergency\nmaintenance. Staff must export today's remaining appointments now, or the list\nwill not be available when the system returns.\n\nExport your list: https://ashbrook-scheduling.example/export\n\nScheduling Alerts",
-      "teaches": "An invented outage used to make you act within the hour.",
+      "teaches": "Subdomain misdirection: the hospital's name is only a subdomain. The real owner is scheduling-alerts.example, read right to left.",
+      "address_trick": "subdomain_misdirection",
+      "address_trick_note": "The hospital name sits at the FRONT as a subdomain, but the real owner is the LAST domain before the ending. Read a domain right to left.",
       "red_flags": [
-        "lookalike domain: ashbrook-scheduling.example",
+        "subdomain misdirection: ashbrookgeneral.example is only a label in front",
+        "the domain that actually owns this is scheduling-alerts.example - read right to left",
         "one hour's notice, so you don't stop to check",
         "invents a consequence to force the click",
         "real outages come from the Service Desk with a change reference - see E38"
       ]
     },
     {
-      "id": "E14",
+      "id": 14,
       "label": "phishing",
       "cue": "urgency",
       "technique": "Pretexting",
@@ -384,6 +433,8 @@
       "subject": "Medication recall affecting your unit",
       "body": "Dear Nursing Staff,\n\nA manufacturer has issued an urgent recall for a batch of IV medication stocked\non several units, including yours. Check the affected lot numbers against your\nunit stock before the next medication round and confirm the check.\n\nAffected lots: https://ashbrookgeneral.example.net/pharmacy/recall\n\nPharmacy Services",
       "teaches": "A false story built from real clinical practice, so hesitating feels unsafe.",
+      "address_trick": "extra_ending",
+      "address_trick_note": "The genuine name with a further ending bolted on, so the real registered domain is not the one you recognise.",
       "red_flags": [
         "domain has an extra ending: ashbrookgeneral.example.net",
         "patient-safety framing makes checking first feel irresponsible",
@@ -392,7 +443,7 @@
       ]
     },
     {
-      "id": "E15",
+      "id": 15,
       "label": "phishing",
       "cue": "urgency",
       "technique": "Extortion / blackmail",
@@ -408,6 +459,8 @@
       "subject": "We have a copy of your activity log",
       "body": "We have obtained a copy of your workstation activity and browsing history from\nthis hospital's network, along with files from your user folder.\n\nUnless you respond within 48 hours, this material will be sent to your manager\nand to the hospital's HR department.\n\nTo stop this, open the review portal and follow the instructions:\nhttps://secure-review-portal.example/case\n\nThis is your only notice.",
       "teaches": "A threat with a countdown - the goal is panic, not accuracy.",
+      "address_trick": "unrelated",
+      "address_trick_note": "Makes no attempt to look like the hospital - it imitates a supplier, insurer or authority instead.",
       "red_flags": [
         "a threat with a countdown, designed to cause panic",
         "no name, no department, no reference anyone can look up",
@@ -416,7 +469,7 @@
       ]
     },
     {
-      "id": "E16",
+      "id": 16,
       "label": "phishing",
       "cue": "hr_payroll",
       "technique": "Phishing",
@@ -435,6 +488,8 @@
       "link_text": "Confirm details",
       "link_target": "https://ashbrookgeneral-hr.example/payroll/confirm",
       "teaches": "Sent from payroll@ashbrookgeneral.example - the exact address the real payslip notice E26 comes from. Only the content gives it away.",
+      "address_trick": "forged_from",
+      "address_trick_note": "The From line shows the hospital's own address. A From line can be forged, so it proves nothing on its own - check Reply-To and the link.",
       "red_flags": [
         "identical From address to the genuine E26 - the From line is not evidence",
         "Reply-To breaks the illusion: ashbrookgeneral-hr.example",
@@ -445,7 +500,7 @@
       ]
     },
     {
-      "id": "E17",
+      "id": 17,
       "label": "phishing",
       "cue": "hr_payroll",
       "technique": "Smishing",
@@ -461,6 +516,8 @@
       "subject": "Direct deposit failed - confirm by text or link",
       "body": "Your direct deposit for this period could not be processed and was returned by\nthe bank.\n\nWe have also sent this notice to your mobile. Reply YES to that text message, or\nconfirm your account here:\n\nhttps://ashbrook-payroll-alerts.example/deposit\n\nUnconfirmed accounts are removed from the next payment run.\n\nPayroll Notifications",
       "teaches": "The table's example: 'Your direct deposit failed, click here', pushed to SMS.",
+      "address_trick": "lookalike",
+      "address_trick_note": "Extra words bolted onto the real name: ashbrook-support.example. Reads right at a glance, owned by someone else.",
       "red_flags": [
         "lookalike domain: ashbrook-payroll-alerts.example",
         "moves you to SMS, where links are even harder to inspect",
@@ -470,7 +527,7 @@
       ]
     },
     {
-      "id": "E18",
+      "id": 18,
       "label": "phishing",
       "cue": "hr_payroll",
       "technique": "Baiting",
@@ -486,6 +543,8 @@
       "subject": "Salary bands 2026 - all staff (confidential)",
       "body": "The 2026 salary bands are attached, covering every grade in the hospital.\n\nAttached: Salary_Info_2026.xlsm\n\nThis was circulated to managers in error before the announcement. Please do not\nforward it.\n\nCompensation Review",
       "teaches": "The table's 'Salary Info 2026' bait, as a file instead of a USB stick.",
+      "address_trick": "lookalike",
+      "address_trick_note": "Extra words bolted onto the real name: ashbrook-support.example. Reads right at a glance, owned by someone else.",
       "red_flags": [
         "temptation with nothing asked for up front - exactly how baiting works",
         "an .xlsm file runs macros; that is the payload",
@@ -494,7 +553,7 @@
       ]
     },
     {
-      "id": "E19",
+      "id": 19,
       "label": "phishing",
       "cue": "hr_payroll",
       "technique": "Baiting",
@@ -506,19 +565,22 @@
       "target_role": "front_billing",
       "difficulty": "easy",
       "sender_name": "HR Benefits",
-      "sender_email": "hr-benefits@ashbrook-benefits.example",
+      "sender_email": "hr.benefits.dept@mailbox-provider.example",
       "subject": "Overtime bonus approved!",
       "body": "Good news - a discretionary overtime bonus has been approved for your department\nfor the last quarter.\n\nYour individual amount is shown here: https://ashbrook-benefits.example/bonus\n\nPayments will be made with the next salary run.\n\nHR Benefits",
-      "teaches": "Unexpected money - the oldest bait there is.",
+      "teaches": "A payroll message from a consumer mail provider - HR never writes from a personal mail service.",
+      "address_trick": "free_provider",
+      "address_trick_note": "A corporate role sent from a consumer mail provider. Payroll and managers never write from a personal mail service.",
       "red_flags": [
-        "lookalike domain: ashbrook-benefits.example",
+        "a consumer mail provider, not the hospital: hr.benefits.dept@mailbox-provider.example",
+        "a long official-sounding local part does not make an address internal",
         "something tempting, with nothing asked for up front",
         "a bonus nobody mentioned and no manager announced",
         "real bonuses appear on your payslip, not behind a link"
       ]
     },
     {
-      "id": "E20",
+      "id": 20,
       "label": "phishing",
       "cue": "hr_payroll",
       "technique": "Spear phishing",
@@ -530,19 +592,22 @@
       "target_role": "physician",
       "difficulty": "hard",
       "sender_name": "Medical Staffing",
-      "sender_email": "medstaff@ashbrookgeneral.example.info",
+      "sender_email": "medstaff@ashbrookgeneral.example.oncall-portal.example",
       "subject": "On-call schedule and payment summary - Q3",
-      "body": "Your Q3 on-call payment summary is ready. It covers the Emergency Medicine and\nSurgery rotas and includes the two weekends you queried in August.\n\nView your summary: https://ashbrookgeneral.example.info/oncall/q3\n\nMedical Staffing",
-      "teaches": "Targeted detail: the right departments, the right quarter, a real past query.",
+      "body": "Your Q3 on-call payment summary is ready. It covers the Emergency Medicine and\nSurgery rotas and includes the two weekends you queried in August.\n\nView your summary: https://ashbrookgeneral.example.oncall-portal.example/q3\n\nMedical Staffing",
+      "teaches": "Targeted detail - right departments, right quarter, a real past query - behind a domain whose real owner is oncall-portal.example.",
+      "address_trick": "subdomain_misdirection",
+      "address_trick_note": "The hospital name sits at the FRONT as a subdomain, but the real owner is the LAST domain before the ending. Read a domain right to left.",
       "red_flags": [
-        "domain has an extra ending: ashbrookgeneral.example.info",
+        "subdomain misdirection: the real domain is oncall-portal.example, not the hospital",
+        "the hospital's name is only the first label - read the domain right to left",
         "real departments and a real past query, to sound routine",
         "combines rota and pay, the two things worth checking immediately",
         "on-call summaries live on the Staff Portal"
       ]
     },
     {
-      "id": "E21",
+      "id": 21,
       "label": "phishing",
       "cue": "billing",
       "technique": "Ransomware",
@@ -558,6 +623,8 @@
       "subject": "Remittance advice - October statement attached",
       "body": "Please find attached the remittance advice for October, covering invoices settled\nthis month.\n\nAttached: Remittance_October.zip (contains Remittance_October.pdf.exe)\n\nExtract and open the document to reconcile against your ledger. If a security\nwarning appears, approve it - the archive is password protected, so the scanner\ncannot read inside.\n\nAshbrook Procurement",
       "teaches": "The delivery email behind a hospital going back to paper charts for days.",
+      "address_trick": "lookalike",
+      "address_trick_note": "Extra words bolted onto the real name: ashbrook-support.example. Reads right at a glance, owned by someone else.",
       "red_flags": [
         "a double extension: .pdf.exe is a program wearing a document's name",
         "tells you in advance to approve the security warning",
@@ -566,7 +633,7 @@
       ]
     },
     {
-      "id": "E22",
+      "id": 22,
       "label": "phishing",
       "cue": "billing",
       "technique": "Pretexting",
@@ -582,6 +649,8 @@
       "subject": "Patient insurance claim rejected",
       "body": "A claim submitted by your department has been rejected because the patient's\ndetails could not be matched to our records.\n\nTo release the claim we need the patient's date of birth and social security\nnumber re-confirmed:\n\nhttps://health-insure-claims.example/verify\n\nClaims Processing Department",
       "teaches": "The table's example: 'Billing' asking someone to verify a patient's SSN.",
+      "address_trick": "unrelated",
+      "address_trick_note": "Makes no attempt to look like the hospital - it imitates a supplier, insurer or authority instead.",
       "red_flags": [
         "an outside domain pretending to be an insurer",
         "an invented story used to extract patient identifiers",
@@ -590,7 +659,7 @@
       ]
     },
     {
-      "id": "E23",
+      "id": 23,
       "label": "phishing",
       "cue": "billing",
       "technique": "Third-party / supply chain",
@@ -609,6 +678,8 @@
       "link_text": "Updated details",
       "link_target": "https://ashbrookgeneral-finance.example/vendors/update",
       "teaches": "A vendor's compromise becoming your loss. Sent from inside the hospital, because the attacker already has a colleague's mailbox.",
+      "address_trick": "forged_from",
+      "address_trick_note": "The From line shows the hospital's own address. A From line can be forged, so it proves nothing on its own - check Reply-To and the link.",
       "red_flags": [
         "a genuine internal address - an attacker in a colleague's mailbox sends real internal mail",
         "Reply-To quietly redirects to ashbrookgeneral-finance.example",
@@ -619,7 +690,7 @@
       ]
     },
     {
-      "id": "E24",
+      "id": 24,
       "label": "phishing",
       "cue": "billing",
       "technique": "Phishing",
@@ -631,19 +702,22 @@
       "target_role": "front_billing",
       "difficulty": "easy",
       "sender_name": "MedSupply Partners Accounts",
-      "sender_email": "accounts@medsupply-partners-invoice.example",
+      "sender_email": "accounts@medsupply-partners.example.net",
       "subject": "Overdue invoice #48213 - FINAL NOTICE",
-      "body": "FINAL NOTICE\n\nInvoice #48213 is 60 days overdue. Unless payment is received within 3 working\ndays, the account passes to a collections agency and further deliveries will be\nsuspended.\n\nView invoice and pay: https://medsupply-partners-invoice.example/48213\n\nAccounts Department",
+      "body": "FINAL NOTICE\n\nInvoice #48213 is 60 days overdue. Unless payment is received within 3 working\ndays, the account passes to a collections agency and further deliveries will be\nsuspended.\n\nView invoice and pay: https://medsupply-partners.example.net/48213\n\nAccounts Department",
       "teaches": "Pressure by invoice: shouting, a countdown and a threat.",
+      "address_trick": "extra_ending",
+      "address_trick_note": "The genuine name with a further ending bolted on, so the real registered domain is not the one you recognise.",
       "red_flags": [
-        "a domain built to look like an invoicing service",
+        "an extra ending bolted on: the supplier on file is not on .example.net",
+        "check the ending as well as the name - both have to match",
         "shouting FINAL NOTICE to create panic",
         "threatens collections and suspended deliveries",
         "no purchase order number to match it against - see E39"
       ]
     },
     {
-      "id": "E25",
+      "id": 25,
       "label": "phishing",
       "cue": "billing",
       "technique": "Malware",
@@ -659,6 +733,8 @@
       "subject": "Statement of account - action needed on 3 items",
       "body": "Three items on your account need attention this week. The detail is in the\nattached statement.\n\nAttached: Statement_Q4_Ashbrook.docm\n\nIf the document opens in a protected view, choose Enable Content to see the\nitem breakdown.\n\nAccounts Receivable",
       "teaches": "Malware through an attachment that looks like ordinary finance paperwork.",
+      "address_trick": "lookalike",
+      "address_trick_note": "Extra words bolted onto the real name: ashbrook-support.example. Reads right at a glance, owned by someone else.",
       "red_flags": [
         "'Enable Content' is the request that runs the macro",
         "a .docm file carries macros; a plain statement never needs them",
@@ -667,38 +743,7 @@
       ]
     },
     {
-      "id": "E51",
-      "label": "phishing",
-      "cue": "hr_payroll",
-      "technique": "Phishing",
-      "technique_category": "Social engineering (email/web)",
-      "table_row": 10,
-      "week": 7,
-      "cia_hit": "C",
-      "key_defense": "Hover before clicking, spam filters, MFA, simulated phishing tests",
-      "target_role": "all",
-      "difficulty": "hard",
-      "sender_name": "HR Team",
-      "sender_email": "hr@ashbrookgeneral.example",
-      "subject": "HR Team",
-      "body": "Greetings:\n\nYou have a message from the HR Department\n\nClick here to view your message\n\nSincerely,\n\nThe Human Resources Talent Acquisition Team\n\nThis is an automatically generated email, please do not reply.",
-      "reply_to": "hr-notifications@ashbrook-hrportal.example",
-      "link_text": "Click here",
-      "link_target": "https://ashbrook-hrportal.example/securemessage",
-      "teaches": "Modelled on a real captured phish: no name, no detail, no reason - just 'you have a message' and a Click here. Vagueness is the whole design.",
-      "red_flags": [
-        "'Greetings:' - no name, because it went to everyone at once",
-        "says nothing about what the message is or why it exists",
-        "the subject is just 'HR Team', which is not a subject",
-        "'Click here' hides the destination - hover and it reads ashbrook-hrportal.example",
-        "Reply-To is an outside address even though the From line is the hospital's",
-        "'Talent Acquisition Team' has no reason to message existing staff",
-        "'do not reply' blocks the obvious way to check",
-        "real HR mail comes from Sandra Kim with an extension - see E33"
-      ]
-    },
-    {
-      "id": "E26",
+      "id": 26,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -723,7 +768,7 @@
       ]
     },
     {
-      "id": "E27",
+      "id": 27,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -748,7 +793,7 @@
       ]
     },
     {
-      "id": "E28",
+      "id": 28,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -773,7 +818,7 @@
       ]
     },
     {
-      "id": "E29",
+      "id": 29,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -798,7 +843,7 @@
       ]
     },
     {
-      "id": "E30",
+      "id": 30,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -823,7 +868,7 @@
       ]
     },
     {
-      "id": "E31",
+      "id": 31,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -848,7 +893,7 @@
       ]
     },
     {
-      "id": "E32",
+      "id": 32,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -873,7 +918,7 @@
       ]
     },
     {
-      "id": "E33",
+      "id": 33,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -897,7 +942,7 @@
       ]
     },
     {
-      "id": "E34",
+      "id": 34,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -920,7 +965,7 @@
       ]
     },
     {
-      "id": "E35",
+      "id": 35,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -943,7 +988,7 @@
       ]
     },
     {
-      "id": "E36",
+      "id": 36,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -966,7 +1011,7 @@
       ]
     },
     {
-      "id": "E37",
+      "id": 37,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -991,7 +1036,7 @@
       ]
     },
     {
-      "id": "E38",
+      "id": 38,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -1016,7 +1061,7 @@
       ]
     },
     {
-      "id": "E39",
+      "id": 39,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -1041,7 +1086,7 @@
       ]
     },
     {
-      "id": "E40",
+      "id": 40,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -1064,7 +1109,7 @@
       ]
     },
     {
-      "id": "E41",
+      "id": 41,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -1088,7 +1133,7 @@
       ]
     },
     {
-      "id": "E42",
+      "id": 42,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -1113,7 +1158,7 @@
       ]
     },
     {
-      "id": "E43",
+      "id": 43,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -1137,7 +1182,7 @@
       ]
     },
     {
-      "id": "E44",
+      "id": 44,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -1161,7 +1206,7 @@
       ]
     },
     {
-      "id": "E45",
+      "id": 45,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -1185,7 +1230,7 @@
       ]
     },
     {
-      "id": "E46",
+      "id": 46,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -1208,7 +1253,7 @@
       ]
     },
     {
-      "id": "E47",
+      "id": 47,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -1231,7 +1276,7 @@
       ]
     },
     {
-      "id": "E48",
+      "id": 48,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -1255,7 +1300,7 @@
       ]
     },
     {
-      "id": "E49",
+      "id": 49,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -1278,7 +1323,7 @@
       ]
     },
     {
-      "id": "E50",
+      "id": 50,
       "label": "legitimate",
       "cue": "none",
       "technique": "Legitimate",
@@ -1298,6 +1343,39 @@
         "real hospital domain",
         "about as low-stakes as email gets",
         "nothing to click"
+      ]
+    },
+    {
+      "id": 51,
+      "label": "phishing",
+      "cue": "hr_payroll",
+      "technique": "Phishing",
+      "technique_category": "Social engineering (email/web)",
+      "table_row": 10,
+      "week": 7,
+      "cia_hit": "C",
+      "key_defense": "Hover before clicking, spam filters, MFA, simulated phishing tests",
+      "target_role": "all",
+      "difficulty": "hard",
+      "sender_name": "HR Team",
+      "sender_email": "hr@ashbrookgeneral.example",
+      "subject": "HR Team",
+      "body": "Greetings:\n\nYou have a message from the HR Department\n\nClick here to view your message\n\nSincerely,\n\nThe Human Resources Talent Acquisition Team\n\nThis is an automatically generated email, please do not reply.",
+      "reply_to": "hr-notifications@ashbrook-hrportal.example",
+      "link_text": "Click here",
+      "link_target": "https://ashbrook-hrportal.example/securemessage",
+      "teaches": "Modelled on a real captured phish: no name, no detail, no reason - just 'you have a message' and a Click here. Vagueness is the whole design.",
+      "address_trick": "forged_from",
+      "address_trick_note": "The From line shows the hospital's own address. A From line can be forged, so it proves nothing on its own - check Reply-To and the link.",
+      "red_flags": [
+        "'Greetings:' - no name, because it went to everyone at once",
+        "says nothing about what the message is or why it exists",
+        "the subject is just 'HR Team', which is not a subject",
+        "'Click here' hides the destination - hover and it reads ashbrook-hrportal.example",
+        "Reply-To is an outside address even though the From line is the hospital's",
+        "'Talent Acquisition Team' has no reason to message existing staff",
+        "'do not reply' blocks the obvious way to check",
+        "real HR mail comes from Sandra Kim with an extension - see E33"
       ]
     }
   ]

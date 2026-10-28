@@ -30,7 +30,8 @@ def main():
     # 2. Pick one person (P05 here) and build their simulated human + the twin.
     person = people[3]
     human = SimulatedHuman(person)
-    twin = TwinPredictor()
+    # No file paths: a test must never write into the real history.
+    twin = TwinPredictor(log_path=None, csv_path=None, results_path=None)
 
     print("Person: %s (%s)" % (person.name, person.id))
     print("Role: %s | awareness: %s | workload: %s"

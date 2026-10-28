@@ -31,8 +31,12 @@ class SimulatedHuman:
             # Roll the dice against the final chance.
             if random.random() < chance:
                 return "click"
-            else:
-                return "ignore"
+
+            # They did not click. A security-aware person goes one step further
+            # and REPORTS it; everyone else just leaves it in the inbox.
+            if random.random() < self._report_chance(situation):
+                return "report"
+            return "ignore"
         else:
             # A real/safe email: the only mistake is a false alarm.
             chance = self.persona.hidden_probs["false_report"]
@@ -40,6 +44,21 @@ class SimulatedHuman:
                 return "report"
             else:
                 return "ignore"
+
+    # How likely someone is to REPORT a phishing email they did not click.
+    # There is no hidden_probs entry for this, so it comes from the one trait
+    # that drives it: how security-aware the person is.
+    REPORT_CHANCE = {"high": 0.50, "medium": 0.25, "low": 0.10}
+
+    def _report_chance(self, situation):
+        """Chance of reporting a phishing email that was not clicked."""
+        chance = self.REPORT_CHANCE.get(self.persona.security_awareness, 0.25)
+
+        # Mid-rush, raising a ticket is the first thing to get dropped.
+        if situation and situation.get("busy_now") == "very busy":
+            chance -= 0.05
+
+        return max(0.02, min(0.95, chance))
 
     def _adjust_for_situation(self, chance, email, situation):
         """Nudge the click chance based on the moment the email arrives.
