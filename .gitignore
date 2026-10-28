@@ -7,3 +7,22 @@ __pycache__/
 
 # App runtime data
 data/responses.json
+data/people_history.json
+data/history_log.jsonl
+data/archive/
+data/history.csv
+data/results.csv
+data/scores.csv
+data/email_scores.csv
+data/click_rates.csv
+data/person_summary.csv
+data/emails.db
+data/generated_emails.json
+
+# Built, not authored - all regenerate from the sources above
+data/backups/
+data/db_emails.json
+data/new_emails.json
+data/generated_emails.csv
+data/types.csv
+*.tmp
