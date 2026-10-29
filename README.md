@@ -15,6 +15,10 @@ counting what it observes, and is graded on emails it has never seen.
 
 ## Layout
 
+**[STRUCTURE.md](STRUCTURE.md) is the map** — every file with one line on what
+it does, a "I want to change X, where do I go" table, and which files are safe
+to delete. Start there if you are looking for something.
+
 ```
 app.py  main.py  live.py  evaluate.py     the things you run
 
@@ -39,9 +43,9 @@ tests/      the test scripts
 data/       the sources, and everything built from them
 ```
 
-`streamlit` is imported by exactly one file, `app.py`. That is the rule the
-split is held to: if a module draws, it is frontend; if it decides, it is
-backend.
+No file in `backend/`, `database/` or `scripts/` imports `streamlit`. That is
+the rule the split is held to: if a module draws, it is frontend; if it
+decides, it is backend. Only `app.py` and `frontend/` know the UI exists.
 
 The layout is responsive. Columns are given a minimum readable width and
 flex-wrap does the rest, so a row of four metrics becomes three, then two,
