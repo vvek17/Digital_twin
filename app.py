@@ -38,6 +38,7 @@ from backend import benchmark
 from backend import store
 from backend.engine import DeliveryEngine
 from backend.metrics import CUES, workforce_frame
+from frontend import responsive
 from frontend.theme import (AWARENESS_SCALE, CLICKED, GRID, INK, MUTED, RECOGNISED,
                    verdict_of)
 
@@ -173,7 +174,11 @@ def live_step():
 
 # ------------------------------------------------------------------ sidebar
 
-st.set_page_config(page_title="Phishing Twin - Front Desk", layout="wide")
+st.set_page_config(page_title="Phishing Twin - Front Desk", layout="wide",
+                   initial_sidebar_state="auto")
+# Columns stack and tabs scroll once the window is narrow. See
+# frontend/responsive.py - it is CSS, so the browser reflows on resize.
+responsive.inject()
 
 with st.sidebar:
     st.header("Front desk")

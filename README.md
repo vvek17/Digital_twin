@@ -43,6 +43,13 @@ data/       the sources, and everything built from them
 split is held to: if a module draws, it is frontend; if it decides, it is
 backend.
 
+The layout is responsive. Columns are given a minimum readable width and
+flex-wrap does the rest, so a row of four metrics becomes three, then two,
+then one as the window narrows, rather than squeezing to a few characters
+each. Below 760px the columns stack and the eight tabs scroll sideways.
+Checked at 1440, 1100, 820, 390 and 320px with no horizontal overflow -
+see `frontend/responsive.py`.
+
 ## Install
 
 ```bash
