@@ -1118,8 +1118,15 @@ with tab_run:
         if skipped:
             note += (" %d skipped - those people had already seen every email "
                      "(turn on Allow repeats)." % skipped)
-        st.success(note)
+        # The rerun below refreshes the other tabs with the new history, but
+        # it also discards anything drawn in this pass - the success message
+        # included. Carry it across and draw it after the rerun instead.
+        st.session_state.run_note = note
         st.rerun()
+
+    done = st.session_state.pop("run_note", None)
+    if done:
+        st.success(done)
 
     auto = st.session_state.get("auto_results")
     if auto:
