@@ -1,5 +1,5 @@
 # app.py
-# The front desk for the phishing digital twin.
+# The front desk for ALERT.
 #
 # Four views:
 #   Dashboard  - the whole workforce at a glance: who clicks, who knows
@@ -195,7 +195,7 @@ def show_table(df, height=420, config=None, index=False):
 
 # ------------------------------------------------------------------ sidebar
 
-st.set_page_config(page_title="Phishing Twin - Front Desk", layout="wide",
+st.set_page_config(page_title="ALERT - Front Desk", layout="wide",
                    initial_sidebar_state="auto")
 # Columns stack and tabs scroll once the window is narrow. See
 # frontend/responsive.py - it is CSS, so the browser reflows on resize.
@@ -254,8 +254,12 @@ with st.sidebar:
         st.rerun()
 
 
-st.title("Phishing Digital Twin")
-st.caption("P(click) = yes / (yes + no)  ·  yes = clicked, no = reported  ·  everything starts at 0")
+st.title("ALERT")
+st.caption(
+    "A fictional hospital of 25 staff receives phishing and genuine email. "
+    "ALERT learns to predict who will click — from what it can observe, "
+    "never from why they really do it."
+)
 
 tab_dash, tab_live, tab_inbox, tab_person, tab_history, tab_run, tab_model, tab_emails = st.tabs(
     ["Dashboard", "Live", "Inbox", "Person", "All history", "Run", "Model", "Emails"]

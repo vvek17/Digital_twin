@@ -1,4 +1,4 @@
-# Phishing Digital Twin - Complete Project Explanation
+# ALERT - Complete Project Explanation
 
 A study guide for explaining this project in detail. Every claim below was
 checked against the code in this repository on 2026-10-29. Where something
@@ -2751,7 +2751,7 @@ visible in one screen.
 
 ## A. Two-minute introduction
 
-> My project is a phishing digital twin. A fictional hospital - Ashbrook
+> My project is called ALERT. A fictional hospital - Ashbrook
 > General, 25 members of staff across five pillars - receives simulated
 > phishing and legitimate emails. Each person decides to click, report or
 > ignore. A digital twin watches those decisions and learns to predict, per

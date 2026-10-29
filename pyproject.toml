@@ -9,9 +9,9 @@
 #     pip install -e .
 
 [project]
-name = "phishing-twin"
+name = "alert"
 version = "0.1.0"
-description = "A digital twin that learns how each member of staff answers phishing email"
+description = "ALERT - learns how each member of staff answers phishing email, and predicts who will click"
 requires-python = ">=3.10"
 dependencies = [
     "streamlit>=1.30",

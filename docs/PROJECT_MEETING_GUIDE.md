@@ -257,9 +257,9 @@ single ordering is the most important line of thinking in the project.**
 
 ## Your 3-5 minute explanation
 
-> My project is a phishing digital twin. A pretend hospital with 25 staff
-> receives fake and real emails. Each person clicks, reports or ignores them.
-> A digital twin watches and learns to guess what each person will do next.
+> My project is called ALERT. A pretend hospital with 25 staff receives fake
+> and real emails. Each person clicks, reports or ignores them. ALERT watches
+> and learns to guess what each person will do next.
 >
 > The interesting rule is that every pretend person has secret click numbers,
 > and the twin is never allowed to see them. It must learn only from what it

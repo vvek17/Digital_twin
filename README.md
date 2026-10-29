@@ -1,8 +1,8 @@
-# Phishing Digital Twin
+# ALERT
 
 A fictional hospital's staff receive simulated phishing and legitimate emails.
-A "digital twin" learns to predict whether each person will click, report or
-ignore an email — without ever being allowed to see why they really do it.
+ALERT learns to predict whether each person will click, report or ignore an
+email — without ever being allowed to see why they really do it.
 
 Everything is fictional: fake hospital, fake names, `.example` domains only.
 

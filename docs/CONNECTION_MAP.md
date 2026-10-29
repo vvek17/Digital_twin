@@ -1,4 +1,4 @@
-# Connection Map - Phishing Digital Twin
+# Connection Map - ALERT
 
 Every file, and what connects to what. An arrow means **this file imports and
 calls that file**. Extracted from the actual `import` statements, 2026-10-29.
