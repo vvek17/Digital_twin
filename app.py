@@ -905,8 +905,10 @@ with tab_person:
                 labels[r["email_id"]] = "%s  —  %s  (%s)" % (
                     r["email_id"], r["subject"][:52], mark)
 
+        # A label the widget has not seen falls back to the id itself, and an
+        # id is an int, which Streamlit cannot render. str() keeps it a string.
         pick = st.selectbox("Pick an email", options,
-                            format_func=lambda i: labels.get(i, i),
+                            format_func=lambda i: str(labels.get(i, i)),
                             label_visibility="collapsed")
 
         e = by_id.get(pick)
