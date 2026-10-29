@@ -22,23 +22,23 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
-from persona import load_people
-from generator import EmailGenerator
-from twin import TwinPredictor, HISTORY_PATH
-from feedback import FeedbackModule
-from human import SimulatedHuman
-from reader import RuleReader
-from email_builder import EmailBuilder, RECIPES as GEN_RECIPES
-import modifications as MODS
-from email_generator import EmailGeneratorLLM, OUT_CSV as GEN_CSV
+from backend.persona import load_people
+from backend.generator import EmailGenerator
+from backend.twin import TwinPredictor, HISTORY_PATH
+from backend.feedback import FeedbackModule
+from backend.human import SimulatedHuman
+from backend.reader import RuleReader
+from backend.email_builder import EmailBuilder, RECIPES as GEN_RECIPES
+from backend import modifications as MODS
+from backend.email_generator import EmailGeneratorLLM, OUT_CSV as GEN_CSV
 
 # The backend. Nothing below this line opens a file, runs a delivery or
 # computes a rate - it asks one of these and draws the answer.
-import benchmark
-import store
-from engine import DeliveryEngine
-from metrics import CUES, workforce_frame
-from theme import (AWARENESS_SCALE, CLICKED, GRID, INK, MUTED, RECOGNISED,
+from backend import benchmark
+from backend import store
+from backend.engine import DeliveryEngine
+from backend.metrics import CUES, workforce_frame
+from frontend.theme import (AWARENESS_SCALE, CLICKED, GRID, INK, MUTED, RECOGNISED,
                    verdict_of)
 
 @st.cache_data

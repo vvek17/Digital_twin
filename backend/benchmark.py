@@ -25,12 +25,12 @@ import sys
 
 import pandas as pd
 
-from email_builder import EmailBuilder
-from ml_model import featurize, train_best
-from persona import load_people
-from reader import RuleReader
-from situation import make_random_situation
-from twin import TwinPredictor
+from backend.email_builder import EmailBuilder
+from backend.ml_model import featurize, train_best
+from backend.persona import load_people
+from backend.reader import RuleReader
+from backend.situation import make_random_situation
+from backend.twin import TwinPredictor
 
 THRESHOLD = 0.5
 

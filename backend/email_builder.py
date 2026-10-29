@@ -22,9 +22,9 @@ import os
 import random
 import sys
 
-from generator import EmailGenerator
-import modifications as M
-import entities as ENT
+from backend.generator import EmailGenerator
+from backend import modifications as M
+from backend import entities as ENT
 
 OUT_PATH = os.path.join("data", "new_emails.json")
 

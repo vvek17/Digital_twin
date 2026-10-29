@@ -37,8 +37,8 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.tree import DecisionTreeClassifier
 
-from persona import load_people
-from twin import TwinPredictor
+from backend.persona import load_people
+from backend.twin import TwinPredictor
 
 LOG = os.path.join("data", "history_log.jsonl")
 EMAILS_JSON = os.path.join("data", "hospital_emails_mixed.json")

@@ -37,9 +37,9 @@ import sys
 from datetime import datetime
 from difflib import SequenceMatcher
 
-import entities as ENT
-import modifications as MODS
-from email_builder import RECIPES, TAXONOMY, ADDRESS_MODS
+from backend import entities as ENT
+from backend import modifications as MODS
+from backend.email_builder import RECIPES, TAXONOMY, ADDRESS_MODS
 
 OUT_CSV = os.path.join("data", "generated_emails.csv")
 

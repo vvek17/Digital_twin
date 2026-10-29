@@ -11,10 +11,10 @@
 
 import random
 
-from persona import load_people
-from generator import EmailGenerator
-from human import SimulatedHuman
-from twin import TwinPredictor
+from backend.persona import load_people
+from backend.generator import EmailGenerator
+from backend.human import SimulatedHuman
+from backend.twin import TwinPredictor
 
 # Same seed every run so the numbers are repeatable.
 random.seed(42)

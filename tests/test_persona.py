@@ -2,7 +2,7 @@
 # A quick check: load all the people and print their key traits.
 # (hidden_probs are printed here only because this is a test/debug script.)
 
-from persona import load_people
+from backend.persona import load_people
 
 
 def main():

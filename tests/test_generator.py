@@ -1,4 +1,4 @@
-from generator import EmailGenerator
+from backend.generator import EmailGenerator
 
 gen = EmailGenerator()
 email = gen.get_email(role="nurse")

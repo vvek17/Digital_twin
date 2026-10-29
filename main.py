@@ -16,13 +16,13 @@
 import random
 import sys
 
-from persona import load_people
-from generator import EmailGenerator
-from human import SimulatedHuman
-from reader import RuleReader
-from twin import TwinPredictor, HISTORY_PATH
-from feedback import FeedbackModule
-from simulation import Simulation
+from backend.persona import load_people
+from backend.generator import EmailGenerator
+from backend.human import SimulatedHuman
+from backend.reader import RuleReader
+from backend.twin import TwinPredictor, HISTORY_PATH
+from backend.feedback import FeedbackModule
+from backend.simulation import Simulation
 
 SEED = 42
 DEFAULT_ROUNDS = 60

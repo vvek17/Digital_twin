@@ -24,11 +24,11 @@ import collections
 import random
 import sys
 
-from persona import load_people
-from reader import RuleReader
-from twin import TwinPredictor
-from situation import make_random_situation
-from email_builder import EmailBuilder
+from backend.persona import load_people
+from backend.reader import RuleReader
+from backend.twin import TwinPredictor
+from backend.situation import make_random_situation
+from backend.email_builder import EmailBuilder
 
 THRESHOLD = 0.5          # above this, the twin expects them to fall for it
 

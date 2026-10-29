@@ -19,7 +19,7 @@ import json
 import os
 from datetime import datetime
 
-from twin import HISTORY_LOG, HISTORY_CSV, RESULTS_CSV
+from backend.twin import HISTORY_LOG, HISTORY_CSV, RESULTS_CSV
 
 GENERATED_PATH = os.path.join("data", "generated_emails.json")
 RESPONSES_PATH = os.path.join("data", "responses.json")

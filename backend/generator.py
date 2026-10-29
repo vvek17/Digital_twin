@@ -15,7 +15,7 @@
 
 import random
 
-from email_db import EmailDB
+from database.db import EmailDB
 
 
 class EmailGenerator:

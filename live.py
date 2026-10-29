@@ -20,11 +20,11 @@ import sys
 import time
 from datetime import datetime
 
-from persona import load_people
-from generator import EmailGenerator
-from human import SimulatedHuman
-from twin import TwinPredictor
-from feedback import FeedbackModule
+from backend.persona import load_people
+from backend.generator import EmailGenerator
+from backend.human import SimulatedHuman
+from backend.twin import TwinPredictor
+from backend.feedback import FeedbackModule
 
 # ANSI colours. Kept tiny and in one place.
 BOLD = "\033[1m"

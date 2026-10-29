@@ -22,7 +22,7 @@
 import random
 from datetime import datetime
 
-from situation import make_random_situation
+from backend.situation import make_random_situation
 
 
 class NothingLeft(Exception):

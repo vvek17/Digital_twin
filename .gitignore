@@ -16,7 +16,7 @@ data/scores.csv
 data/email_scores.csv
 data/click_rates.csv
 data/person_summary.csv
-data/emails.db
+data/simulation.db
 data/generated_emails.json
 
 # Built, not authored - all regenerate from the sources above
@@ -26,3 +26,6 @@ data/new_emails.json
 data/generated_emails.csv
 data/types.csv
 *.tmp
+
+# Editable-install metadata
+*.egg-info/

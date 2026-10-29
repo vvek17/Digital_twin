@@ -32,10 +32,10 @@ import os
 import random
 import sys
 
-import entities as ENT
-import modifications as M
-from email_builder import ADDRESS_MODS, RECIPES, TAXONOMY
-from email_db import EmailDB
+from backend import entities as ENT
+from backend import modifications as M
+from backend.email_builder import ADDRESS_MODS, RECIPES, TAXONOMY
+from database.db import EmailDB
 
 OUT_PATH = os.path.join("data", "db_emails.json")
 

@@ -13,7 +13,7 @@
 # The twin predicts BEFORE the human acts, so every prediction is scored on an
 # email it has not seen the answer to yet.
 
-from situation import make_random_situation
+from backend.situation import make_random_situation
 
 
 class Simulation:

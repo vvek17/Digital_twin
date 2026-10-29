@@ -17,7 +17,7 @@ from collections import Counter
 
 # The attack and address definitions already exist in make_emails.py - import
 # them rather than retyping, so the two files can never drift apart.
-from make_emails import TAXONOMY, ADDRESS_TRICKS
+from scripts.make_emails import TAXONOMY, ADDRESS_TRICKS
 
 # Plain-English meaning for every other category. Keyed "category|type".
 MEANINGS = {
