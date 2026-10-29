@@ -46,8 +46,10 @@ docs/
 [pdf/Project_Meeting_Explanation.pdf](pdf/Project_Meeting_Explanation.pdf) is an
 earlier four-page explanation. It has no Markdown source and its figures are out
 date: it describes `scripts/` and `tests/` as they were before two dead
-scripts and one dead test were removed. `PROJECT_CODE_EXPLANATION.md` replaced
-it and covers the same ground. Kept only as a record; safe to delete.
+scripts and one dead test were removed, and it still calls the project by its
+old name. It cannot be reprinted, because there is no Markdown to reprint it
+from. `PROJECT_CODE_EXPLANATION.md` replaced it and covers the same ground.
+Kept only as a record; safe to delete.
 
 ## A note on the PDFs
 
