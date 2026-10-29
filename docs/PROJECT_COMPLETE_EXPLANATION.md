@@ -162,7 +162,7 @@ machine learning, a database driver - exists in Python, so the whole system is
 one language. For a data science project that is a real advantage: the model
 code and the application code are the same code.
 
-**What it does here.** All 8,847 lines of source (verified by `wc -l`).
+**What it does here.** All 8,925 lines of source (verified by `wc -l`).
 
 **If removed.** There is no project.
 
@@ -183,7 +183,7 @@ top to bottom. That is why:
 
 - Anything expensive is wrapped in a cache: `@st.cache_data` on `get_people()` and `get_emails()` (`app.py:45` and `app.py:50`), `@st.cache_resource` on `get_builder()`, `get_readers()`, `get_humans()` (`app.py:97-110`). Without these, 25 personas and 51 emails would reload from disk on every single click.
 - Anything that must survive the re-run lives in `st.session_state` - the twin itself, the live feed, the generated emails (`app.py:60-95`).
-- A long blocking loop is forbidden. The Live tab runs a **burst of 12** deliveries and then calls `st.rerun()` (`app.py:646-663`), because Streamlit is single-threaded: while your loop runs, the Stop button cannot be processed. That reasoning is in the comment at `app.py:643-645`.
+- A long blocking loop is forbidden. The Live tab runs a **burst of 12** deliveries and then calls `st.rerun()` (`app.py:690-707`), because Streamlit is single-threaded: while your loop runs, the Stop button cannot be processed. That reasoning is in the comment at `app.py:687-689`.
 
 **Which files use it.** Exactly two places: `app.py` and `frontend/`. That is
 the architectural rule of the project.
@@ -227,9 +227,9 @@ it produces the chart. Under the hood it emits Vega-Lite JSON, which
 JavaScript in the browser renders.
 
 **What it does here.** Five chart types: the horizontal "Who clicks" bar chart
-(`app.py:275-304`), the grouped clicked-vs-recognised chart (`app.py:307-347`),
+(`app.py:296-325`), the grouped clicked-vs-recognised chart (`app.py:328-368`),
 the "What works on people" breakdown bars with value labels
-(`app.py:404-446`), and the live `P(click)` step line (`app.py:573-608`).
+(`app.py:425-472`), and the live `P(click)` step line (`app.py:613-648`).
 
 **Styling.** All colours come from `frontend/theme.py` so a bar, a metric and a
 badge showing the same thing cannot each pick their own red. `CLICKED` is
@@ -345,7 +345,7 @@ JavaScript file, no HTML file and no frontend build step in this repository.
 
 | Path | What it is |
 |---|---|
-| `app.py` (1,338 lines) | The entire user interface: the sidebar and all 8 tabs |
+| `app.py` (1,416 lines) | The entire user interface: the sidebar and all 8 tabs |
 | `frontend/theme.py` (53 lines) | Colours, shared chart styling, the wording of a verdict |
 | `frontend/responsive.py` (117 lines) | The CSS that makes it work on a narrow window and a phone |
 
@@ -362,10 +362,10 @@ an importable Python package.
 | `app.py:45-57` | `get_people()` and `get_emails()` load 25 personas and 51 emails, both cached |
 | `app.py:60-76` | `reset_session()` rebuilds the twin by replaying the log, builds the feedback module, shuffles the Inbox order |
 | `app.py:86-89` | The session-state guard: `if "twin" not in st.session_state: reset_session()`. This is what stops a reload on every click |
-| `app.py:177-181` | `st.set_page_config(...)` then `responsive.inject()` - the CSS must come straight after the page config |
-| `app.py:183-233` | The sidebar: person picker, answers-on-file metric, three toggles, reload button |
-| `app.py:236-242` | Title, the `P(click)` caption, and `st.tabs([...])` creating all 8 tabs |
-| `app.py:246-1338` | The eight `with tab_xxx:` blocks, each drawing one tab |
+| `app.py:198-202` | `st.set_page_config(...)` then `responsive.inject()` - the CSS must come straight after the page config |
+| `app.py:204-254` | The sidebar: person picker, answers-on-file metric, three toggles, reload button |
+| `app.py:257-263` | Title, the `P(click)` caption, and `st.tabs([...])` creating all 8 tabs |
+| `app.py:267-1416` | The eight `with tab_xxx:` blocks, each drawing one tab |
 
 **How it reaches the browser.** `python3 -m streamlit run app.py` starts
 Streamlit's own web server (a Tornado server) on port 8501. The browser
@@ -378,7 +378,7 @@ travels back down it. You did not write any of that; Streamlit did.
 ## 3.4 How pages are created
 
 There are no pages in the routing sense. There is one page with eight tabs,
-created in a single call at `app.py:239`:
+created in a single call at `app.py:260`:
 
 ```python
 tab_dash, tab_live, tab_inbox, tab_person, tab_history, tab_run, tab_model, tab_emails = st.tabs(
@@ -391,7 +391,7 @@ in this block belongs to the Dashboard tab".
 
 **The important consequence:** switching tabs is not navigation. All eight tab
 bodies execute on every single run of the script, every time. Streamlit just
-shows one and hides the others. That is why `app.py:674-675` carries this
+shows one and hides the others. That is why `app.py:718-719` carries this
 warning in the code:
 
 ```python
@@ -407,12 +407,12 @@ have silently deleted the Person, All history, Run, Model and Emails tabs.
 
 | Component | Streamlit call | Example in the code |
 |---|---|---|
-| Dropdown | `st.selectbox` | the staff member picker, `app.py:185` |
-| Toggle switch | `st.toggle` | the three sidebar switches, `app.py:202`, `210`, `217` |
+| Dropdown | `st.selectbox` | the staff member picker, `app.py:206` |
+| Toggle switch | `st.toggle` | the three sidebar switches, `app.py:223`, `210`, `217` |
 | Button | `st.button` | `Start`, `Stop`, `Clear`, `Spam`, `Not spam`, `Run now` |
-| Number box | `st.number_input` | emails to deliver, 1 to 1,000,000, `app.py:998` |
+| Number box | `st.number_input` | emails to deliver, 1 to 1,000,000, `app.py:1056` |
 | Radio buttons | `st.radio` | "Break down by", "Show: All / Only wrong / Only correct" |
-| Multi-select | `st.multiselect` | the person filter on All history, `app.py:966` |
+| Multi-select | `st.multiselect` | the person filter on All history, `app.py:1014` |
 | Slider | `st.select_slider` | Live speed, options `[0.0, 0.1, 0.25, 0.5, 1.0]` |
 | Big number | `st.metric` | "Phishing delivered", "Clicked", the counters |
 | Table | `st.dataframe` | every table, fed a pandas DataFrame |
@@ -421,7 +421,7 @@ have silently deleted the Person, All history, Run, Model and Emails tabs.
 | Progress bar | `st.progress` | the Run tab and the Model tab |
 | Expander | `st.expander` | "Counters and full history", "Table view" |
 | File download | `st.download_button` | All history CSV, model predictions CSV |
-| Placeholder | `st.empty()` | the five Live-tab boxes, `app.py:505-509` |
+| Placeholder | `st.empty()` | the five Live-tab boxes, `app.py:545-549` |
 
 `st.empty()` deserves its own note, because it is how the Live tab animates.
 Five empty placeholders are created once; `render_live()` then fills them with
@@ -437,7 +437,7 @@ Streamlit widgets work in one of two ways, and this app uses both.
 re-run that follows the click. So the pattern is:
 
 ```python
-start = st.button("Start", ...)      # app.py:485
+start = st.button("Start", ...)      # app.py:525
 if start:
     st.session_state.live_running = True
 ```
@@ -448,7 +448,7 @@ That is how the three sidebar toggles work, and it is what lets any tab ask
 "is the reader currently on?" without the toggle being nearby:
 
 ```python
-st.toggle("Read the email", key="use_reader", value=True, help=...)   # app.py:202
+st.toggle("Read the email", key="use_reader", value=True, help=...)   # app.py:223
 ...
 def answerer_for(person_id):                                          # app.py:115
     if st.session_state.get("use_reader", True):
@@ -479,7 +479,7 @@ caches matter so much.
 ## 3.8 How the frontend communicates with the backend
 
 By calling Python functions. Both halves are in the same process and the same
-memory. `workforce_frame(twin, people)` on `app.py:247` is a direct function
+memory. `workforce_frame(twin, people)` on `app.py:268` is a direct function
 call into `backend/metrics.py`; the DataFrame it returns is the same object in
 memory, not a copy serialised over a network.
 
@@ -496,7 +496,7 @@ changes when you pick a different one.
 
 **Step by step:**
 
-1. `app.py:357-368` defines the mapping from the label the user sees to the field name on an email object:
+1. `app.py:378-389` defines the mapping from the label the user sees to the field name on an email object:
    ```python
    BREAKDOWNS = {"Cue": "cue", "Technique": "technique",
                  "Address trick": "address_trick", "Difficulty": "difficulty",
@@ -506,15 +506,15 @@ changes when you pick a different one.
    field = BREAKDOWNS[dim]
    ```
 2. The user clicks "Technique". Streamlit sends the click up the WebSocket and re-runs `app.py` from line 1. This time `st.radio` returns `"Technique"`, so `field == "technique"`.
-3. `app.py:377-378` builds a lookup of every email, curated and built:
+3. `app.py:398-399` builds a lookup of every email, curated and built:
    ```python
    email_by_id = {e["id"]: e for e in emails}
    email_by_id.update({e["id"]: e for e in st.session_state.generated})
    ```
    This matters: the history stores only the email *id*, so to group by any field on the email it has to be joined back to the email object.
-4. `app.py:379-393` loops over every person and every answer in the twin's history, keeps only phishing answers, looks up the source email, and records `{"type": src_email.get(field, "-"), "fooled": not ev["correct"]}`.
-5. `app.py:396-402` builds a DataFrame, groups by `type`, and computes `rate = fooled / asked`.
-6. `app.py:404-446` declares the Altair bar chart plus a text layer of percentage labels, and `st.altair_chart` sends the Vega-Lite spec to the browser, which draws it.
+4. `app.py:400-414` loops over every person and every answer in the twin's history, keeps only phishing answers, looks up the source email, and records `{"type": src_email.get(field, "-"), "fooled": not ev["correct"]}`.
+5. `app.py:417-423` builds a DataFrame, groups by `type`, and computes `rate = fooled / asked`.
+6. `app.py:425-472` declares the Altair bar chart plus a text layer of percentage labels, and `st.altair_chart` sends the Vega-Lite spec to the browser, which draws it.
 
 **The one thing to notice:** step 3 silently drops any answer whose email can
 no longer be found - `if not src_email: continue`. With the current data that
@@ -523,14 +523,14 @@ generated-email file has since been replaced.
 
 ### Feature B: the Live tab, start to a visible arrival
 
-1. User clicks **Start**. `app.py:485` returns `True`, so `app.py:496-497` sets `st.session_state.live_running = True`.
-2. The script continues to `app.py:505-509`, which creates five `st.empty()` placeholders, and `app.py:642` calls `render_live()` once to draw the current (empty) state.
-3. `app.py:646` sees `live_running` is true and enters the burst loop: `for _ in range(12)`.
+1. User clicks **Start**. `app.py:525` returns `True`, so `app.py:536-537` sets `st.session_state.live_running = True`.
+2. The script continues to `app.py:545-549`, which creates five `st.empty()` placeholders, and `app.py:686` calls `render_live()` once to draw the current (empty) state.
+3. `app.py:690` sees `live_running` is true and enters the burst loop: `for _ in range(12)`.
 4. Each iteration calls `live_step()` (`app.py:135`), which calls `get_engine().deliver(...)` - the real backend work, described in section 4 - and gets back one record dict.
-5. `app.py:654-655` pushes the record onto the front of the feed and truncates it: `st.session_state.live_feed.insert(0, rec)` then `del st.session_state.live_feed[10:]`. The feed is capped at 10.
+5. `app.py:698-699` pushes the record onto the front of the feed and truncates it: `st.session_state.live_feed.insert(0, rec)` then `del st.session_state.live_feed[10:]`. The feed is capped at 10.
 6. `render_live()` is called again, re-filling all five placeholders in place: the four metrics, the email exactly as the person saw it, the `P(click)` line chart, the 10-line feed, and the two leaderboards.
 7. `time.sleep(delay)` pauses for the slider's value.
-8. After 12 iterations, `app.py:659` saves the twin, `app.py:660-662` writes the generated-email file if any were built, and `app.py:663` calls `st.rerun()` - which starts the whole script again and, because `live_running` is still true, runs the next burst. That is the loop.
+8. After 12 iterations, `app.py:703` saves the twin, `app.py:704-706` writes the generated-email file if any were built, and `app.py:707` calls `st.rerun()` - which starts the whole script again and, because `live_running` is still true, runs the next burst. That is the loop.
 
 **The design point to be able to defend:** why bursts of 12 instead of one
 long `while` loop? Because Streamlit is single-threaded. A long loop never
@@ -540,10 +540,10 @@ script re-run is amortised.
 
 ### Feature C: answering an email in the Inbox tab
 
-1. `app.py:670-686` computes what is left to ask: the ids this person has already answered, subtracted from the shuffled order held in `st.session_state.order`.
-2. `app.py:692-705` draws the email - From, Subject, body in a disabled text area - and two buttons, `Spam` and `Not spam`.
-3. The user clicks **Spam**. `said_spam` is `True` on the next re-run (`app.py:701`).
-4. `app.py:704-714` translates the button into a simulation action. This translation is the heart of the feature:
+1. `app.py:714-730` computes what is left to ask: the ids this person has already answered, subtracted from the shuffled order held in `st.session_state.order`.
+2. `app.py:736-749` draws the email - From, Subject, body in a disabled text area - and two buttons, `Spam` and `Not spam`.
+3. The user clicks **Spam**. `said_spam` is `True` on the next re-run (`app.py:745`).
+4. `app.py:748-758` translates the button into a simulation action. This translation is the heart of the feature:
    ```python
    if said_spam:
        action = "report"
@@ -553,9 +553,9 @@ script re-run is amortised.
    "Not spam" means they trusted it. On a phishing email trusting it *is* the click; on a genuine email it is the correct non-action. One button, two different meanings depending on what the email really was.
 5. `twin.update(person_id, email, action, source="app")` - the counters move and the answer is appended to the log with `source="app"` rather than `"sim"`, so a real person's answer is distinguishable forever.
 6. `twin.save(people_by_id=people_by_id)` writes the snapshot and the four summary CSVs.
-7. `app.py:716-719` asks the feedback module for an explanation and parks it in `st.session_state.last_feedback`.
+7. `app.py:760-763` asks the feedback module for an explanation and parks it in `st.session_state.last_feedback`.
 8. `store.save_response({...})` appends the answer to `data/responses.json` - the only file in the project that nothing can regenerate, because a human typed it.
-9. `st.rerun()`. The next run finds `last_feedback` populated and the right-hand column at `app.py:736-768` draws the verdict, the technique, the tells, the hidden link, the Reply-To, the key defence and the history note.
+9. `st.rerun()`. The next run finds `last_feedback` populated and the right-hand column at `app.py:780-812` draws the verdict, the technique, the tells, the hidden link, the Reply-To, the key defence and the history note.
 
 ---
 
@@ -577,7 +577,7 @@ versions would have to reimplement it. That actually happened and was fixed:
 
 ## 4.2 Where the backend lives, and the rule that defines it
 
-`backend/` holds 20 modules. The rule, stated in `README.md` and `STRUCTURE.md`
+`backend/` holds 18 modules. The rule, stated in `README.md` and `STRUCTURE.md`
 and verified true: **no file in `backend/`, `database/` or `scripts/` imports
 Streamlit.** If a module draws, it is frontend. If it decides, it is backend.
 
@@ -896,7 +896,7 @@ most. Honest summary:
 | The generated-emails file is missing or malformed | `store.py:42-48` | Returns an empty list |
 | Nothing left to deliver | `engine.py:89-99` | Returns `None`; the Live loop stops and shows a warning |
 | A person has already answered every email | `main.py:45-52` | Prints a message instead of indexing an empty list |
-| The ML comparison fails for any reason | `app.py:1110-1111` | `except Exception as exc: st.error(...)` - the one broad catch in the app |
+| The ML comparison fails for any reason | `app.py:1168-1169` | `except Exception as exc: st.error(...)` - the one broad catch in the app |
 | A crash during a snapshot write | `twin.py:444-449` and `store.py:28-36` | Write to a `.tmp` file then `os.replace`, which is atomic, so the previous snapshot survives intact |
 | A crash during an append | `twin.py:146-149` | `f.flush()` then `os.fsync()`, so the line is on disk before anything else happens |
 
@@ -1022,7 +1022,7 @@ real call, verified in the code.
 | Operation | `DeliveryEngine.deliver_many(count, targets, build_new, allow_repeats, generated, on_progress, on_record)` |
 |---|---|
 | Analogous to | `POST /deliveries/batch` |
-| Frontend caller | `app.py:1034` (Run tab, "Run now") |
+| Frontend caller | `app.py:1092` (Run tab, "Run now") |
 | Backend handler | `backend/engine.py:149` |
 | Input | up to 1,000,000; targets = everyone or one person |
 | Processing | calls `deliver()` in a loop; invokes `on_progress` every 200 deliveries so the progress bar moves |
@@ -1044,7 +1044,7 @@ real call, verified in the code.
 | Operation | `TwinPredictor.update(person_id, email, action, source)` |
 |---|---|
 | Analogous to | `POST /answers` |
-| Callers | `engine.deliver` (`source="sim"`), `app.py:712` Inbox (`source="app"`), `simulation.step` |
+| Callers | `engine.deliver` (`source="sim"`), `app.py:756` Inbox (`source="app"`), `simulation.step` |
 | Backend handler | `backend/twin.py:330` |
 | Input | person id, email, one of `click` / `report` / `ignore`, source tag |
 | Processing | moves one counter, computes `correct`, builds a 19-field record |
@@ -1055,12 +1055,12 @@ real call, verified in the code.
 
 | Operation | Called from | Handler | Returns |
 |---|---|---|---|
-| `metrics.workforce_frame(twin, people)` | `app.py:247` Dashboard | `backend/metrics.py:18` | DataFrame, one row per person: seen, clicked, reported, click_rate, report_rate |
+| `metrics.workforce_frame(twin, people)` | `app.py:268` Dashboard | `backend/metrics.py:18` | DataFrame, one row per person: seen, clicked, reported, click_rate, report_rate |
 | `twin.get_score(person_id)` | Dashboard + Person tab | `backend/twin.py:662` | dict: answered, clicked, correct, wrong, accuracy, missed_spam, false_alarms, spam_seen, genuine_seen |
 | `twin.get_totals(person_id)` | Person tab, `save()` | `backend/twin.py:690` | dict of 6 cues, each yes / no / all / p_click |
 | `twin.get_history(person_id, key=None)` | every tab | `backend/twin.py:399` | list of answer records, oldest first, optionally one cue only |
-| `benchmark.run(n, twin, people, on_progress)` | `app.py:1103` Model tab | `backend/benchmark.py:38` | DataFrame, one row per (person, new email) prediction pair |
-| `benchmark.summarise(df)` | `app.py:1120` | `backend/benchmark.py:79` | dict: predictions, ml, twin, difference, missed, over |
+| `benchmark.run(n, twin, people, on_progress)` | `app.py:1161` Model tab | `backend/benchmark.py:38` | DataFrame, one row per (person, new email) prediction pair |
+| `benchmark.summarise(df)` | `app.py:1178` | `backend/benchmark.py:79` | dict: predictions, ml, twin, difference, missed, over |
 
 ### Building emails
 
@@ -1068,7 +1068,7 @@ real call, verified in the code.
 |---|---|---|---|
 | `EmailBuilder.build_any(fake_ratio=0.5, new_id)` | `engine.pick` | `backend/email_builder.py:160` | one email dict, phishing or legitimate, 50/50 |
 | `EmailBuilder.build(count, techniques, fake_ratio)` | `evaluate.py:51`, `benchmark.py:46` | `backend/email_builder.py:212` | a list, phishing spread across the 11 techniques |
-| `EmailGeneratorLLM.generate(technique)` | `app.py:1181` Emails tab | `backend/email_generator.py` | one email, or `None` if every attempt was too similar |
+| `EmailGeneratorLLM.generate(technique)` | `app.py:1252` Emails tab | `backend/email_generator.py` | one email, or `None` if every attempt was too similar |
 | `modifications.apply_all(email, names)` | `email_builder.build_one` | `backend/modifications.py:390` | `(changed email, list of red flags)` |
 
 ### Storage
@@ -1116,9 +1116,9 @@ Every name below is real.
  3. Streamlit        re-executes app.py from line 1
  4. app.py:45,50     get_people(), get_emails()      -> cache hit, no disk read
  5. app.py:86        "twin" is in session_state      -> no log replay
- 6. app.py:485       st.button("Start") returns True
- 7. app.py:496       st.session_state.live_running = True
- 8. app.py:646       the burst loop begins
+ 6. app.py:525       st.button("Start") returns True
+ 7. app.py:536       st.session_state.live_running = True
+ 8. app.py:690       the burst loop begins
  9. app.py:135       live_step()
 10. app.py:122       get_engine() builds a DeliveryEngine pointed at the
                      current toggles, with answerer_for as a callable
@@ -1162,8 +1162,8 @@ Every name below is real.
 39. engine.py:127    the 20-field record dict is returned
 40. app.py:143       live_step() updates the session tallies
 41. app.py:160       the P(click) trace gets a point: round, cue, p_after
-42. app.py:654       the record goes to the front of live_feed, capped at 10
-43. app.py:511       render_live() fills all five placeholders
+42. app.py:698       the record goes to the front of live_feed, capped at 10
+43. app.py:551       render_live() fills all five placeholders
 44. theme.py:41      verdict_of(rec) -> ("RECOGNISED", "blue")
 45. Streamlit        the element tree is serialised and sent down the WebSocket
 46. Browser          the DOM is patched; you see the email, the badge, and
@@ -1465,7 +1465,7 @@ graph TD
  +---------------------------v--------------------------------------+
  |  ONE PYTHON PROCESS                                              |
  |                                                                  |
- |  FRONTEND          app.py  (1,338 lines, sidebar + 8 tabs)       |
+ |  FRONTEND          app.py  (1,416 lines, sidebar + 8 tabs)       |
  |                    frontend/theme.py        colours, verdicts    |
  |                    frontend/responsive.py   CSS media queries    |
  |                             |                                    |
@@ -1504,7 +1504,7 @@ graph TD
 | # | Connection | Why it exists | What travels | Which file creates it | Which function handles it | If it fails |
 |---|---|---|---|---|---|---|
 | 1 | Browser to Streamlit server | The only way a human can use it | Widget events up; a serialised element tree down | Streamlit's own code, started by `python3 -m streamlit run app.py` | Streamlit's internals | Browser shows "connection lost" and retries. Nothing already fsync'd to the log is lost |
-| 2 | `app.py` to `frontend/responsive.py` | No server-side way to know the window width, so the breakpoints must be CSS | A string of CSS, once per page load | `app.py:181` | `responsive.inject()` | The app works but squeezes columns on a narrow window. Cosmetic only |
+| 2 | `app.py` to `frontend/responsive.py` | No server-side way to know the window width, so the breakpoints must be CSS | A string of CSS, once per page load | `app.py:202` | `responsive.inject()` | The app works but squeezes columns on a narrow window. Cosmetic only |
 | 3 | `app.py` to `frontend/theme.py` | One definition of each colour, so a chart and a badge cannot disagree | Hex colour strings, the `AWARENESS_SCALE` dict, `verdict_of(rec)` | `app.py:38-41` | `verdict_of`, `chart_base` | ImportError at startup; the app does not launch |
 | 4 | `app.py` to `backend/engine.py` | Live and Run must be the same loop, so they cannot drift apart | A `DeliveryEngine` built per call; back comes a 20-field record dict | `app.py:122-133` `get_engine()` | `DeliveryEngine.deliver`, `.deliver_many` | No deliveries happen. The Dashboard still renders past history |
 | 5 | `engine.py` to `email_builder.py` | A fixed set of 51 emails cannot test generalisation | A new id goes in; a complete email dict comes back | `engine.py:63-71` | `EmailBuilder.build_any` | `pick()` raises `ValueError("build_new needs a builder")`. Turning the "Build new emails" toggle off is the workaround |
@@ -1515,8 +1515,8 @@ graph TD
 | 10 | `engine.py` to `twin.py` (predict) | The prediction must be committed before the outcome exists | A person id and an email; a float 0.0-1.0 back | `engine.py:114` | `TwinPredictor.predict` | The whole experiment loses its point; there is nothing to grade |
 | 11 | `engine.py` to `twin.py` (update) | Learning, and the permanent record | id, email, action, source; nothing back | `engine.py:116` | `TwinPredictor.update` | The twin never learns; every prediction stays at its prior |
 | 12 | `engine.py` to `feedback.py` | A single result means little; the pattern across a cue means something | The email, the action and this person's history for that cue; a feedback dict back | `engine.py:119-121` | `FeedbackModule.give_feedback` | Optional. `feedback=None` yields `note = None` and the loop continues |
-| 13 | `app.py` to `backend/metrics.py` | One definition of "click rate" rather than one per chart | A twin and the people list; a pandas DataFrame back | `app.py:247` | `workforce_frame` | The Dashboard cannot render |
-| 14 | `app.py` to `backend/benchmark.py` | The headline comparison: does ML beat arithmetic? | A count and the trained twin; a DataFrame of predictions back | `app.py:1103` | `benchmark.run`, `.summarise` | Caught by `except Exception` at `app.py:1110`; shown as `st.error`, the tab survives |
+| 13 | `app.py` to `backend/metrics.py` | One definition of "click rate" rather than one per chart | A twin and the people list; a pandas DataFrame back | `app.py:268` | `workforce_frame` | The Dashboard cannot render |
+| 14 | `app.py` to `backend/benchmark.py` | The headline comparison: does ML beat arithmetic? | A count and the trained twin; a DataFrame of predictions back | `app.py:1161` | `benchmark.run`, `.summarise` | Caught by `except Exception` at `app.py:1168`; shown as `st.error`, the tab survives |
 | 15 | `benchmark.py` to `ml_model.py` | Reuse the same features at training and prediction time | The log path in; a fitted `Pipeline` and the column list out | `benchmark.py:43-45` | `train_best`, `featurize` | The Model tab errors; the counting twin is unaffected |
 | 16 | `generator.py` to `database/db.py` | Email selection by query rather than by loop | SQL in; lists of dicts out | `generator.py:22-23` | `EmailDB.all`, `.find`, `.fakes`, `.real` | **This is the hard dependency.** No emails load, so the app does not start |
 | 17 | `database/db.py` to `database/build.py` | A fresh clone must work with no setup step | The path; the database file is created | `db.py:32-33` `build_if_missing` | `build(path)` | If the JSON sources are missing, an uncaught exception at startup |
@@ -1642,7 +1642,7 @@ Take the sidebar toggle "Read the email", switched off:
 1. The browser sends the new widget value up the WebSocket.
 2. Streamlit sets `st.session_state["use_reader"] = False` and re-runs `app.py` from line 1.
 3. Everything is recomputed. The caches mean no file is re-read and the log is not replayed.
-4. `app.py:223-226` now renders the red caption `:red[Using hidden_probs - invented numbers]`.
+4. `app.py:244-247` now renders the red caption `:red[Using hidden_probs - invented numbers]`.
 5. On the *next* delivery, `answerer_for()` returns a `SimulatedHuman` instead of a `RuleReader`, so the answering model has changed - without the engine knowing anything happened, because it holds a callable rather than an object.
 
 ## STEP 8: How information moves through the application
@@ -1738,7 +1738,7 @@ bytecode caches, which Python manages itself and `.gitignore` excludes.
 ```
 phishing_twin/
 |
-|-- app.py                   1338  THE WEBSITE. Sidebar + 8 tabs
+|-- app.py                   1416  THE WEBSITE. Sidebar + 8 tabs
 |-- main.py                   167  Run the simulation in the terminal
 |-- live.py                   268  Watch deliveries, one at a time, no browser
 |-- evaluate.py               151  Does the twin transfer to unseen emails?
@@ -1746,8 +1746,22 @@ phishing_twin/
 |-- pyproject.toml                 Makes backend/frontend/database importable
 |-- .gitignore                     Keeps derived files out of git
 |-- README.md                      What the project is, how to run it
-|-- STRUCTURE.md                   The map: every file, one line each
-|-- prompts.md                     The prompts used to build the project
+|
+|-- docs/                          Everything written ABOUT the project.
+|   |                              Nothing here is imported by the code
+|   |-- README.md                  Index of the documents
+|   |-- STRUCTURE.md               The map: every file, one line each
+|   |-- prompts.md                 The prompts used to build the project
+|   |-- PROJECT_COMPLETE_EXPLANATION.md  + .pdf   this document, 83 pages
+|   |-- PROJECT_MEETING_GUIDE.md         + .pdf   the 4-page plain-English one
+|   |-- CONNECTION_MAP.md                + .pdf   what imports what, 3 pages
+|   |-- Project_Meeting_Explanation.pdf  an earlier 4-page explanation
+|   +-- presentation/
+|       |-- phishing_twin_overview.pptx       the overview deck
+|       |-- project_architecture.pdf          architecture and workflow
+|       |-- hospital_workforce_summary.pdf    the dataset summary
+|       +-- work_today.pptx  work_after_feedback.pptx
+|           static_vs_dynamic.pptx  email_dataset_changes.pptx
 |
 |-- frontend/
 |   |-- __init__.py             1  Makes it a package
@@ -1785,14 +1799,11 @@ phishing_twin/
 |   |-- __init__.py             1
 |   |-- make_emails.py       1604  Writes hospital_emails_mixed.json (the 51)
 |   |-- make_people.py        222  Writes hospital_people.json  (SEE WARNING)
-|   |-- make_person_summary.py 127  Writes the per-person summary CSV
-|   |-- make_types.py         228  Writes data/types.csv: every category used
-|   +-- renumber_csvs.py      150  Gives the summary CSVs clean sequential ids
+|   +-- make_types.py         228  Writes data/types.csv: every category used
 |
 |-- tests/
 |   |-- __init__.py             1
 |   |-- test_persona.py        22  Load all 25 people, print their traits
-|   |-- test_generator.py       5  Pick an email for a nurse
 |   |-- test_situation.py      61  Same person, same email, calm vs chaotic
 |   |-- test_twin.py           65  One person, 30 emails, guess vs hidden truth
 |   +-- test_twin_all.py       75  All 25 people, per-person accuracy
@@ -1812,12 +1823,13 @@ phishing_twin/
 |
 |-- .venv/                          DEPENDENCIES. Never edited, never committed
 |-- __pycache__/                    Python bytecode cache. Generated
-|-- phishing_twin.egg-info/         Editable-install metadata. Generated
-|
-+-- project_architecture.pdf        Presentation material
-    hospital_workforce_summary.pdf
-    phishing_twin_overview.pptx  + 4 more .pptx progress decks
++-- phishing_twin.egg-info/         Editable-install metadata. Generated
 ```
+
+The root holds only what has to be there: the four programs you run, the
+packaging file, and the README. Everything written about the project is in
+`docs/`, and nothing in `docs/` is imported by any `.py` file - which is why
+the whole folder can be moved or renamed without the application noticing.
 
 ## 9.3 The 15 files to understand before the meeting
 
@@ -1840,12 +1852,13 @@ Ranked by how likely you are to be asked about them.
 **Depended on by:** everything.
 **Fair criticism to pre-empt:** it does two jobs, the model and the persistence. Splitting persistence into a `twin_store.py` would be the clean refactor.
 
-### 3. `app.py` (1,338 lines) - the entire user interface
+### 3. `app.py` (1,416 lines) - the entire user interface
 
 **Does:** the sidebar and all eight tabs.
 **Key functions:** `get_people`, `get_emails` (cached data), `get_builder`, `get_readers`, `get_humans` (cached resources), `reset_session`, `reset_live`, `answerer_for`, `get_engine`, `live_step`, and the nested `render_live`.
+**Two table helpers** (`app.py:176-192`): `show_table(df, height, config, index)` wraps every `st.dataframe` call so the tables share one set of widths and row heights instead of each guessing its own, and `PCT_BAR(label, hi)` returns a `st.column_config.ProgressColumn` so a percentage is drawn as a filled bar rather than a bare number. They are presentation only - same idea as `frontend/theme.py`, applied to tables rather than charts.
 **Imports:** Streamlit, pandas, Altair, and 12 backend/frontend modules.
-**Fair criticism to pre-empt:** at 1,338 lines it is the biggest file in the project, and eight tabs in one script is a lot. Streamlit's own multipage feature, or one module per tab, is the obvious next refactor.
+**Fair criticism to pre-empt:** at 1,416 lines it is the biggest file in the project, and eight tabs in one script is a lot. Streamlit's own multipage feature, or one module per tab, is the obvious next refactor.
 
 ### 4. `backend/reader.py` (229 lines) - the default model of a person
 
@@ -2592,9 +2605,9 @@ file, function and field name is real.
 | # | Layer | File and function | What happens |
 |---|---|---|---|
 | 1 | Browser | - | Click travels up the WebSocket |
-| 2 | Frontend | `app.py:485` `st.button("Start")` | Returns `True` on this re-run |
-| 3 | Frontend | `app.py:496-497` | `st.session_state.live_running = True` |
-| 4 | Frontend | `app.py:646-648` | Burst loop, `range(12)` |
+| 2 | Frontend | `app.py:525` `st.button("Start")` | Returns `True` on this re-run |
+| 3 | Frontend | `app.py:536-537` | `st.session_state.live_running = True` |
+| 4 | Frontend | `app.py:690-692` | Burst loop, `range(12)` |
 | 5 | Frontend | `app.py:135` `live_step()` | Session bookkeeping wrapper |
 | 6 | Frontend | `app.py:122` `get_engine()` | Builds a `DeliveryEngine` with `answerer_for` as a callable, so the sidebar toggle is honoured |
 | 7 | Backend | `engine.py:89` `deliver()` | Entry to the four steps |
@@ -2623,11 +2636,11 @@ file, function and field name is real.
 | 30 | Backend | `engine.py:119-121` `feedback.give_feedback()` | Verdict + tells + defence + history note |
 | 31 | Backend | `engine.py:126-146` | The 20-field record dict is returned |
 | 32 | Frontend | `app.py:143-162` | Session tallies and the `P(click)` trace point |
-| 33 | Frontend | `app.py:654-655` | Record to the front of `live_feed`, capped at 10 |
-| 34 | Frontend | `app.py:511` `render_live()` | Re-fills all five placeholders |
+| 33 | Frontend | `app.py:698-699` | Record to the front of `live_feed`, capped at 10 |
+| 34 | Frontend | `app.py:551` `render_live()` | Re-fills all five placeholders |
 | 35 | Frontend | `theme.py:39` `verdict_of()` | `("RECOGNISED", "blue")` etc |
-| 36 | Storage | `app.py:659-662` | After the burst: `twin.save()`, and `store.save_generated()` if any were built |
-| 37 | Frontend | `app.py:663` `st.rerun()` | Next burst |
+| 36 | Storage | `app.py:703-706` | After the burst: `twin.save()`, and `store.save_generated()` if any were built |
+| 37 | Frontend | `app.py:707` `st.rerun()` | Next burst |
 
 **Final output:** the email on screen, a coloured verdict badge, the yes/no/all
 counters, `P(click)` with its delta, a step line per cue, a 10-line feed, and
@@ -2639,25 +2652,25 @@ two leaderboards.
 
 | # | Layer | File and function | What happens |
 |---|---|---|---|
-| 1 | Frontend | `app.py:670-672` | `seen_ids` from history; `queue` = shuffled order minus seen |
-| 2 | Frontend | `app.py:674-675` | The `st.stop()` warning comment - guard with `if`, never halt |
-| 3 | Frontend | `app.py:692-699` | From, Subject, body in a disabled text area |
-| 4 | Frontend | `app.py:701-702` | Two buttons |
-| 5 | Frontend | `app.py:704-711` | `Spam` -> `"report"`. `Not spam` -> `"click"` on phishing, `"ignore"` on genuine |
-| 6 | Backend | `app.py:712` `twin.update(..., source="app")` | The source tag marks this answer as human forever |
+| 1 | Frontend | `app.py:714-716` | `seen_ids` from history; `queue` = shuffled order minus seen |
+| 2 | Frontend | `app.py:718-719` | The `st.stop()` warning comment - guard with `if`, never halt |
+| 3 | Frontend | `app.py:736-743` | From, Subject, body in a disabled text area |
+| 4 | Frontend | `app.py:745-746` | Two buttons |
+| 5 | Frontend | `app.py:748-755` | `Spam` -> `"report"`. `Not spam` -> `"click"` on phishing, `"ignore"` on genuine |
+| 6 | Backend | `app.py:756` `twin.update(..., source="app")` | The source tag marks this answer as human forever |
 | 7 | Storage | `twin.py:146` | Appended to the log with `"source": "app"` |
-| 8 | Storage | `app.py:713` `twin.save()` | Snapshot + `scores.csv` + `click_rates.csv` + `person_summary.csv` |
-| 9 | Backend | `app.py:716-718` `give_feedback()` | Built from the email's tells and this person's cue history |
+| 8 | Storage | `app.py:757` `twin.save()` | Snapshot + `scores.csv` + `click_rates.csv` + `person_summary.csv` |
+| 9 | Backend | `app.py:760-762` `give_feedback()` | Built from the email's tells and this person's cue history |
 | 10 | Backend | `feedback.py:32-55` `_verdict()` | One of: missed, caught, passive, false alarm, fine |
 | 11 | Backend | `feedback.py:54-85` `_history_note()` | Names a streak only at three in a row |
-| 12 | Storage | `app.py:720-731` `store.save_response()` | Appended to `responses.json` - the irreplaceable file |
-| 13 | Frontend | `app.py:733` `st.rerun()` | - |
-| 14 | Frontend | `app.py:736-768` | `st.success` / `st.error` / `st.warning` by outcome, then technique, tells, the hidden link, Reply-To, key defence and history note |
+| 12 | Storage | `app.py:764-775` `store.save_response()` | Appended to `responses.json` - the irreplaceable file |
+| 13 | Frontend | `app.py:777` `st.rerun()` | - |
+| 14 | Frontend | `app.py:780-812` | `st.success` / `st.error` / `st.warning` by outcome, then technique, tells, the hidden link, Reply-To, key defence and history note |
 
 **Note on this trace:** `responses.json` in the repository holds 31 records in
 an **older schema** - keys `time, person_id, person_name, email_id, cue,
 label, answer, action`, where `answer` is `"yes"` / `"no"`. The current writer
-at `app.py:720-731` emits `said`, `truth` and `correct` instead. So the file
+at `app.py:764-775` emits `said`, `truth` and `correct` instead. So the file
 predates the current code. Worth knowing in case you open it in the meeting.
 
 ## Trace 3: Run - a batch of 1,000 deliveries
@@ -2666,15 +2679,15 @@ predates the current code. Worth knowing in case you open it in the meeting.
 
 | # | Layer | File and function | What happens |
 |---|---|---|---|
-| 1 | Frontend | `app.py:998-1003` | `st.number_input`, max 1,000,000 |
-| 2 | Frontend | `app.py:1005` | Everyone, or just the sidebar person |
-| 3 | Frontend | `app.py:1017-1030` | Progress bar; `targets` resolved |
-| 4 | Backend | `app.py:1034` `deliver_many()` | - |
+| 1 | Frontend | `app.py:1056-1061` | `st.number_input`, max 1,000,000 |
+| 2 | Frontend | `app.py:1063` | Everyone, or just the sidebar person |
+| 3 | Frontend | `app.py:1075-1088` | Progress bar; `targets` resolved |
+| 4 | Backend | `app.py:1092` `deliver_many()` | - |
 | 5 | Backend | `engine.py:149-170` | Loops `deliver()`; `None` increments `skipped`; `on_progress` every 200 |
 | 6 | Backend | - | Steps 7-31 of Trace 1, 1,000 times |
-| 7 | Storage | `app.py:1041-1047` | `twin.save()`, `store.save_generated()` |
-| 8 | Storage | `app.py:1048` `twin.write_email_scores(emails_by_id)` | `email_scores.csv`, hardest phishing first |
-| 9 | Frontend | `app.py:1051-1057` | Success message, with the skip count and the hint to turn on Allow repeats |
+| 7 | Storage | `app.py:1099-1105` | `twin.save()`, `store.save_generated()` |
+| 8 | Storage | `app.py:1106` `twin.write_email_scores(emails_by_id)` | `email_scores.csv`, hardest phishing first |
+| 9 | Frontend | `app.py:1109-1115` | Success message, with the skip count and the hint to turn on Allow repeats |
 
 **Performance note worth owning:** one `os.fsync()` per delivery means 1,000
 deliveries is 1,000 forced disk commits. The loop is I/O-bound, not CPU-bound.
@@ -2688,9 +2701,9 @@ trade-off and a good thing to be able to discuss.
 
 | # | Layer | File and function | What happens |
 |---|---|---|---|
-| 1 | Frontend | `app.py:1087` | `st.number_input`, 10 to 2000 |
-| 2 | Frontend | `app.py:1098-1100` | Progress bar: "Training on N past answers..." |
-| 3 | Backend | `app.py:1103` `benchmark.run()` | Inside `try` / `except Exception` |
+| 1 | Frontend | `app.py:1145` | `st.number_input`, 10 to 2000 |
+| 2 | Frontend | `app.py:1156-1158` | Progress bar: "Training on N past answers..." |
+| 3 | Backend | `app.py:1161` `benchmark.run()` | Inside `try` / `except Exception` |
 | 4 | Backend | `benchmark.py:43-45` `train_best()` | - |
 | 5 | Backend | `ml_model.py:61` `build_dataset()` | Replays the log; joins each answer to its person and email |
 | 6 | Backend | `ml_model.py:143-148` | Fits the `RandomForestClassifier` **on all available history** |
@@ -2699,8 +2712,8 @@ trade-off and a good thing to be able to discuss.
 | 9 | Backend | `benchmark.py:58` `twin.predict()` | The counting twin's answer for the same pair |
 | 10 | Backend | `benchmark.py:59-60` | The reader actually answers. **THIS IS THE BUGGY LINE - see section 11.5** |
 | 11 | Backend | `benchmark.py:75-77` | `ml_right` and `twin_right` columns |
-| 12 | Backend | `app.py:1120` `benchmark.summarise()` | The headline dict |
-| 13 | Frontend | `app.py:1119-1156` | Three metrics, by-awareness table, hardest-techniques table, the two error counts, and a full download |
+| 12 | Backend | `app.py:1178` `benchmark.summarise()` | The headline dict |
+| 13 | Frontend | `app.py:1177-1227` | Three metrics, by-awareness table, hardest-techniques table, the two error counts, and a full download |
 
 **Important:** step 6 fits on **all** history, including the emails that will
 be compared. That is defensible here only because step 7 builds emails that
@@ -2714,9 +2727,9 @@ tab is a transfer test, not a cross-validation.
 
 | # | Layer | File and function | What happens |
 |---|---|---|---|
-| 1 | Frontend | `app.py:1168-1176` | Technique dropdown from `GEN_RECIPES`, count, the output path caption |
-| 2 | Frontend | `app.py:1178` | `EmailGeneratorLLM()` - loads the fingerprints of everything already generated from the CSV |
-| 3 | Backend | `app.py:1181` `maker.generate("Whaling")` | - |
+| 1 | Frontend | `app.py:1239-1247` | Technique dropdown from `GEN_RECIPES`, count, the output path caption |
+| 2 | Frontend | `app.py:1249` | `EmailGeneratorLLM()` - loads the fingerprints of everything already generated from the CSV |
+| 3 | Backend | `app.py:1252` `maker.generate("Whaling")` | - |
 | 4 | Backend | `email_generator.py:158` `generate_once()` | One attempt |
 | 5 | Backend | `email_generator.py:118` `generate_body()` | **The documented LLM seam.** Currently `ENT.templatize` then `ENT.refill` |
 | 6 | Backend | `entities.py:216` `templatize()` | 13 entity patterns found and replaced with numbered slots |
@@ -2724,8 +2737,8 @@ tab is a transfer test, not a cross-validation.
 | 8 | Backend | `modifications.py:390` `apply_all()` | The phishy parts, in family order |
 | 9 | Backend | `email_generator.py` `similarity()` | `SequenceMatcher` against every prior fingerprint; above 0.80 it is rejected and rebuilt, up to 12 tries |
 | 10 | Storage | `email_generator.py` | A row appended to `data/generated_emails.csv` with ID, timestamp, type, subject, body, entities used, modifications, built-from and red flags |
-| 11 | Frontend | `app.py:1195-1215` | The email in a bordered container, with the entities swapped and the modifications applied, each listed |
-| 12 | Frontend | `app.py:1317-1338` | **Before and after**: the genuine original beside the corrupted version, From and Reply-To on both |
+| 11 | Frontend | `app.py:1266-1286` | The email in a bordered container, with the entities swapped and the modifications applied, each listed |
+| 12 | Frontend | `app.py:1395-1416` | **Before and after**: the genuine original beside the corrupted version, From and Reply-To on both |
 
 That last panel is the single best thing to demo live. It shows a genuine
 hospital email and the same email after corruption, side by side, with the
@@ -2892,7 +2905,7 @@ evidence in the project that backs it.
 **Q1. Why Streamlit rather than Flask, Django or React?**
 *Plain:* Streamlit lets you build a web page out of ordinary Python.
 *Answer:* "The audience is a researcher and a trainer, not a customer. Streamlit gave me an eight-tab interface for about 1,300 lines of Python with no HTML, no JavaScript and no build step. The cost is that it re-runs the whole script on every interaction, so I had to be deliberate about caching and session state. Flask plus React would have been two languages and a real API to design, for no benefit to this audience."
-*Evidence:* `app.py` is 1,338 lines and the whole UI; `@st.cache_data` and `@st.cache_resource` at `app.py:45-110`; no HTML or JS file in the repository.
+*Evidence:* `app.py` is 1,416 lines and the whole UI; `@st.cache_data` and `@st.cache_resource` at `app.py:45-110`; no HTML or JS file in the repository.
 
 **Q2. Why SQLite rather than PostgreSQL?**
 *Answer:* "It is one file, it needs no server, and `sqlite3` ships with Python, so a fresh clone works with no setup. The data is a few thousand rows for a single user. Postgres would add a service to run and credentials to manage for no gain. If this became multi-user I would move to Postgres, and `database/db.py` is the only file that would change."
@@ -2992,7 +3005,7 @@ evidence in the project that backs it.
 ### Process and engineering
 
 **Q28. How did you test the application?**
-*Answer, and be straight about it:* "Honestly, not well enough. There are five scripts under `tests/` but they are demonstrations, not tests: they print output for a human to read and none of them asserts anything. `test_twin.py` sends 30 emails to one person and prints the twin's guesses beside the real hidden probabilities; `test_twin_all.py` does all 25 and prints a per-person error; `test_situation.py` sends the same email 2,000 times in a calm moment and a chaotic one to show the rates differ. There is no `pytest` and no CI. The only real assertions in the codebase are invariant checks inside `twin.py`'s writers - that correct plus incorrect equals emails received, and that clicked plus not-clicked equals the total. What I validated instead was end-to-end: 11,544 answers through the loop, the log replaying to identical counters, and the generalisation test on unseen emails."
+*Answer, and be straight about it:* "Honestly, not well enough. There are four scripts under `tests/` but they are demonstrations, not tests: they print output for a human to read and none of them asserts anything. `test_twin.py` sends 30 emails to one person and prints the twin's guesses beside the real hidden probabilities; `test_twin_all.py` does all 25 and prints a per-person error; `test_situation.py` sends the same email 2,000 times in a calm moment and a chaotic one to show the rates differ. There is no `pytest` and no CI. The only real assertions in the codebase are invariant checks inside `twin.py`'s writers - that correct plus incorrect equals emails received, and that clicked plus not-clicked equals the total. What I validated instead was end-to-end: 11,544 answers through the loop, the log replaying to identical counters, and the generalisation test on unseen emails."
 
 **Q29. What was the hardest technical problem?**
 *Answer:* "Keeping the evaluation honest. Three separate things had to be got right and each one was a way to accidentally cheat. The prediction has to be committed before the answer exists, which is three lines in `engine.py` in a fixed order. The twin must never read `hidden_probs`, which I enforced architecturally by putting them in a separate table. And the ML split has to hold out whole emails, because each email appears about 225 times and a row split would have leaked. Any one of those done wrong gives you a beautiful number that means nothing."
@@ -3133,7 +3146,7 @@ data with an incompatible roster. `STRUCTURE.md` describes it as writing "the
 ### 6. `data/responses.json` is in an older schema
 
 The 31 records use `answer: "yes"/"no"`; the current writer at
-`app.py:720-731` emits `said`, `truth` and `correct`. The file predates the
+`app.py:764-775` emits `said`, `truth` and `correct`. The file predates the
 code that would write it now, and nothing reads it back, so nothing breaks.
 
 ### 7. A stale comment in `email_builder.py`
@@ -3147,7 +3160,7 @@ above `"difficulty": "hard" if len(names) <= 4 else "easy"`, which can return
 | Concern | Argument |
 |---|---|
 | `twin.py` does two jobs | 706 lines holding both the model and all persistence. A `twin_store.py` split would be cleaner |
-| `app.py` is 1,338 lines | Eight tabs in one script. Streamlit's multipage feature, or one module per tab, is the obvious refactor |
+| `app.py` is 1,416 lines | Eight tabs in one script. Streamlit's multipage feature, or one module per tab, is the obvious refactor |
 | `store.py` imports from `twin.py` | Only for three path constants. The module that owns file locations should not have to ask the model where files are |
 | `people_history.json` is 6.7 MB | It stores every event *and* the totals, duplicating the log. Totals alone would be a few kilobytes |
 | No pooling in the twin | A person-cue pair with 1 observation is as confident as one with 300 |
@@ -3189,7 +3202,7 @@ assessment. What would have to be built before any deployment:
 
 ## 15.7 Missing tests
 
-**Verified:** five scripts under `tests/`, **zero assertions**, no `pytest`, no
+**Verified:** four scripts under `tests/`, **zero assertions**, no `pytest`, no
 CI configuration. They print output for a human to read. The only assertions in
 the whole codebase are two invariant checks inside `twin.py`'s writers
 (`write_person_summary` and `write_click_rates`) and one uniqueness check in

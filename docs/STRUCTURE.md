@@ -14,7 +14,7 @@ particular thing, start with the table in **"I want to change..."** below.
 
 Everything else is a library that these four use.
 
-## The five folders
+## The folders
 
 | Folder | Rule | What is in it |
 |---|---|---|
@@ -23,6 +23,12 @@ Everything else is a library that these four use.
 | `database/` | how things are **stored and queried** | schema, builder, query layer |
 | `scripts/` | run **once in a while** | generators and maintenance |
 | `tests/` | **check** a piece works | one script per piece |
+| `data/` | what is **read and written** | the sources, and everything built from them |
+| `docs/` | what is **written about it** | this file, the guides, the slides |
+
+`docs/` is the odd one out: no `.py` file imports anything from it, so it can
+be moved or renamed without the application noticing. Everything else is code
+the four programs depend on.
 
 The rule the split is held to: **nothing in `backend/`, `database/` or
 `scripts/` imports streamlit.** Only `app.py` and `frontend/` know there is a
@@ -99,12 +105,20 @@ can be compared.
 | File | What it does |
 |---|---|
 | `make_emails.py` | writes `data/hospital_emails_mixed.json`, the 51 emails |
-| `make_people.py` | writes `data/hospital_people.json`, the 25 staff |
-| `make_person_summary.py` | writes the per-person summary CSV |
+| `make_people.py` | writes `data/hospital_people.json` — **stale, see below** |
 | `make_types.py` | writes `data/types.csv`, every category used anywhere |
-| `renumber_csvs.py` | gives the summary CSVs clean sequential ids |
 
 These **overwrite the source data**. Do not run them casually.
+
+`make_people.py` is out of date with the data it is supposed to produce: it
+generates **30** people over four role groups, while
+`data/hospital_people.json` holds **25** over five pillars and six role
+groups. Running it would replace the roster with an incompatible one. It is
+kept as the record of how the dataset was first made, not as a tool to re-run.
+
+`make_person_summary.py` was removed: `twin.write_person_summary()` produces
+the same CSV automatically on every save. `renumber_csvs.py` was removed too -
+it was a one-time migration, completed on 2026-10-26.
 
 ## I want to change...
 

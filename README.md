@@ -15,12 +15,16 @@ counting what it observes, and is graded on emails it has never seen.
 
 ## Layout
 
-**[STRUCTURE.md](STRUCTURE.md) is the map** — every file with one line on what
-it does, a "I want to change X, where do I go" table, and which files are safe
-to delete. Start there if you are looking for something.
+**[docs/STRUCTURE.md](docs/STRUCTURE.md) is the map** — every file with one line
+on what it does, a "I want to change X, where do I go" table, and which files
+are safe to delete. Start there if you are looking for something.
+
+Everything else written about the project lives in **[docs/](docs/)** — see
+[docs/README.md](docs/README.md) for the index.
 
 ```
 app.py  main.py  live.py  evaluate.py     the things you run
+README.md  pyproject.toml                 the front page, and the install
 
 frontend/   theme          palette, chart styling, verdict wording
 backend/    engine         one delivery: pick, predict, answer, update
@@ -37,10 +41,10 @@ backend/    engine         one delivery: pick, predict, answer, update
             modifications  the things that make an email phishy
             persona  simulation  feedback  situation  generator
 database/   schema.sql  build.py  db.py
-scripts/    make_emails  make_people  make_person_summary
-            make_types   renumber_csvs
-tests/      the test scripts
+scripts/    make_emails  make_people  make_types
+tests/      test_persona  test_situation  test_twin  test_twin_all
 data/       the sources, and everything built from them
+docs/       everything written about the project - no code imports it
 ```
 
 No file in `backend/`, `database/` or `scripts/` imports `streamlit`. That is
@@ -219,9 +223,21 @@ generated those labels.
   does not affect the models, which read structure rather than prose, but a
   human reading one spots it.
 
-## Presentation material
+## Documents
 
-- `project_architecture.pdf` — architecture and workflow
-- `hospital_workforce_summary.pdf` — the dataset summary
-- `phishing_twin_overview.pptx` — overview slide deck
-- `prompts.md` — the main prompts used to build the project
+All under [docs/](docs/), indexed in [docs/README.md](docs/README.md). Each one
+has a printable version of the same name in [docs/pdf/](docs/pdf/).
+
+| Document | What it is |
+|---|---|
+| [STRUCTURE.md](docs/STRUCTURE.md) | the map: every file, one line each, plus "I want to change X, where do I go" |
+| [PROJECT_MEETING_GUIDE.md](docs/PROJECT_MEETING_GUIDE.md) | the whole project in four pages of plain English |
+| [PROJECT_CODE_EXPLANATION.md](docs/PROJECT_CODE_EXPLANATION.md) | what each file does, in four pages |
+| [CONNECTION_MAP.md](docs/CONNECTION_MAP.md) | every file and exactly what it imports, as a tree |
+| [PROJECT_COMPLETE_EXPLANATION.md](docs/PROJECT_COMPLETE_EXPLANATION.md) | the long one: 84 pages, architecture to the known bugs, 40 questions |
+| [prompts.md](docs/prompts.md) | the main prompts used to build the project |
+
+The `.md` file is the original; the PDF beside it in `docs/pdf/` is a printed
+copy and does not update by itself.
+
+Slides and earlier hand-outs are in [docs/presentation/](docs/presentation/).
