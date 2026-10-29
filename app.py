@@ -172,6 +172,27 @@ def live_step():
     return rec
 
 
+# ---------------------------------------------------------------- tables
+# One place that decides how every table looks, so they stay consistent
+# instead of each one guessing its own widths and height.
+
+def PCT_BAR(label, hi=100):
+    """A percentage shown as a filled bar rather than a bare number."""
+    return st.column_config.ProgressColumn(
+        label, format="%.0f%%", min_value=0, max_value=hi, width="medium")
+
+
+def show_table(df, height=420, config=None, index=False):
+    st.dataframe(
+        df,
+        width="stretch",
+        hide_index=not index,
+        height=height,
+        column_config=config or {},
+        row_height=36,
+    )
+
+
 # ------------------------------------------------------------------ sidebar
 
 st.set_page_config(page_title="Phishing Twin - Front Desk", layout="wide",
@@ -431,7 +452,12 @@ with tab_dash:
                 out = agg.rename(columns={"type": dim.lower(),
                                           "fooled": "trusted it"}).copy()
                 out["rate"] = (100 * out["rate"]).round(0).astype(int).astype(str) + "%"
-                st.dataframe(out, width='stretch', hide_index=True)
+                show_table(out, height=420, config={
+                    dim.lower(): st.column_config.TextColumn(dim, width="large"),
+                    "asked": st.column_config.NumberColumn("Times asked"),
+                    "trusted it": st.column_config.NumberColumn("Trusted it"),
+                    "rate": st.column_config.TextColumn("Rate", width="small"),
+                })
 
         # ---- per-person scoreboard: judged, correct, wrong ----
         scores = []
@@ -455,20 +481,34 @@ with tab_dash:
                 "versus genuine mail they flagged."
             )
             sdf = pd.DataFrame(scores).sort_values("accuracy", ascending=False)
-            st.dataframe(
-                sdf.assign(accuracy=sdf["accuracy"].astype(str) + "%"),
-                width='stretch', hide_index=True,
-            )
+            show_table(sdf, height=560, config={
+                "id": st.column_config.TextColumn("ID", width="small"),
+                "name": st.column_config.TextColumn("Person", width="medium"),
+                "awareness": st.column_config.TextColumn("Awareness", width="small"),
+                "judged": st.column_config.NumberColumn("Judged", width="small"),
+                "correct": st.column_config.NumberColumn("Correct", width="small"),
+                "wrong": st.column_config.NumberColumn("Wrong", width="small"),
+                "accuracy": PCT_BAR("Accuracy"),
+                "spam trusted": st.column_config.NumberColumn(
+                    "Spam trusted", help="Fakes they believed - the costly mistake"),
+                "genuine flagged": st.column_config.NumberColumn(
+                    "Genuine flagged", help="Real mail they reported"),
+            })
 
         with st.expander("Table view"):
             show = wf[wf["seen"] > 0].copy()
-            show["click_rate"] = (100 * show["click_rate"]).round(0).astype(int).astype(str) + "%"
-            show["report_rate"] = (100 * show["report_rate"]).round(0).astype(int).astype(str) + "%"
-            st.dataframe(
-                show[["id", "name", "role", "awareness", "seen", "clicked",
-                      "reported", "click_rate", "report_rate"]],
-                width='stretch', hide_index=True,
-            )
+            show["click_rate"] = (100 * show["click_rate"]).round(0)
+            show["report_rate"] = (100 * show["report_rate"]).round(0)
+            show_table(show[["id", "name", "role", "awareness", "seen",
+                             "clicked", "reported", "click_rate", "report_rate"]],
+                       height=560, config={
+                "id": st.column_config.TextColumn("ID", width="small"),
+                "name": st.column_config.TextColumn("Person", width="medium"),
+                "role": st.column_config.TextColumn("Role", width="large"),
+                "awareness": st.column_config.TextColumn("Aware", width="small"),
+                "click_rate": PCT_BAR("Clicked"),
+                "report_rate": PCT_BAR("Recognised"),
+            })
 
 
 # ======================================================================== LIVE
@@ -619,25 +659,29 @@ with tab_live:
                 with b1:
                     st.markdown(":red[**Who clicks**]")
                     top = sorted(ranked, key=lambda s: -s["clicked"] / s["seen"])[:8]
-                    st.dataframe(
-                        pd.DataFrame([{
-                            "person": s["name"], "awareness": s["awareness"],
-                            "seen": s["seen"],
-                            "clicked": "%.0f%%" % (100 * s["clicked"] / s["seen"]),
-                        } for s in top]),
-                        width='stretch', hide_index=True,
-                    )
+                    show_table(pd.DataFrame([{
+                        "person": s["name"], "awareness": s["awareness"],
+                        "seen": s["seen"],
+                        "clicked": round(100 * s["clicked"] / s["seen"]),
+                    } for s in top]), height=330, config={
+                        "person": st.column_config.TextColumn("Person", width="medium"),
+                        "awareness": st.column_config.TextColumn("Aware", width="small"),
+                        "seen": st.column_config.NumberColumn("Seen", width="small"),
+                        "clicked": PCT_BAR("Clicked"),
+                    })
                 with b2:
                     st.markdown(":blue[**Who knows**]")
                     top = sorted(ranked, key=lambda s: -s["reported"] / s["seen"])[:8]
-                    st.dataframe(
-                        pd.DataFrame([{
-                            "person": s["name"], "awareness": s["awareness"],
-                            "seen": s["seen"],
-                            "recognised": "%.0f%%" % (100 * s["reported"] / s["seen"]),
-                        } for s in top]),
-                        width='stretch', hide_index=True,
-                    )
+                    show_table(pd.DataFrame([{
+                        "person": s["name"], "awareness": s["awareness"],
+                        "seen": s["seen"],
+                        "recognised": round(100 * s["reported"] / s["seen"]),
+                    } for s in top]), height=330, config={
+                        "person": st.column_config.TextColumn("Person", width="medium"),
+                        "awareness": st.column_config.TextColumn("Aware", width="small"),
+                        "seen": st.column_config.NumberColumn("Seen", width="small"),
+                        "recognised": PCT_BAR("Recognised"),
+                    })
 
     render_live()
 
@@ -834,7 +878,14 @@ with tab_person:
         else:
             view = qdf
 
-        st.dataframe(view, width='stretch', hide_index=True, height=330)
+        show_table(view, height=520, config={
+            "#": st.column_config.NumberColumn("#", width="small"),
+            "email": st.column_config.TextColumn("Email", width="small"),
+            "subject": st.column_config.TextColumn("Subject", width="large"),
+            "really was": st.column_config.TextColumn("Really was", width="small"),
+            "they said": st.column_config.TextColumn("They said", width="small"),
+            "result": st.column_config.TextColumn("Result", width="small"),
+        })
         st.caption(
             "%d of the mistakes were spam they trusted; %d were real emails they "
             "flagged as spam." % (sc["missed_spam"], sc["false_alarms"])
@@ -902,16 +953,13 @@ with tab_person:
                 width='stretch', hide_index=True,
             )
             st.caption("yes = trusted spam · no = flagged it · P(click) = yes / all")
-            st.dataframe(
-                pd.DataFrame([
-                    {"#": r["n"], "email": str(r["email_id"]), "cue": r["cue"],
-                     "they said": r["said"], "really was": r["truth"],
-                     "result": "correct" if r.get("correct") else "incorrect",
-                     "source": r["source"]}
-                    for r in reversed(records)
-                ]),
-                width='stretch', hide_index=True, height=260,
-            )
+            show_table(pd.DataFrame([
+                {"#": r["n"], "email": str(r["email_id"]), "cue": r["cue"],
+                 "they said": r["said"], "really was": r["truth"],
+                 "result": "correct" if r.get("correct") else "incorrect",
+                 "source": r["source"]}
+                for r in reversed(records)
+            ]), height=400)
 
 
 # ================================================================= ALL HISTORY
@@ -977,7 +1025,17 @@ with tab_history:
             view = view[view["correct"]]
 
         st.caption("%d of %d answers." % (len(view), len(adf)))
-        st.dataframe(view, width='stretch', hide_index=True, height=420)
+        show_table(view, height=560, config={
+            "id": st.column_config.NumberColumn("#", width="small"),
+            "person": st.column_config.TextColumn("Person", width="small"),
+            "email_id": st.column_config.TextColumn("Email", width="small"),
+            "subject": st.column_config.TextColumn("Subject", width="large"),
+            "label": st.column_config.TextColumn("Really was", width="small"),
+            "answer": st.column_config.TextColumn("They said", width="small"),
+            "correct": st.column_config.CheckboxColumn("Correct", width="small"),
+            "probability": st.column_config.NumberColumn(
+                "P(click)", format="%.2f", width="small"),
+        })
 
         st.download_button("Download CSV", data=view.to_csv(index=False),
                            file_name="history.csv", mime="text/csv")
@@ -1130,13 +1188,16 @@ with tab_model:
             st.markdown("**By awareness**")
             by = rdf.groupby("awareness")[["ml_right", "twin_right"]].mean() * 100
             by.columns = ["ML (%)", "Twin (%)"]
-            st.dataframe(by.round(1), width='stretch')
+            show_table(by.round(1), height=200, index=True, config={
+                "ML (%)": PCT_BAR("ML (%)"),
+                "Twin (%)": PCT_BAR("Twin (%)"),
+            })
         with b2:
             st.markdown("**Hardest techniques to predict**")
             byt = (rdf.groupby("technique")[["ml_right"]].mean() * 100)
             byt.columns = ["ML (%)"]
-            st.dataframe(byt.round(1).sort_values("ML (%)"), width='stretch',
-                         height=240)
+            show_table(byt.round(1).sort_values("ML (%)"), height=420,
+                       index=True, config={"ML (%)": PCT_BAR("ML (%)")})
 
         st.markdown("**Where the ML model went wrong**")
         w1, w2 = st.columns(2)
@@ -1148,7 +1209,17 @@ with tab_model:
         )
 
         with st.expander("Every prediction"):
-            st.dataframe(rdf, width='stretch', hide_index=True, height=360)
+            show_table(rdf, height=520, config={
+                "person": st.column_config.TextColumn("Person", width="medium"),
+                "awareness": st.column_config.TextColumn("Awareness", width="small"),
+                "email": st.column_config.TextColumn("Email", width="small"),
+                "technique": st.column_config.TextColumn("Attack type", width="medium"),
+                "ml_says_falls": st.column_config.CheckboxColumn("ML: falls"),
+                "twin_says_falls": st.column_config.CheckboxColumn("Twin: falls"),
+                "actually_fell": st.column_config.CheckboxColumn("Actually fell"),
+                "ml_right": st.column_config.CheckboxColumn("ML right"),
+                "twin_right": st.column_config.CheckboxColumn("Twin right"),
+            })
             st.download_button("Download CSV", rdf.to_csv(index=False),
                                file_name="model_predictions.csv", mime="text/csv")
 
@@ -1258,7 +1329,14 @@ with tab_emails:
 
         st.caption("Showing the most recent %d." % len(listing)
                    if len(pool) > 500 else "%d emails." % len(pool))
-        st.dataframe(listing, width='stretch', hide_index=True, height=240)
+        show_table(listing, height=420, config={
+            "id": st.column_config.TextColumn("ID", width="small"),
+            "technique": st.column_config.TextColumn("Attack type", width="medium"),
+            "cue": st.column_config.TextColumn("Pressure", width="small"),
+            "sender": st.column_config.TextColumn("Sender", width="large"),
+            "subject": st.column_config.TextColumn("Subject", width="large"),
+            "changes": st.column_config.TextColumn("Changes", width="small"),
+        })
 
         # ---- one email in full ----
         st.divider()
