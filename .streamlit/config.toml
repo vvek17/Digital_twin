@@ -1,0 +1,10 @@
+# 17px root produces approximately 15px native dataframe text (0.875rem).
+# Keep Streamlit's theme selection available; do not force light or dark.
+[theme]
+primaryColor = "#2a78d6"
+baseFontSize = 17
+headingFontSizes = ["28px", "22px", "20px", "18px", "17px", "16px"]
+metricValueFontSize = "26px"
+
+[client]
+showSidebarNavigation = false

@@ -36,14 +36,14 @@ THRESHOLD = 0.5
 
 
 def run(n_emails=200, twin=None, people=None, model=None, feature_cols=None,
-        on_progress=None):
+        on_progress=None, builder=None):
     """Score both models on n brand new emails. Returns a DataFrame."""
     people = people or load_people()
     twin = twin or TwinPredictor.from_log()
     if model is None:
         model, feature_cols = train_best()
 
-    new_emails = EmailBuilder().build(int(n_emails))
+    new_emails = (builder or EmailBuilder()).build(int(n_emails))
     readers = {p.id: RuleReader(p) for p in people}
 
     rows = []

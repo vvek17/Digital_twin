@@ -417,7 +417,7 @@ class TwinPredictor:
     # run starts from 0 again. Saving lets a person's history build up over many
     # sessions, which is the point of a per-person model.
 
-    def save(self, path=HISTORY_PATH, people_by_id=None):
+    def save(self, path=HISTORY_PATH, people_by_id=None, export_dir=None):
         """Write every person's totals and events to disk."""
         people = {}
         for pid in sorted(set(self.counters) | set(self.history)):
@@ -447,9 +447,14 @@ class TwinPredictor:
             f.flush()
             os.fsync(f.fileno())
         os.replace(tmp, path)
-        self.write_scores()
-        self.write_click_rates()
-        self.write_person_summary()
+        if export_dir is None:
+            self.write_scores()
+            self.write_click_rates()
+            self.write_person_summary()
+        else:
+            self.write_scores(os.path.join(export_dir, "scores.csv"))
+            self.write_click_rates(os.path.join(export_dir, "click_rates.csv"))
+            self.write_person_summary(path=os.path.join(export_dir, "person_summary.csv"))
         return path
 
     def load(self, path=HISTORY_PATH):

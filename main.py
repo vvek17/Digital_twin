@@ -15,10 +15,12 @@
 
 import random
 import sys
+from pathlib import Path
+from itertools import count
 
-from backend.persona import load_people
-from backend.generator import EmailGenerator
-from backend.human import SimulatedHuman
+from backend import store
+from backend.practice import next_dynamic_id
+from backend.training import Workspace
 from backend.reader import RuleReader
 from backend.twin import TwinPredictor, HISTORY_PATH
 from backend.feedback import FeedbackModule
@@ -30,17 +32,23 @@ SHOW_FIRST = 8          # how many rounds to print in full
 
 
 def run_one(person, generator, twin, rounds, verbose=True,
-            use_reader=False, allow_repeats=False):
+            use_reader=True, allow_repeats=False, generated=None,
+            next_id=None, on_generated=None):
     """Run the whole loop for one person and return the finished Simulation."""
     sim = Simulation(
         persona=person,
         generator=generator,
-        human=RuleReader(person) if use_reader else SimulatedHuman(person),
+        human=RuleReader(person),
         twin=twin,
         feedback=FeedbackModule("detailed"),
         allow_repeats=allow_repeats,
+        generated=generated, next_id=next_id,
     )
-    sim.run(rounds)
+    try:
+        sim.run(rounds)
+    finally:
+        if on_generated:
+            on_generated()
 
     if not sim.rounds:
         # allow_repeats=False and this person has already answered every
@@ -103,9 +111,8 @@ def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     flags = {a for a in sys.argv[1:] if a.startswith("--")}
     fresh = "--fresh" in flags
-    # --reader answers by inspecting the email instead of rolling against
-    # hidden_probs. No invented numbers anywhere in that path.
-    use_reader = "--reader" in flags
+    # All answers inspect the email. The old --reader flag remains compatible.
+    use_reader = True
     # --repeat lets an email arrive more than once, at different moments.
     allow_repeats = bool(flags & {"--repeat", "--repeats"})
     save = "--no-save" not in flags
@@ -113,16 +120,25 @@ def main():
     who = args[0] if args else None
     rounds = int(args[1]) if len(args) > 1 else DEFAULT_ROUNDS
 
-    people = load_people()
+    workspace = Workspace(Path.cwd())
+    people = workspace.people
     people_by_id = {p.id: p for p in people}
-    generator = EmailGenerator()
+    generator = workspace.generator
 
     # Carry on from the history already on disk unless asked to start fresh.
-    twin = TwinPredictor() if fresh else TwinPredictor.from_log()
+    twin = TwinPredictor() if fresh else workspace.twin
+    if not save:
+        twin.log_path = twin.csv_path = twin.results_path = None
     twin.people_by_id = people_by_id
     carried = sum(len(twin.get_history(p.id)) for p in people)
     if carried:
         print("Loaded %d past answers from %s\n" % (carried, HISTORY_PATH))
+
+    identities = count(next_dynamic_id(workspace.emails, workspace.generated, workspace.data))
+    dynamic = dict(generated=workspace.generated,
+                   next_id=identities.__next__,
+                   on_generated=(lambda: store.save_generated(
+                       workspace.generated, str(workspace.data / "generated_emails.json"))) if save else None)
 
     if who == "all":
         print("Running %d rounds for each of %d people\n" % (rounds, len(people)))
@@ -131,16 +147,17 @@ def main():
         print("-" * 68)
         for person in people:
             sim = run_one(person, generator, twin, rounds, verbose=False,
-                          use_reader=use_reader, allow_repeats=allow_repeats)
+                          use_reader=use_reader, allow_repeats=allow_repeats, **dynamic)
             res = sim.results()
             print("%-5s %-18s %-10s %-9.1f %-10.1f %-9.3f" %
                   (person.id, person.name[:18], person.security_awareness,
                    100 * res["click_rate"], 100 * res["report_rate"], res["avg_error"]))
         if save:
             twin.save(people_by_id=people_by_id)
-            twin.write_email_scores({e['id']: e for e in generator.emails})
+            twin.write_email_scores({e['id']: e for e in generator.emails + workspace.generated})
             total = sum(len(twin.get_history(p.id)) for p in people)
             print("\nHistory saved to %s (%d answers on file)" % (HISTORY_PATH, total))
+        workspace.close()
         return
 
     if who:
@@ -148,19 +165,21 @@ def main():
         if not matches:
             print("No person with id %r. Try one of: %s"
                   % (who, ", ".join(p.id for p in people[:5]) + ", ..."))
+            workspace.close()
             return
         person = matches[0]
     else:
         person = people[2]      # a nurse, by default
 
     run_one(person, generator, twin, rounds, use_reader=use_reader,
-            allow_repeats=allow_repeats)
+            allow_repeats=allow_repeats, **dynamic)
 
     if save:
         twin.save(people_by_id=people_by_id)
-        twin.write_email_scores({e['id']: e for e in generator.emails})
+        twin.write_email_scores({e['id']: e for e in generator.emails + workspace.generated})
         print("\nHistory saved to %s (%d answers on file for %s)"
               % (HISTORY_PATH, len(twin.get_history(person.id)), person.name))
+    workspace.close()
 
 
 if __name__ == "__main__":

@@ -14,6 +14,8 @@
 # change: .emails is the same list of dicts the old version exposed.
 
 import random
+import json
+from pathlib import Path
 
 from database.db import EmailDB
 
@@ -21,20 +23,31 @@ from database.db import EmailDB
 class EmailGenerator:
     def __init__(self, db=None, db_path=None):
         self.db = db or (EmailDB(db_path) if db_path else EmailDB())
+        source = Path(self.db.path).parent / "hospital_emails_mixed.json"
+        self.teaching = {}
+        if source.exists():
+            self.teaching = {e["id"]: e for e in json.loads(source.read_text())["emails"]}
         # Kept so existing callers that read .emails still work.
-        self.emails = self.db.all()
+        self.emails = self._enrich(self.db.all())
         self.by_id = {e["id"]: e for e in self.emails}
 
     # ------------------------------------------------------------ strategies
 
+    def _enrich(self, rows):
+        for email in rows:
+            original = self.teaching.get(email["id"], {})
+            email["red_flags"] = list(original.get("red_flags") or [])
+            email["safe_signs"] = list(original.get("safe_signs") or [])
+        return rows
+
     def get_email(self, role=None):
         """Any email, repeats allowed."""
-        options = self.db.find(target_role=role) if role else self.emails
+        options = self._enrich(self.db.find(target_role=role)) if role else self.emails
         return random.choice(options) if options else None
 
     def get_unseen(self, seen_ids, role=None):
         """An email this person has not judged yet, or None when done."""
-        options = self.db.find(target_role=role, exclude_ids=list(seen_ids or []))
+        options = self._enrich(self.db.find(target_role=role, exclude_ids=list(seen_ids or [])))
         return random.choice(options) if options else None
 
     def get_balanced(self, seen_ids=None, want_fake=None, role=None):
@@ -72,10 +85,10 @@ class EmailGenerator:
         return self.by_id.get(email_id)
 
     def fakes(self, **kw):
-        return self.db.fakes(**kw)
+        return self._enrich(self.db.fakes(**kw))
 
     def real(self, **kw):
-        return self.db.real(**kw)
+        return self._enrich(self.db.real(**kw))
 
     def count(self, **kw):
         return self.db.count(**kw)

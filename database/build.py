@@ -149,7 +149,7 @@ def load_deliveries(conn, path=HISTORY_LOG):
 
 # ------------------------------------------------------------------- build
 
-def build(path=DB_PATH, verbose=False):
+def build(path=DB_PATH, verbose=False, data_dir=None):
     """(Re)build the whole database. Safe to run repeatedly."""
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     if os.path.exists(path):
@@ -158,11 +158,12 @@ def build(path=DB_PATH, verbose=False):
     conn = sqlite3.connect(path)
     conn.executescript(_schema())
 
+    data_dir = os.fspath(data_dir) if data_dir is not None else "data"
     counts = {
-        "emails": load_emails(conn),
-        "people": load_people(conn),
+        "emails": load_emails(conn, os.path.join(data_dir, "hospital_emails_mixed.json")),
+        "people": load_people(conn, os.path.join(data_dir, "hospital_people.json")),
     }
-    counts["deliveries"], counts["damaged"] = load_deliveries(conn)
+    counts["deliveries"], counts["damaged"] = load_deliveries(conn, os.path.join(data_dir, "history_log.jsonl"))
     counts["red_flags"] = conn.execute(
         "SELECT COUNT(*) FROM red_flags").fetchone()[0]
     conn.commit()

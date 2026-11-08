@@ -43,14 +43,22 @@ def load_generated(path=GENERATED_PATH):
     """Emails built during past runs. A missing file just means none yet."""
     try:
         with open(path) as f:
-            return json.load(f)["emails"]
-    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+            emails = json.load(f)["emails"]
+    except FileNotFoundError:
         return []
+    except (json.JSONDecodeError, KeyError, TypeError) as exc:
+        raise ValueError("Could not read generated emails; the saved file was not changed") from exc
+    from backend.practice import valid_email
+    if not isinstance(emails, list) or any(not valid_email(email) for email in emails):
+        raise ValueError("Generated emails must contain complete messages with valid classifications")
+    if len({email["id"] for email in emails}) != len(emails):
+        raise ValueError("Generated emails contain duplicate IDs")
+    return emails
 
 
 def save_generated(emails, path=GENERATED_PATH):
     return _write_json(path, {
-        "note": "Emails built on the fly during live delivery.",
+        "note": "Emails built by the existing email generators for experiments and practice.",
         "count": len(emails),
         "emails": emails,
     })

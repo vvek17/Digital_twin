@@ -19,10 +19,15 @@ import random
 import sys
 import time
 from datetime import datetime
+from pathlib import Path
+from itertools import count
 
-from backend.persona import load_people
-from backend.generator import EmailGenerator
-from backend.human import SimulatedHuman
+from backend import store
+from backend.engine import DeliveryEngine
+from backend.email_builder import EmailBuilder
+from backend.practice import next_dynamic_id
+from backend.training import Workspace
+from backend.reader import RuleReader
 from backend.twin import TwinPredictor
 from backend.feedback import FeedbackModule
 
@@ -48,15 +53,25 @@ def bar(fraction, width=12):
 
 class LiveRun:
     def __init__(self, speed=0.4, plain=False, save_every=25, fresh=False):
-        self.people = load_people()
+        self.workspace = Workspace(Path.cwd())
+        self.people = self.workspace.people
         self.people_by_id = {p.id: p for p in self.people}
-        self.generator = EmailGenerator()
+        self.generator = self.workspace.generator
         # Carry on from the history already on disk unless asked to start fresh.
-        self.twin = TwinPredictor() if fresh else TwinPredictor.from_log()
+        self.twin = TwinPredictor() if fresh else self.workspace.twin
+        if not save_every:
+            self.twin.log_path = self.twin.csv_path = self.twin.results_path = None
         self.twin.people_by_id = self.people_by_id
         self.save_every = save_every
         self.feedback = FeedbackModule("detailed")
-        self.humans = {p.id: SimulatedHuman(p) for p in self.people}
+        self.humans = {p.id: RuleReader(p) for p in self.people}
+        self.generated = self.workspace.generated
+        identities = count(next_dynamic_id(self.generator.emails, self.generated, self.workspace.data))
+        self.delivery = DeliveryEngine(
+            self.twin, self.people, self.generator.emails, self.humans.__getitem__, self.generator,
+            EmailBuilder(self.generator), self.feedback,
+            next_id=identities.__next__,
+            use_situations=False)
         self.speed = speed
         self.plain = plain
 
@@ -74,26 +89,12 @@ class LiveRun:
     # ------------------------------------------------------------- one email
 
     def step(self):
-        # Only ask people who still have unseen emails left.
-        available = [p for p in self.people
-                     if len({r["email_id"] for r in self.twin.get_history(p.id)})
-                     < len(self.generator.emails)]
-        if not available:
+        record = self.delivery.deliver(generated=self.generated)
+        if record is None:
             return None
-        person = random.choice(available)
-        seen = {r["email_id"] for r in self.twin.get_history(person.id)}
-        email = self.generator.get_unseen(seen)
-        if email is None:
-            return None
-
-        predicted = self.twin.predict(person.id, email)
-        action = self.humans[person.id].respond(email, None)
-        self.twin.update(person.id, email, action)
-
-        key = "false_report" if email["label"] == "legitimate" else email["cue"]
-        note = self.feedback.give_feedback(
-            email, action, self.twin.get_history(person.id, key)
-        )
+        person = self.people_by_id[record["person_id"]]
+        email, action = record["email"], record["action"]
+        predicted, note = record["predicted"], record["feedback"]
 
         self.rounds += 1
         s = self.stats[person.id]
@@ -115,6 +116,7 @@ class LiveRun:
             "feedback": note,
         })
         del self.feed[FEED_LINES:]
+        return record
 
     # ---------------------------------------------------------------- render
 
@@ -212,6 +214,7 @@ class LiveRun:
                     sys.stdout.flush()
                 # Save as we go, so a Ctrl-C never loses the run.
                 if self.save_every and self.rounds % self.save_every == 0:
+                    store.save_generated(self.generated, str(self.workspace.data / "generated_emails.json"))
                     self.twin.save(people_by_id=self.people_by_id)
 
                 time.sleep(self.speed)
@@ -219,11 +222,13 @@ class LiveRun:
             pass
 
         if self.save_every:
+            store.save_generated(self.generated, str(self.workspace.data / "generated_emails.json"))
             path = self.twin.save(people_by_id=self.people_by_id)
             total = sum(len(self.twin.get_history(p.id)) for p in self.people)
             print("\nHistory saved to %s (%d answers on file)" % (path, total))
 
         self.summary()
+        self.workspace.close()
 
     def summary(self):
         print("\n" + BOLD + "Final tally" + RESET)

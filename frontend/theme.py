@@ -22,18 +22,20 @@ GRID = "#e6e5e2"
 AWARENESS_ORDER = ["low", "medium", "high"]
 
 
+def readable_chart(chart):
+    """One legible chart style; Streamlit supplies light/dark text colors."""
+    return (chart.configure_view(strokeWidth=0)
+            .configure_axis(labelFontSize=14, titleFontSize=14,
+                            labelPadding=6, titlePadding=10, labelLimit=190,
+                            gridOpacity=0.18, domainOpacity=0.25, tickOpacity=0.25)
+            .configure_legend(labelFontSize=14, titleFontSize=14,
+                              orient="top", columns=3, padding=8)
+            .configure_header(labelFontSize=14, titleFontSize=14))
+
+
 def chart_base(df):
     """Shared chart styling: recessive axes, no chart junk."""
-    return (
-        alt.Chart(df)
-        .configure_view(strokeWidth=0)
-        .configure_axis(
-            labelColor=MUTED, titleColor=MUTED, labelFontSize=11,
-            titleFontSize=11, domainColor=GRID, tickColor=GRID, gridColor=GRID,
-        )
-        .configure_legend(labelColor=MUTED, titleColor=MUTED, labelFontSize=11,
-                          titleFontSize=11)
-    )
+    return readable_chart(alt.Chart(df))
 
 
 def verdict_of(rec):

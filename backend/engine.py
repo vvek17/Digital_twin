@@ -11,7 +11,7 @@
 #
 # A delivery is always the same four steps, in this order:
 #
-#   1. pick an email        built fresh, or drawn from the set
+#   1. pick an email        built fresh, or drawn from the generated pool
 #   2. predict              the twin guesses, from its counters alone
 #   3. answer               the person decides
 #   4. update               the counters move, and the answer is logged
@@ -26,7 +26,7 @@ from backend.situation import make_random_situation
 
 
 class NothingLeft(Exception):
-    """Everyone has seen every email and repeats are off."""
+    """There are no eligible generated emails to reuse."""
 
 
 def next_email_id(emails, generated):
@@ -44,45 +44,71 @@ class DeliveryEngine:
     """Runs deliveries against a twin. Holds no UI state."""
 
     def __init__(self, twin, people, emails, answerer_for, generator,
-                 builder=None, feedback=None):
+                 builder=None, feedback=None, next_id=None, on_generated=None,
+                 use_situations=True):
         self.twin = twin
         self.people = people
         self.emails = emails
-        # Given a person id, return whatever is answering for them right now
-        # (the rule reader or the dice roller). A callable, because the UI
-        # lets that be switched between deliveries.
+        # Given a person id, return the email reader answering for them.
         self.answerer_for = answerer_for
         self.generator = generator
         self.builder = builder
         self.feedback = feedback
+        self.next_id = next_id
+        self.on_generated = on_generated
+        self.use_situations = use_situations
+        self._fingerprint_pool = None
+        self._fingerprint_count = 0
+        self._used_text = set()
 
     # ------------------------------------------------------------ choosing
 
     def pick(self, person, build_new=True, allow_repeats=True, generated=None):
         """The email for this delivery, and whether it was newly built."""
+        from backend.email_generator import MAX_TRIES, fingerprint
+
+        generated = generated if generated is not None else []
         if build_new:
+            from backend.practice import valid_email
             if self.builder is None:
                 raise ValueError("build_new needs a builder")
-            generated = generated if generated is not None else []
-            email = self.builder.build_any(
-                new_id=next_email_id(self.emails, generated))
-            return email, True
+            identity = self.next_id() if self.next_id else next_email_id(self.emails, generated)
+            if self._fingerprint_pool is not generated or len(generated) < self._fingerprint_count:
+                self._used_text = {fingerprint(email) for email in self.emails}
+                self._fingerprint_pool, self._fingerprint_count = generated, 0
+            self._used_text.update(fingerprint(email) for email in generated[self._fingerprint_count:])
+            self._fingerprint_count = len(generated)
+            for _ in range(MAX_TRIES):
+                email = self.builder.build_any(new_id=identity)
+                if email is not None and not valid_email(email):
+                    raise ValueError("The generated email is incomplete or has an invalid classification")
+                if email is not None and fingerprint(email) not in self._used_text:
+                    return email, True
+            raise ValueError("Could not build a unique dynamic email; no answer was recorded")
 
-        if allow_repeats:
-            return random.choice(self.emails), False
+        # Reuse complete generated messages, never the source templates.
+        options = self._generated_options(person, generated, allow_repeats)
+        if not options:
+            raise NothingLeft("No unseen generated emails are available for %s" % person.id)
+        return random.choice(options), False
 
-        # One question each: only an email this person has not seen.
-        seen = {r["email_id"] for r in self.twin.get_history(person.id)}
-        email = self.generator.get_unseen(seen)
-        if email is None:
-            raise NothingLeft("%s has seen every email" % person.id)
-        return email, False
+    def _generated_options(self, person, generated, allow_repeats=False):
+        from backend.email_generator import fingerprint
+        seen = set() if allow_repeats else {r["email_id"] for r in self.twin.get_history(person.id)}
+        used = {fingerprint(email) for email in self.emails}
+        used.update(fingerprint(email) for email in generated if email["id"] in seen)
+        options = []
+        for email in generated:
+            text = fingerprint(email)
+            if email["id"] not in seen and text not in used:
+                options.append(email)
+                used.add(text)
+        return options
 
-    def available(self, targets=None):
-        """Those who still have an unseen email, for a no-repeats run."""
-        return [p for p in (targets or self.people)
-                if len({r["email_id"] for r in self.twin.get_history(p.id)})
-                < len(self.emails)]
+    def available(self, targets=None, generated=None):
+        """Those who still have an unseen generated email, for a no-repeats run."""
+        return [person for person in (targets or self.people)
+                if self._generated_options(person, generated or [])]
 
     # ------------------------------------------------------------ one round
 
@@ -95,7 +121,7 @@ class DeliveryEngine:
         """
         if person is None:
             pool = (targets or self.people) if (build_new or allow_repeats) \
-                else self.available(targets)
+                else self.available(targets, generated)
             if not pool:
                 return None
             person = random.choice(pool)
@@ -108,8 +134,10 @@ class DeliveryEngine:
 
         if was_built and generated is not None:
             generated.append(email)
+            if self.on_generated:
+                self.on_generated()
 
-        situation = make_random_situation()
+        situation = make_random_situation() if self.use_situations else None
 
         predicted = self.twin.predict(person.id, email)
         action = self.answerer_for(person.id).respond(email, situation)

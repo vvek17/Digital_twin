@@ -18,6 +18,7 @@ data/click_rates.csv
 data/person_summary.csv
 data/simulation.db
 data/generated_emails.json
+data/practice_sessions.json
 
 # Built, not authored - all regenerate from the sources above
 data/backups/
@@ -29,3 +30,10 @@ data/types.csv
 
 # Editable-install metadata
 *.egg-info/
+
+# Local administration state and credentials
+backups/
+.admin.lock
+data/admin_audit.jsonl
+.streamlit/secrets.toml
+.pytest_cache/

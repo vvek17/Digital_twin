@@ -24,6 +24,7 @@ import collections
 import json
 import os
 import random
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -58,10 +59,22 @@ def domain_of(address):
     return address.rsplit("@", 1)[1].lower() if address and "@" in address else ""
 
 
-def build_dataset(log_path=LOG):
+def _email_catalogue(log_path):
+    """Resolve historical IDs to their exact saved messages, including practice."""
+    from backend import store
+    from backend.practice import load_sessions, merge_session_emails
+    data = Path(log_path).parent
+    with (data / "hospital_emails_mixed.json").open() as stream:
+        originals = json.load(stream)["emails"]
+    generated = merge_session_emails(
+        store.load_generated(str(data / "generated_emails.json")), load_sessions(data), originals)
+    return originals + generated
+
+
+def build_dataset(log_path=LOG, people=None, emails=None):
     """One row per answer: person features + email features + the label."""
-    people = {p.id: p for p in load_people()}
-    emails = {e["id"]: e for e in json.load(open(EMAILS_JSON))["emails"]}
+    people = {p.id: p for p in (people if people is not None else load_people())}
+    emails = {e["id"]: e for e in (emails if emails is not None else _email_catalogue(log_path))}
 
     twin = TwinPredictor(log_path=None, csv_path=None, results_path=None)
     twin.rebuild_from_log(log_path)
@@ -218,7 +231,7 @@ def twin_baseline(test_df, log_path=LOG):
     twin = TwinPredictor(log_path=None, csv_path=None, results_path=None)
     twin.rebuild_from_log(log_path)
 
-    emails = {e["id"]: e for e in json.load(open(EMAILS_JSON))["emails"]}
+    emails = {e["id"]: e for e in _email_catalogue(log_path)}
     correct = 0
     for _, row in test_df.iterrows():
         email = emails[row["email_id"]]

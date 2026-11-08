@@ -153,6 +153,7 @@ class EmailGeneratorLLM:
             "modifications": [],
             "entities_used": entities_used,
             "red_flags": [],
+            "safe_signs": list(base.get("safe_signs") or []),
         }
 
     def generate_once(self, technique=None, fake=True):

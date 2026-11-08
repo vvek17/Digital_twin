@@ -7,18 +7,21 @@
 #            ->  twin.update()         (Compare and update)
 #            ->  feedback.give_feedback()  (Personalized feedback)
 #
-# Nobody clicks anything: the simulated human answers from its own hidden_probs
-# and the situation, so a whole run finishes in one call.
+# Nobody clicks anything: the reader inspects the email and current situation,
+# so a whole run finishes in one call without hidden-probability answers.
 #
 # The twin predicts BEFORE the human acts, so every prediction is scored on an
 # email it has not seen the answer to yet.
 
 from backend.situation import make_random_situation
+from backend.email_builder import EmailBuilder
+from backend.engine import DeliveryEngine
 
 
 class Simulation:
     def __init__(self, persona, generator, human, twin, feedback,
-                 use_situations=True, allow_repeats=False):
+                 use_situations=True, allow_repeats=False, generated=None,
+                 next_id=None):
         self.persona = persona
         self.generator = generator
         self.human = human
@@ -28,6 +31,10 @@ class Simulation:
         # With repeats on, an email can arrive again at a different moment.
         # That only carries information if the reader reacts to the moment.
         self.allow_repeats = allow_repeats
+        self.generated = generated if generated is not None else []
+        self.delivery = DeliveryEngine(twin, [persona], generator.emails,
+                                       lambda _: human, generator, EmailBuilder(generator),
+                                       next_id=next_id)
 
         # One record per round, in order.
         self.rounds = []
@@ -35,16 +42,14 @@ class Simulation:
     def step(self):
         """Run exactly one round and return its record.
 
-        Returns None once this person has seen every email: a test asks each
-        question once, so there is nothing left to ask.
+        New questions use the existing builder. Repeats explicitly reuse the
+        generated pool rather than returning to the static templates.
         """
-        if self.allow_repeats:
-            email = self.generator.get_email()
-        else:
-            seen = {r["email_id"] for r in self.twin.get_history(self.persona.id)}
-            email = self.generator.get_unseen(seen)
-            if email is None:
-                return None
+        email, built = self.delivery.pick(
+            self.persona, build_new=not (self.allow_repeats and self.generated),
+            allow_repeats=self.allow_repeats, generated=self.generated)
+        if built:
+            self.generated.append(email)
         situation = make_random_situation() if self.use_situations else None
 
         # 1. Model predicts, from history alone.
