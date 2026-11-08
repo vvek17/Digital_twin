@@ -14,10 +14,10 @@ that generates those actions. The project provides an inspectable experiment
 for that question; it does not establish predictive accuracy for real staff.
 All personas and email scenarios are fictional.
 
-**Scope:** This showcase describes the committed implementation at `7b49371`.
-Local, uncommitted application changes are outside this description. Historical
-measurements below are attributed to the repository report and were not rerun
-for this document.
+**Scope:** This showcase describes the current training and protected-admin
+implementation. Historical measurements below describe the earlier implementation
+and data snapshot recorded in the repository report; they were not rerun for
+this update.
 
 ## Architecture
 
@@ -28,7 +28,7 @@ flowchart TD
     App --> Engine[Delivery engine]
     Builder --> Engine
     Engine --> Predict[Twin predicts from existing counters]
-    Predict --> Answer[Rule reader or legacy probabilistic simulator]
+    Predict --> Answer[Rule reader for automatic responses]
     Answer --> Update[Twin updates counters and records outcome]
     Manual[Inbox: manual judgment] --> Update
     Update --> Log[(Append-only JSONL history)]
@@ -63,15 +63,15 @@ emails: 26 phishing and 25 legitimate**. See the
 |---|---|
 | Counting twin | Per-person, per-cue estimate `a / (a + b)`, where phishing clicks increment `a` and reports increment `b`; no observations yields `0.0`. Legitimate-mail false reports have a separate counter. |
 | Rule reader | Checks email fields and wording, including domains, Reply-To, links, attachment markers, and urgency. Awareness determines available checks; a rushed situation reduces checks. |
-| Legacy simulator | Samples responses using persona probabilities; retained as an alternative answer generator in this committed version. |
+| Compatibility wrapper | `SimulatedHuman` retains the older interface but now delegates to the rule reader; hidden probabilities no longer generate answers. |
 | Majority baseline | Scikit-learn `DummyClassifier` using the most frequent class. |
 | Logistic regression | Linear classifier with `max_iter=2000`. |
 | Decision tree | Tree limited to depth 5. |
 | Random forest | 200 trees, maximum depth 10, fixed random seed. |
 
-[RuleReader](backend/reader.py) and the
-[legacy SimulatedHuman](backend/human.py) generate responses; they are distinct
-from the predictor. The twin learns from actions without consulting
+[RuleReader](backend/reader.py) generates automatic responses, including through
+the [SimulatedHuman compatibility wrapper](backend/human.py). Manual practice
+records the submitted choice. These answer paths are distinct from the predictor. The twin learns from actions without consulting
 `hidden_probs`.
 
 The [ML pipeline](backend/ml_model.py) uses 15 input fields: eight categorical
@@ -89,8 +89,12 @@ uses Python's JSON/CSV facilities and SQLite.
 
 The committed implementation includes:
 
-- A Streamlit dashboard with Live, Inbox, Person, All history, Run, Model, and
-  Emails views in [app.py](app.py).
+- A training app with Inbox and Training progress in [app.py](app.py), plus a
+  protected [admin workspace](pages/admin.py) for Dashboard, Live, Person,
+  All history, Run, Model, Emails, and System.
+- Session-bound, expiring admin grants checked by [backend services](backend/admin.py),
+  manual practice assignments with complete email snapshots, and audited
+  backup/restore and integrity tools. See [administration setup](docs/ADMIN.md).
 - Batch and terminal simulation through [main.py](main.py) and [live.py](live.py).
 - Manual spam/not-spam judgments, explanatory feedback, per-person histories,
   and workforce summaries.
@@ -129,9 +133,17 @@ substitutions can nevertheless produce inconsistent prose.
 
 ## Evaluation methods and verified results
 
-### Checks performed for this showcase
+### Current update verification
 
-The committed JSON sources were parsed to confirm the 25-person roster and
+The current regression suite passed **116 tests** with Python 3.12.14 and
+Streamlit 1.66.1 using `.venv/bin/python -m pytest -q`. These checks cover
+authorization, administrative operations, practice sessions, email presentation,
+and frontend rendering; they do not reproduce the historical ML scores.
+Install test dependencies with `python -m pip install -e ".[dev]"`.
+
+### Earlier showcase verification
+
+The tracked JSON sources were parsed to confirm the 25-person roster and
 26/25 email-label split. In an isolated export of commit `7b49371`,
 `python3 -m tests.test_twin_all` completed successfully: 100 simulated emails
 for each of 25 personas, with a printed overall mean absolute gap of **0.257**
@@ -186,22 +198,24 @@ human behavior.
   legitimate email. Its mixed-email headline scores should not be used as
   evidence. `evaluate.py` contains label-aware outcome logic.
 - **Historical data integrity:** The report identifies 49 mismatched email
-  ID/subject records and 99 generated-email records omitted by the committed
-  ML loader, which resolves only curated IDs. These affect interpretation of
-  historical results.
+  ID/subject records and 99 generated-email records omitted by the earlier
+  ML loader. The current loader also resolves saved generated messages and
+  practice snapshots; historical scores still reflect the earlier data handling.
 - **Model scope:** The counting estimator has no smoothing or uncertainty
   interval. Phishing `ignore` actions are logged without changing its click/
   report counters. Situational inputs affect the reader but are absent from
   the ML feature set.
-- **Validation and operation:** The committed `tests/` scripts are printing
-  demonstrations, not an automated assertion suite. File-based shared state,
+- **Validation and operation:** Earlier simulation scripts print demonstrations.
+  The current pytest suite adds assertions for authorization, practice sessions,
+  backups, answer presentation, and frontend rendering. File-based shared state,
   per-event disk synchronization, and in-memory history limit scalability.
   This version does not establish production deployment readiness.
 
 ## Setup and exploration
 
-Run from the repository root. These commands target the committed version
-summarized here; generated outputs are local runtime data.
+Run from the repository root; generated outputs are local runtime data.
+Admin is locked until a local password is configured as described in the
+[admin guide](docs/ADMIN.md).
 
 ```bash
 git clone https://github.com/vvek17/Digital_twin.git
@@ -239,9 +253,9 @@ probabilities; it should not be interpreted as validation of the rule reader.
    training-only events before comparing models.
 2. Validate historical email identity, retain exact generated messages, report
    excluded rows, and save versioned evaluation inputs and outputs.
-3. Add assertion-based tests for prediction ordering, replay equivalence,
-   counter invariants, dataset splits, and legitimate-email scoring; run them
-   in continuous integration.
+3. Extend the existing assertion suite to cover prediction ordering, replay
+   equivalence, dataset splits, and legitimate-email benchmark scoring; add
+   continuous integration.
 4. Evaluate repeated email-group splits, template-family holdouts, calibration,
    uncertainty, and decision thresholds chosen on validation data.
 5. Compare smoothing and three-outcome modeling with the current estimator;

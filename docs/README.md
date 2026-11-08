@@ -21,6 +21,10 @@ docs/
 
 ## Start here
 
+[ADMIN.md](ADMIN.md) explains the current training/admin split, authorization,
+and backup setup. Older presentation guides describe the previous eight-tab
+main page; their historical layout and line references have not been regenerated.
+
 | Document | What it is | Read it when |
 |---|---|---|
 | [STRUCTURE.md](STRUCTURE.md) | The map: every file with one line on what it does, plus a "I want to change X, where do I go" table | You are looking for the file that does a particular thing |

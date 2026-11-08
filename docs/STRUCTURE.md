@@ -7,7 +7,8 @@ particular thing, start with the table in **"I want to change..."** below.
 
 | | |
 |---|---|
-| `app.py` | the website. `python3 -m streamlit run app.py` |
+| `app.py` | the training page: Inbox and Training progress. `python3 -m streamlit run app.py` |
+| `pages/admin.py` | authenticated instructor navigation; reports, simulations, emails and system tools |
 | `main.py` | run the simulation in the terminal for one person or everyone |
 | `live.py` | watch deliveries happen, one at a time, without the website |
 | `evaluate.py` | does the twin still work on emails it has never seen? |
@@ -31,11 +32,31 @@ be moved or renamed without the application noticing. Everything else is code
 the four programs depend on.
 
 The rule the split is held to: **nothing in `backend/`, `database/` or
-`scripts/` imports streamlit.** Only `app.py` and `frontend/` know there is a
+`scripts/` imports streamlit.** Only `app.py`, `pages/`, and `frontend/` know there is a
 website at all. If a file draws something it is frontend; if it decides
 something it is backend.
 
 ## Every file, one line each
+
+### Admin and training boundaries
+
+| File | What it does |
+|---|---|
+| `backend/auth.py` | verifies admin credentials and revalidates session-bound, expiring grants |
+| `backend/admin.py` | authorized instructor operations, backups, health checks and audit |
+| `backend/training.py` | shared workspace, human submissions, human-only progress |
+| `backend/practice.py` | persisted manual assignments, dynamic email selection and session progress |
+| `frontend/runtime.py` | shared Streamlit session/workspace lifecycle |
+| `frontend/layout.py` | shared page headers, cards and container-aware grids |
+| `frontend/dashboard_charts.py` | row-based staff and compact pressure charts; existing metric values |
+| `frontend/tables.py` | adaptive column widths, compact progress cells and virtualized tables |
+| `frontend/training_views.py` | Inbox, feedback and human progress |
+| `frontend/email_presentation.py` | escaped email reader and source-backed educational feedback |
+| `frontend/practice_views.py` | assignment form in the protected Person report |
+| `frontend/admin_reports.py` | workforce Dashboard, Person and All history |
+| `frontend/admin_experiments.py` | Live, Run and Model |
+| `frontend/admin_emails.py` | generation, catalogue and teaching previews |
+| `frontend/admin_system.py` | existing System health/backup/restore controls |
 
 ### `backend/` — the simulation
 
@@ -90,7 +111,8 @@ can be compared.
 | File | What it does |
 |---|---|
 | `theme.py` | the colours, the chart styling, the wording of a verdict |
-| `responsive.py` | makes the layout work on a narrow window and a phone |
+| `responsive.py` | centered workspace, typography, card styling and responsive grids |
+| `recognition_chart.py` | dynamic grouped Clicked vs recognised chart with existing delivery denominators |
 
 ### `database/` — stored and queried
 
@@ -126,7 +148,7 @@ it was a one-time migration, completed on 2026-10-26.
 |---|---|
 | a colour, or how a chart looks | `frontend/theme.py` |
 | how it behaves on a phone | `frontend/responsive.py` |
-| the wording or layout of a tab | `app.py` — find the tab by its `with tab_xxx:` block |
+| the wording or layout of a tab | `frontend/training_views.py` or the relevant `frontend/admin_*.py` renderer |
 | how a person decides spam or not | `backend/reader.py` |
 | how the twin predicts | `backend/twin.py` |
 | what happens in one delivery | `backend/engine.py` — Live and Run both use it |
@@ -168,9 +190,12 @@ data/hospital_emails_mixed.json    the 51 emails
 ```
 data/history_log.jsonl             every simulated answer, appended, never rewritten
 data/responses.json                what REAL people answered in the Inbox tab
+data/practice_sessions.json        assigned sessions and their original generated messages
 ```
 
-`responses.json` is the one file nothing can regenerate. A person typed it.
+Keep the human responses and practice snapshots with the history log. A person's
+answers and the exact generated messages assigned to them cannot be recreated
+by running the generator again.
 
 **Rebuilt — safe to delete.** They come back on their own.
 

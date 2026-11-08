@@ -24,13 +24,25 @@ Everything else written about the project lives in **[docs/](docs/)** — see
 
 ```
 app.py  main.py  live.py  evaluate.py     the things you run
+pages/admin.py                           protected instructor workspace
 README.md  pyproject.toml                 the front page, and the install
 
-frontend/   theme          palette, chart styling, verdict wording
-backend/    engine         one delivery: pick, predict, answer, update
+frontend/   training_views Inbox and human training progress
+            admin_*        instructor reports, experiments, emails, system tools
+            runtime        shared session lifecycle
+            layout         shared page headers and cards
+            dashboard_charts row-based staff and pressure visualizations
+            tables         content-sized, virtualized data tables
+            responsive     workspace, typography and responsive grid rules
+            theme          palette, chart styling, verdict wording
+backend/    auth           server-held admin grants
+            admin          authorized research and maintenance operations
+            training       shared workspace and human-answer submission
+            practice       counted manual sessions and generated-email selection
+            engine         one delivery: pick, predict, answer, update
             twin           the counting model, P(click) = yes / (yes + no)
             reader         answers by inspecting the email
-            human          answers by rolling against hidden_probs
+            human          compatibility wrapper for the email reader
             store          reading and writing the app's data files
             metrics        history to DataFrames
             benchmark      the ML model against the counting twin
@@ -49,14 +61,17 @@ docs/       everything written about the project - no code imports it
 
 No file in `backend/`, `database/` or `scripts/` imports `streamlit`. That is
 the rule the split is held to: if a module draws, it is frontend; if it
-decides, it is backend. Only `app.py` and `frontend/` know the UI exists.
+decides, it is backend. Only `app.py`, `pages/`, and `frontend/` know the UI exists.
 
-The layout is responsive. Columns are given a minimum readable width and
-flex-wrap does the rest, so a row of four metrics becomes three, then two,
-then one as the window narrows, rather than squeezing to a few characters
-each. Below 760px the columns stack and the eight tabs scroll sideways.
-Checked at 1440, 1100, 820, 390 and 320px with no horizontal overflow -
-see `frontend/responsive.py`.
+The workspace is centered with a 1340px maximum width. Related views share
+responsive card grids, with compact readable typography. Shared CSS grids use
+the space actually available inside each section, including sidebar changes.
+Panels use equal-width tracks with a 24rem readable minimum; controls, metrics
+and actions use smaller semantic track sizes. Tracks stack when they no longer
+fit, rather than relying on browser-width breakpoints. Tables size their columns from content rather than
+stretching short values across the page. Large tables retain native
+virtualized scrolling, sorting, search, column visibility, export and fullscreen.
+See `frontend/layout.py`, `frontend/tables.py` and `frontend/responsive.py`.
 
 ## Install
 
@@ -72,15 +87,16 @@ Dependencies: streamlit, pandas, altair, scikit-learn, numpy.
 ## Run
 
 ```bash
-python3 -m streamlit run app.py     # the app: 8 tabs, see below
+python3 -m streamlit run app.py     # training app and protected Admin page
 python3 main.py P09 200             # one person, 200 emails, in the terminal
 python3 main.py all 100             # everyone, 100 each
 python3 live.py                     # the live loop without the UI
 python3 evaluate.py 200             # does the twin transfer to new emails?
 ```
 
-`main.py` takes `--fresh` (ignore saved history), `--no-save`, `--reader`
-(answer by inspecting the email) and `--repeats` (let an email arrive twice).
+`main.py` takes `--fresh` (ignore saved history), `--no-save`, and `--repeats`
+(let an email arrive twice). Automatic answers always inspect the email.
+The old `--reader` flag remains accepted for compatibility.
 
 ```bash
 python3 -m backend.ml_model         # train and evaluate, print the metrics
@@ -93,42 +109,71 @@ python3 tests/test_twin_all.py      # all 25 people, per-person accuracy
 
 ## The app
 
-| Tab | What it does |
+The main page is for training. **Inbox** lets you judge emails and receive
+explained feedback. The email reader preserves the original message and keeps
+the answered email open until **Next email**. Its review separates the saved
+verdict, source evidence, learning note and human-practice progress.
+**Training progress** shows human answers for the selected
+fictional persona, with accuracy and answered-email review. Simulated answers
+never exhaust the human practice queue. There are no private trainee accounts;
+choosing a persona does not establish a real user's identity.
+
+Select **Admin** under **Main screens** and log in to access:
+
+| Section | What it does |
 |---|---|
-| Dashboard | all history: who clicks, what works on people |
-| Live | emails arrive one at a time, visibly, to random staff |
-| Inbox | you play the staff member and answer yourself |
-| Person | one person's report card, split by what the email really was |
-| All history | every answer, one row each |
-| Run | the Live loop batched and silent, up to a million deliveries |
-| Model | ML model against the counting twin, on brand new emails |
-| Emails | build a new email and inspect it |
+| Dashboard | workforce click rates, awareness comparisons, and scores |
+| Live | start/stop simulated delivery, inspect arrivals, speed and session feed |
+| Person | assign manual practice, full report card, response sources, counters and history |
+| All history | workforce records, filters and CSV download |
+| Run | batch the same delivery engine, up to a million deliveries |
+| Model | train and compare ML with the counting twin; known scoring issues are flagged |
+| Emails | generate, browse and inspect curated/built emails and teaching notes |
+| System | file/database health, integrity, backups, restore and cache clearing |
 
-Three sidebar toggles change what every tab does:
+Simulation toggles (new vs saved generated emails, and repeats) live in Admin's
+Live and Run sections. Automatic answers always use the existing email reader;
+there is no hidden-probability answer mode. Only the selected admin section executes. Leaving Live stops future
+bursts; opening training or logging out also stops the session's Live loop.
 
-- **Read the email** — on, answers come from `reader.py`, which inspects the
-  sender domain, Reply-To, link mismatch and wording. Off, answers come from
-  `human.py`, which rolls against each person's secret `hidden_probs` and never
-  reads the email. On is the default; off is the older approach.
-- **Build new emails** — assemble a fresh email per delivery, or draw from the
-  fixed 51.
-- **Allow repeats** — let an email arrive again, or give each person each email
-  once.
+For manual practice with a custom count, open **Admin → Person**,
+select the staff member, enter **Practice emails**, and click **Assign practice**.
+Then return to **App → Inbox**, select the same fictional person, and
+answer Spam / Not spam. A session contains exactly the requested number of
+unique generated emails; existing complete emails are reused before the current
+builder creates the shortfall. Only an administrator can assign sessions.
+Assignments do not create simulated answers or send real email. Without an
+assignment, Inbox uses the saved generated pool. If it is empty, prepare emails
+in Admin; opening or refreshing a page never generates messages. **Run** keeps
+its automatic simulation workflow. With **Build new emails** off, Live and Run
+reuse saved generated messages; they never fall back to static templates.
 
-Live and Run are the same loop at different speeds. Both call
-`backend/engine.py`, so they cannot drift apart.
+Set `admin_password` in the git-ignored `.streamlit/secrets.toml`. Missing or
+empty credentials lock Admin. Backend service methods require an expiring,
+server-held grant bound to the browser session and current password. Hiding a
+control is not the authorization mechanism. Local Python/CLI operators remain
+trusted filesystem users.
+
+See [docs/ADMIN.md](docs/ADMIN.md) for setup, backup behavior and limitations.
+The reorganization does not add per-person history reset, roster editing, or configuration
+features from the later admin roadmap.
 
 ## How one delivery works
 
 ```
-   1. pick      a fresh email, or one of the 51
+   1. pick      a fresh generated email, or a saved generated email
    2. predict   the twin guesses, from its counters alone
-   3. answer    the reader inspects the email, or the human rolls the dice
+   3. answer    the reader inspects the email; Inbox records the user's actual choice
    4. update    the counters move, and the answer is appended to the log
 ```
 
 Step 2 has to come before step 3. A prediction is only worth something if it
 was committed before the outcome existed.
+
+The terminal runners also use the existing builder and retain complete generated
+messages alongside their answer history. The static catalogue remains available
+for template generation, inspection, and review of previous results. There is no
+SMTP service: delivery means arrival inside this fictional simulation.
 
 ## The data
 
@@ -137,9 +182,12 @@ was committed before the outcome existed.
 Each has realistic workforce fields plus a `simulation` block holding
 `role_group`, `security_awareness`, `workload`, `shift` and `hidden_probs`.
 
-`hidden_probs` is the secret click chance per cue. **The twin must never read
-it.** It exists so the twin can be *graded* afterwards, never so it can
-predict. The database keeps it in its own table for the same reason.
+`hidden_probs` contains legacy click chances retained in the original roster and
+database. **No answer generator uses these values.** Manual practice records the
+user's choices; automatic runs use `RuleReader`, including older scripts that
+still import `SimulatedHuman`. Legacy terminal comparison summaries can still
+read these fields for grading, but they do not choose answers. **The twin must
+never read them to predict.** Existing historical results are preserved.
 
 **51 emails** — 26 phishing, 25 legitimate — built around the HIM 1055 Weeks 7
 & 8 taxonomy of attacks and threats. Several genuine emails are deliberate
@@ -165,11 +213,17 @@ Built from them, git-ignored and rebuildable:
   `rebuild_from_log()` restores it.
 - `simulation.db` — the queryable projection of all of the above
 - `responses.json` — what real people answered in the Inbox tab
+- `generated_emails.json` — complete generated messages, including labels,
+  sender details, links and teaching notes; retain this with generated-email history
 - `history.csv`, `results.csv`, `scores.csv`, `email_scores.csv`,
   `click_rates.csv`, `person_summary.csv` — the exports
 
 The log is the source of truth and the snapshot is a cache. Nothing is ever
 only in the database.
+
+`data/practice_sessions.json` stores manual assignments and their complete email
+snapshots. It is git-ignored and backed up, but is not a disposable cache: keep
+it to retain the exact generated messages associated with practice history.
 
 ## The database
 
